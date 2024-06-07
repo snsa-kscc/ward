@@ -1,0 +1,21 @@
+---
+import { db, Comment } from "astro:db";
+
+const comments = await db.select().from(Comment);
+const date = Date.now();
+---
+
+<h2>Comments</h2>
+
+{
+  comments.map(({ author, body }) => (
+    <article>
+      <p>Author: {author}</p>
+      <p>{body}</p>
+    </article>
+  ))
+}
+
+<p>Last updated: {new Date(date).toLocaleString()}</p>
+
+<img src="/img.jpg" alt="img" />

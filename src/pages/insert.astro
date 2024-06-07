@@ -1,0 +1,38 @@
+---
+import { db, Comment } from "astro:db";
+
+if (Astro.request.method === "POST") {
+  // parse form data
+  const formData = await Astro.request.formData();
+  const author = formData.get("author");
+  const body = formData.get("body");
+  if (typeof author === "string" && typeof body === "string") {
+    // insert form data into the Comment table
+    await db.insert(Comment).values({ author, body });
+  }
+}
+
+// render the new list of comments on each request
+const comments = await db.select().from(Comment);
+---
+
+<form method="POST" style="display: grid">
+  <label for="author">Author</label>
+  <input id="author" name="author" />
+
+  <label for="body">Body</label>
+  <textarea id="body" name="body"></textarea>
+
+  <button type="submit">Submit</button>
+</form>
+
+<h2>Comments</h2>
+
+{
+  comments.map(({ author, body }) => (
+    <article>
+      <p>Author: {author}</p>
+      <p>{body}</p>
+    </article>
+  ))
+}
