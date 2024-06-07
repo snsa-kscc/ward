@@ -1,13 +1,11 @@
-const http = require("http");
-const hostname = "127.0.0.1";
-const port = process.env.PORT || 3000;
+import express from "express";
+import { handler as ssrHandler } from "./dist/server/entry.mjs";
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end(`Hello World! I am your new NodeJS app - time ${Date.now()} - port ${port}! \n`);
-});
+const app = express();
+// Change this based on your astro.config.mjs, `base` option.
+// They should match. The default value is "/".
+const base = "/";
+app.use(base, express.static("dist/client/"));
+app.use(ssrHandler);
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.listen(3000);
