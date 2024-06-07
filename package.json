@@ -1,8 +1,7 @@
 {
   "name": "astro",
   "version": "0.0.1",
-  "type": "module",
-  "main": "app.js",
+  "main": "app.mjs",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
