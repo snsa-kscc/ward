@@ -1,5 +1,5 @@
 import { renderers } from './renderers.mjs';
-import { l as levels, g as getEventPrefix, L as Logger, A as AstroIntegrationLogger, manifest } from './manifest_BVF3-2S9.mjs';
+import { l as levels, g as getEventPrefix, L as Logger, A as AstroIntegrationLogger, manifest } from './manifest_YSfLj_jp.mjs';
 import { e as appendForwardSlash$1, j as joinPaths, t as trimSlashes, f as fileExtension, s as slash, p as prependForwardSlash$1, g as removeTrailingForwardSlash, h as collapseDuplicateSlashes } from './chunks/astro/assets-service_COWy5H7s.mjs';
 import { R as ROUTE_TYPE_HEADER, i as REROUTE_DIRECTIVE_HEADER, A as AstroError, j as ResponseSentError, k as MiddlewareNoDataOrNextCalled, l as MiddlewareNotAResponse, G as GetStaticPathsRequired, n as InvalidGetStaticPathsReturn, o as InvalidGetStaticPathsEntry, p as GetStaticPathsExpectedParams, q as GetStaticPathsInvalidRouteParam, P as PageNumberParamNotFound, D as DEFAULT_404_COMPONENT, N as NoMatchingStaticPathFound, t as PrerenderDynamicEndpointPathCollide, u as ReservedSlotName, v as renderSlotToString, w as renderJSX, x as chunkToString, y as isRenderInstruction, z as LocalsNotAnObject, B as clientLocalsSymbol, C as clientAddressSymbol$1, H as PrerenderClientAddressNotAvailable, J as ClientAddressNotAvailable, S as StaticClientAddressNotAvailable, K as renderPage, O as renderEndpoint, Q as ASTRO_VERSION, T as AstroResponseHeadersReassigned, V as responseSentSymbol$1, W as RewriteEncounteredAnError, X as REROUTABLE_STATUS_CODES, Y as getDefaultExportFromCjs } from './chunks/astro_BEVvFLmn.mjs';
 import { AsyncLocalStorage } from 'node:async_hooks';
@@ -10214,7 +10214,7 @@ const serverEntrypointModule = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.de
 const _page0 = () => import('./chunks/node_b9DkQHvd.mjs');
 const _page1 = () => import('./chunks/insert_DvbaO4Aa.mjs');
 const _page2 = () => import('./chunks/prerender_BqzyHbU9.mjs');
-const _page3 = () => import('./chunks/index_BfuacQqL.mjs');
+const _page3 = () => import('./chunks/index_BPtPX36q.mjs');
 const pageMap = new Map([
     ["node_modules/.pnpm/astro@4.10.0_@types+node@20.14.2_typescript@5.4.5/node_modules/astro/dist/assets/endpoint/node.js", _page0],
     ["src/pages/insert.astro", _page1],

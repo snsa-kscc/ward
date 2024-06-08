@@ -21,9 +21,10 @@ const $$Index = createComponent(
   async ($$result, $$props, $$slots) => {
     const comments = await db.select().from(Comment);
     const date = Date.now();
+    const environ = process.env.NODE_ENV;
     return renderTemplate`${maybeRenderHead()}<h2>Comments</h2> ${comments.map(
       ({ author, body }) => renderTemplate`<article> <p>Author: ${author}</p> <p>${body}</p> </article>`
-    )} <p>Last updated: ${new Date(date).toLocaleString()}</p> <img src="/img.jpg" alt="img">`;
+    )} <p>Last updated: ${new Date(date).toLocaleString()}</p> <p>Environment: ${environ}</p> <img src="/img.jpg" alt="img">`;
   },
   "/home/snsa/Desktop/astro/src/pages/index.astro",
   void 0
