@@ -3,6 +3,8 @@ import { db, Comment } from "astro:db";
 
 const comments = await db.select().from(Comment);
 const date = Date.now();
+
+const environ = process.env.NODE_ENV;
 ---
 
 <h2>Comments</h2>
@@ -17,5 +19,7 @@ const date = Date.now();
 }
 
 <p>Last updated: {new Date(date).toLocaleString()}</p>
+
+<p>Environment: {environ}</p>
 
 <img src="/img.jpg" alt="img" />
