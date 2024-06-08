@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && ASTRO_DATABASE_FILE=/home/wardhr/public_html/feature.ward.hr/.astro/content.db",
+    "build": "astro check && ASTRO_DATABASE_FILE=/home/wardhr/public_html/feature.ward.hr/.astro/content.db astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
