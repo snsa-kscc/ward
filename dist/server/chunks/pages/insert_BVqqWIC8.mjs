@@ -2,7 +2,7 @@ import { c as createComponent, r as renderTemplate, m as maybeRenderHead, d as c
 import { normalizeDatabaseUrl, createLocalDatabaseClient, asDrizzleTable } from "@astrojs/db/runtime";
 import "@astrojs/db/dist/runtime/virtual.js";
 
-const dbUrl = normalizeDatabaseUrl(process.env.ASTRO_DATABASE_FILE, "file:///home/wardhr/public_html/feature.ward.hr/.astro/content.db");
+const dbUrl = normalizeDatabaseUrl(process.env.ASTRO_DATABASE_FILE, "file:///home/snsa/Desktop/astro/.astro/content.db/.astro/content.db");
 const db = createLocalDatabaseClient({ dbUrl });
 const Comment = asDrizzleTable(
   "Comment",
