@@ -1,5 +1,5 @@
 ---
-import { db, Comment } from "astro:db";
+// import { db, Comment } from "astro:db";
 
 if (Astro.request.method === "POST") {
   // parse form data
@@ -8,12 +8,12 @@ if (Astro.request.method === "POST") {
   const body = formData.get("body");
   if (typeof author === "string" && typeof body === "string") {
     // insert form data into the Comment table
-    await db.insert(Comment).values({ author, body });
+    // await db.insert(Comment).values({ author, body });
   }
 }
 
 // render the new list of comments on each request
-const comments = await db.select().from(Comment);
+// const comments = await db.select().from(Comment);
 ---
 
 <form method="POST" style="display: grid">
@@ -28,11 +28,11 @@ const comments = await db.select().from(Comment);
 
 <h2>Comments</h2>
 
-{
+<!-- {
   comments.map(({ author, body }) => (
     <article>
       <p>Author: {author}</p>
       <p>{body}</p>
     </article>
   ))
-}
+} -->

@@ -1,9 +1,11 @@
 ---
-import { db, Comment } from "astro:db";
+//import { db, Comment } from "astro:db";
 import Card from "../components/Card.astro";
 import Grid from "../components/Grid.astro";
 
-const comments = await db.select().from(Comment);
+//import { myDb } from "../../db/index.ts";
+
+//const comments = await db.select().from(Comment);
 const date = Date.now();
 
 const environ = process.env.NODE_ENV;
@@ -13,22 +15,21 @@ const home = process.env.HOME;
 <div class="h-screen">
   <h2>Comments</h2>
 
-  {
+  <!-- {
     comments.map(({ author, body }) => (
       <article>
         <p>Author: {author}</p>
         <p>{body}</p>
       </article>
     ))
-  }
+  } -->
 
   <p>Last updated: {new Date(date).toLocaleString()}</p>
 
   <p>Environment: {environ}</p>
   <p>Home: {home}</p>
-
+  <p>ip: {import.meta.env.MYSQL_HOST}</p>
   <img src="/img.jpg" alt="img" />
-
   <Card title="Hello, world!" body="This is a card" />
 
   <p class="text-red-500">This is a paragraph.</p>
