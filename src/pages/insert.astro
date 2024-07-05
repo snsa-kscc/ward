@@ -1,38 +1,40 @@
 ---
 // import { db, Comment } from "astro:db";
+import { myDb } from "../../db";
+import { users } from "../../db/schema";
 
 if (Astro.request.method === "POST") {
   // parse form data
   const formData = await Astro.request.formData();
-  const author = formData.get("author");
+  const name = formData.get("name");
   const body = formData.get("body");
-  if (typeof author === "string" && typeof body === "string") {
+  if (typeof name === "string" && typeof body === "string") {
     // insert form data into the Comment table
-    // await db.insert(Comment).values({ author, body });
+    await myDb.insert(users).values({ name, body });
   }
 }
 
 // render the new list of comments on each request
-// const comments = await db.select().from(Comment);
+const entries = await myDb.select().from(users);
 ---
 
 <form method="POST" style="display: grid">
-  <label for="author">Author</label>
-  <input id="author" name="author" />
+  <label for="name">name</label>
+  <input id="name" name="name" />
 
-  <label for="body">Body</label>
+  <label for="body">body</label>
   <textarea id="body" name="body"></textarea>
 
   <button type="submit">Submit</button>
 </form>
 
-<h2>Comments</h2>
+<h2>entries</h2>
 
-<!-- {
-  comments.map(({ author, body }) => (
+{
+  entries.map(({ name, body }) => (
     <article>
-      <p>Author: {author}</p>
+      <p>name: {name}</p>
       <p>{body}</p>
     </article>
   ))
-} -->
+}

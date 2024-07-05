@@ -3,9 +3,10 @@
 import Card from "../components/Card.astro";
 import Grid from "../components/Grid.astro";
 
-//import { myDb } from "../../db/index.ts";
+import { myDb } from "../../db";
+import { users } from "../../db/schema";
 
-//const comments = await db.select().from(Comment);
+const entries = await myDb.select().from(users);
 const date = Date.now();
 
 const environ = process.env.NODE_ENV;
@@ -15,14 +16,14 @@ const home = process.env.HOME;
 <div class="h-screen">
   <h2>Comments</h2>
 
-  <!-- {
-    comments.map(({ author, body }) => (
+  {
+    entries.map(({ name, body }) => (
       <article>
-        <p>Author: {author}</p>
+        <p>Author: {name}</p>
         <p>{body}</p>
       </article>
     ))
-  } -->
+  }
 
   <p>Last updated: {new Date(date).toLocaleString()}</p>
 

@@ -6,6 +6,8 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate",
     "astro": "astro"
   },
   "dependencies": {
