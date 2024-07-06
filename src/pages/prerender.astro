@@ -1,8 +1,11 @@
 ---
+import Layout from "../layouts/Layout.astro";
 export const prerender = "true";
 
 const time = Date.now();
 ---
 
-<h1>Prerendered</h1>
-<p>This page was prerendered at {new Date(time).toLocaleString()}</p>
+<Layout title="Prerendered">
+  <h1>Prerendered</h1>
+  <p>This page was prerendered at {new Date(time).toLocaleString()}</p>
+</Layout>

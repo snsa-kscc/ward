@@ -1,4 +1,5 @@
 ---
+import Layout from "../layouts/Layout.astro";
 // import { db, Comment } from "astro:db";
 import { myDb } from "../../db";
 import { users } from "../../db/schema";
@@ -18,23 +19,25 @@ if (Astro.request.method === "POST") {
 const entries = await myDb.select().from(users);
 ---
 
-<form method="POST" style="display: grid">
-  <label for="name">name</label>
-  <input id="name" name="name" />
+<Layout title="Insert">
+  <form method="POST" style="display: grid">
+    <label for="name">name</label>
+    <input id="name" name="name" />
 
-  <label for="body">body</label>
-  <textarea id="body" name="body"></textarea>
+    <label for="body">body</label>
+    <textarea id="body" name="body"></textarea>
 
-  <button type="submit">Submit</button>
-</form>
+    <button type="submit">Submit</button>
+  </form>
 
-<h2>entries</h2>
+  <h2>entries</h2>
 
-{
-  entries.map(({ name, body }) => (
-    <article>
-      <p>name: {name}</p>
-      <p>{body}</p>
-    </article>
-  ))
-}
+  {
+    entries.map(({ name, body }) => (
+      <article>
+        <p>name: {name}</p>
+        <p>{body}</p>
+      </article>
+    ))
+  }
+</Layout>
