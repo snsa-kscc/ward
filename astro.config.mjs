@@ -11,4 +11,7 @@ export default defineConfig({
   adapter: node({
     mode: "middleware",
   }),
+  experimental: {
+    actions: true,
+  },
 });
