@@ -4,43 +4,48 @@ import Layout from "../layouts/Layout.astro";
 import { writeFile } from "fs/promises";
 import path from "path";
 
-let filename = "";
+let filenames = [];
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
-  const file = formData.get("file") as File;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  filename = file.name;
-  await writeFile(path.join(process.cwd(), "src/media", filename), buffer);
+  for (const file of formData.getAll("file") as File[]) {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await writeFile(path.join("./src/media", file.name), buffer);
+    filenames.push(file.name);
+  }
 }
 ---
 
 <Layout title="File">
-  <h1>File</h1>
+  <h1 class="text-3xl py-20">File</h1>
   <form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" />
+    <input type="file" name="file" multiple accept="image/*, video/*" />
     <button type="submit">send</button>
   </form>
   {
-    filename && (
-      <div class="file">
-        <p>{filename}</p>
-        <button class="btn">{filename}</button>
-      </div>
-    )
+    filenames.map((filename) => {
+      return (
+        <div class="flex gap-4">
+          <p>{filename}</p>
+          <button class="btn">{filename}</button>
+        </div>
+      );
+    })
   }
 </Layout>
+
 <script>
   import { actions } from "astro:actions";
 
-  const button = document.querySelector(".btn") as HTMLButtonElement;
-  const file = document.querySelector(".file") as HTMLElement;
-  button?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    const result = await actions.delete({
-      id: button.textContent ?? "",
+  const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+  buttons.forEach((button) => {
+    button.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const result = await actions.delete({
+        id: button.textContent ?? "",
+      });
+      if (result === "deleted") {
+        button.parentElement?.remove();
+      }
     });
-    if (result === "deleted") {
-      file.remove();
-    }
   });
 </script>
