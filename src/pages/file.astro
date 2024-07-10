@@ -1,6 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
+import { Button } from "@/components/ui/button";
+
 import { writeFile } from "fs/promises";
 import path from "path";
 
@@ -18,15 +20,17 @@ if (Astro.request.method === "POST") {
 <Layout title="File">
   <h1 class="text-3xl py-20">File</h1>
   <form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" multiple accept="image/*, video/*" />
-    <button type="submit">send</button>
+    <input type="file" name="file" multiple accept="image/*, video/*" required />
+    <Button type="submit" variant="secondary">send</Button>
   </form>
   {
     filenames.map((filename) => {
       return (
-        <div class="flex gap-4">
+        <div class="flex gap-4 py-4">
           <p>{filename}</p>
-          <button class="btn">{filename}</button>
+          <Button className="btn" variant="destructive">
+            {filename}
+          </Button>
         </div>
       );
     })
