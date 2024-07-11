@@ -21,16 +21,16 @@ if (Astro.request.method === "POST") {
 <Layout title="File">
   <h1 class="text-3xl py-20">File</h1>
   <form method="POST" enctype="multipart/form-data" class="flex gap-4">
-    <Input type="file" name="file" multiple accept="image/*, video/*" required />
+    <Input type="file" name="file" multiple accept="image/*, video/*" required className="text-black" />
     <Button type="submit" variant="secondary">send</Button>
   </form>
   {
     filenames.map((filename) => {
       return (
-        <div class="flex gap-4 py-4">
+        <div class="flex gap-4 py-4 items-center">
           <p>{filename}</p>
           <Button className="btn" variant="destructive">
-            {filename}
+            delete
           </Button>
         </div>
       );
@@ -46,7 +46,7 @@ if (Astro.request.method === "POST") {
     button.addEventListener("click", async (e) => {
       e.preventDefault();
       const result = await actions.delete({
-        id: button.textContent ?? "",
+        id: button.previousElementSibling?.textContent ?? "",
       });
       if (result === "deleted") {
         button.parentElement?.remove();
