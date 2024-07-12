@@ -3,6 +3,8 @@
 ## TODO
 
 - [x] db connection
-- [ ] file upload and path to file in database
-- [ ] admin page
-- [ ] db schema
+- [x] file upload and path to file in database
+- [x] admin page
+- [x] db schema
+- [ ] admin dashboard delete items
+- [ ] index page pics

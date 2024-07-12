@@ -11,7 +11,11 @@ export const server = {
       const res = await db.select().from(portfolios).where(eq(portfolios.title, title));
       const filenames: string[] = JSON.parse(res[0].media as string);
       const filteredFilenames = filenames.filter((filename) => filename !== item);
-      await rm(`./src/media/${item}`);
+      try {
+        await rm(`./src/media/${item}`);
+      } catch (error) {
+        console.log(error);
+      }
       await db
         .update(portfolios)
         .set({ media: JSON.stringify(filteredFilenames) })

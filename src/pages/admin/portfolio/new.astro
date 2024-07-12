@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { writeFile } from "fs/promises";
 import path from "path";
-import { db } from "@/../db";
-import { portfolios } from "@/../db/schema";
+import { db } from "db";
+import { portfolios } from "db/schema";
 import { slugify } from "@/lib/utils";
 
 let filenames = [];
@@ -35,7 +35,7 @@ if (Astro.request.method === "POST") {
       <Label htmlFor="file">media</Label>
       <Input type="file" name="file" multiple accept="image/*, video/*" required className="text-black" />
       <Label htmlFor="content">description</Label>
-      <Textarea name="content" className="text-white bg-transparent" />
+      <Textarea name="content" className="text-white bg-transparent" rows={15} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

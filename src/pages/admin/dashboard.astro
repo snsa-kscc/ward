@@ -1,0 +1,37 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { db } from "db";
+import { portfolios } from "db/schema";
+import { desc } from "drizzle-orm";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+
+const portfolioItems = await db.select().from(portfolios).orderBy(desc(portfolios.createdAt));
+---
+
+<Layout title="Dashboard" />
+<div class="container px-8">
+  <h1 class="title text-3xl py-20">Dashboard</h1>
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Item</TableHead>
+        <TableHead>Delete</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {
+        portfolioItems.map((item) => (
+          <TableRow key={item.id}>
+            <TableCell className="font-medium">
+              <a href={`/admin/portfolio/${item.slug}`}>{item.title}</a>
+            </TableCell>
+            <TableCell>
+              <Button variant="destructive">delete</Button>
+            </TableCell>
+          </TableRow>
+        ))
+      }
+    </TableBody>
+  </Table>
+</div>

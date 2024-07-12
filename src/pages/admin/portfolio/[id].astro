@@ -6,9 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { writeFile } from "fs/promises";
 import path from "path";
-import { db } from "@/../db";
+import { db } from "db";
 import { eq } from "drizzle-orm";
-import { portfolios } from "@/../db/schema";
+import { portfolios } from "db/schema";
 import { slugify } from "@/lib/utils";
 
 const { id } = Astro.params;
@@ -30,7 +30,7 @@ if (Astro.request.method === "POST") {
   for (const file of formData.getAll("file") as File[]) {
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(path.join("./src/media", file.name), buffer);
-    filenames.push(file.name);
+    filenames.unshift(file.name);
   }
   await db
     .update(portfolios)
@@ -61,7 +61,7 @@ if (Astro.request.method === "POST") {
         })
       }
       <Label htmlFor="content">description</Label>
-      <Textarea name="content" className="text-white bg-transparent" defaultValue={res[0].content as string} />
+      <Textarea name="content" className="text-white bg-transparent" defaultValue={res[0].content as string} rows={15} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
