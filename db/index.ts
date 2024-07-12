@@ -19,4 +19,4 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-export const myDb = drizzle(poolConnection, { schema, mode: "default" });
+export const db = drizzle(poolConnection, { schema, mode: "default" });

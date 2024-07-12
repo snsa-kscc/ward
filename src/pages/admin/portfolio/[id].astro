@@ -1,0 +1,88 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { writeFile } from "fs/promises";
+import path from "path";
+import { db } from "@/../db";
+import { eq } from "drizzle-orm";
+import { portfolios } from "@/../db/schema";
+import { slugify } from "@/lib/utils";
+
+const { id } = Astro.params;
+const res = await db.select().from(portfolios).where(eq(portfolios.slug, id!));
+
+if (!res[0]) {
+  return Astro.redirect("/admin/portfolio/new");
+}
+
+let filenames: string[] = JSON.parse(res[0].media as string);
+
+if (Astro.request.method === "POST") {
+  const res = await db.select().from(portfolios).where(eq(portfolios.slug, id!));
+  filenames = JSON.parse(res[0].media as string);
+  const formData = await Astro.request.formData();
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const slug = slugify(title);
+  for (const file of formData.getAll("file") as File[]) {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await writeFile(path.join("./src/media", file.name), buffer);
+    filenames.push(file.name);
+  }
+  await db
+    .update(portfolios)
+    .set({ title, slug, content, media: JSON.stringify(filenames), lang: "en" })
+    .where(eq(portfolios.slug, id!));
+  return Astro.redirect(`/admin/portfolio/${slug}`);
+}
+---
+
+<Layout title={res[0].title!}>
+  <div class="container px-8">
+    <h1 class="title text-3xl py-20">{res[0].title}</h1>
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 items-start">
+      <Label htmlFor="title">title</Label>
+      <Input type="text" name="title" required className="text-white bg-transparent" defaultValue={res[0].title as string} />
+      <Label htmlFor="file">media</Label>
+      <Input type="file" name="file" multiple accept="image/*, video/*" required className="text-black" />
+      {
+        filenames.map((filename) => {
+          return (
+            <div class="flex gap-4 px-6 py-2 items-center">
+              <p>{filename}</p>
+              <Button className="btn" variant="destructive">
+                delete
+              </Button>
+            </div>
+          );
+        })
+      }
+      <Label htmlFor="content">description</Label>
+      <Textarea name="content" className="text-white bg-transparent" defaultValue={res[0].content as string} />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  import { actions } from "astro:actions";
+
+  const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+  const title = document.querySelector(".title") as HTMLTitleElement;
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const result = await actions.deleteMedia({
+        title: title.textContent ?? "",
+        item: button.previousElementSibling?.textContent ?? "",
+      });
+      if (result === "deleted") {
+        button.parentElement?.remove();
+      }
+    });
+  });
+</script>

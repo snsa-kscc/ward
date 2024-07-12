@@ -1,0 +1,42 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { writeFile } from "fs/promises";
+import path from "path";
+import { db } from "@/../db";
+import { portfolios } from "@/../db/schema";
+import { slugify } from "@/lib/utils";
+
+let filenames = [];
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const slug = slugify(title);
+  for (const file of formData.getAll("file") as File[]) {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await writeFile(path.join("./src/media", file.name), buffer);
+    filenames.push(file.name);
+  }
+  await db.insert(portfolios).values({ title, slug, content, createdAt: new Date(), media: JSON.stringify(filenames), lang: "en" });
+  return Astro.redirect(`/admin/portfolio/${slug}`);
+}
+---
+
+<Layout title="New portfolio item">
+  <div class="container px-8">
+    <h1 class="text-3xl py-20">New portfolio item</h1>
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 items-start">
+      <Label htmlFor="title">title</Label>
+      <Input type="text" name="title" required className="text-white bg-transparent" />
+      <Label htmlFor="file">media</Label>
+      <Input type="file" name="file" multiple accept="image/*, video/*" required className="text-black" />
+      <Label htmlFor="content">description</Label>
+      <Textarea name="content" className="text-white bg-transparent" />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
+  </div>
+</Layout>

@@ -8,6 +8,13 @@
       "when": 1720169591453,
       "tag": "0000_supreme_talos",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1720709112094,
+      "tag": "0001_lively_sumo",
+      "breakpoints": true
     }
   ]
 }
