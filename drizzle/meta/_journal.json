@@ -15,6 +15,13 @@
       "when": 1720709112094,
       "tag": "0001_lively_sumo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1720807175939,
+      "tag": "0002_next_outlaw_kid",
+      "breakpoints": true
     }
   ]
 }

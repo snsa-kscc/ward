@@ -27,7 +27,9 @@ const portfolioItems = await db.select().from(portfolios).orderBy(desc(portfolio
               <a href={`/admin/portfolio/${item.slug}`}>{item.title}</a>
             </TableCell>
             <TableCell>
-              <Button variant="destructive">delete</Button>
+              <Button variant="destructive" className="btn">
+                delete
+              </Button>
             </TableCell>
           </TableRow>
         ))
@@ -35,3 +37,22 @@ const portfolioItems = await db.select().from(portfolios).orderBy(desc(portfolio
     </TableBody>
   </Table>
 </div>
+
+<script>
+  import { actions } from "astro:actions";
+
+  const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+  buttons.forEach((button) => {
+    button.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const tableRow = button.closest("tr");
+      const title = tableRow?.querySelector("a")?.textContent;
+      const result = await actions.deletePortfolio({
+        title: title ?? "",
+      });
+      if (result === "deleted") {
+        tableRow?.remove();
+      }
+    });
+  });
+</script>

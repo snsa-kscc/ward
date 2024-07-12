@@ -1,4 +1,4 @@
-import { int, text, mysqlTable, timestamp } from "drizzle-orm/mysql-core";
+import { int, text, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 export const pages = mysqlTable("page", {
   id: int("id").notNull().primaryKey().autoincrement(),
@@ -10,12 +10,12 @@ export const pages = mysqlTable("page", {
 
 export const portfolios = mysqlTable("portfolio", {
   id: int("id").notNull().primaryKey().autoincrement(),
-  slug: text("slug"),
+  slug: varchar("slug", { length: 512 }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
-  title: text("title"),
+  title: varchar("title", { length: 512 }).unique(),
   content: text("content"),
-  media: text("media"),
-  lang: text("lang"),
+  media: varchar("media", { length: 1024 }),
+  lang: varchar("lang", { length: 6 }),
 });
 
 export const accolades = mysqlTable("accolade", {

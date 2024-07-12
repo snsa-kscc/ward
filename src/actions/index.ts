@@ -23,4 +23,25 @@ export const server = {
       return "deleted";
     },
   }),
+
+  deletePortfolio: defineAction({
+    input: z.object({ title: z.string() }),
+    handler: async ({ title }) => {
+      const res = await db.select().from(portfolios).where(eq(portfolios.title, title));
+      const filenames: string[] = JSON.parse(res[0].media as string);
+      for (const filename of filenames) {
+        try {
+          await rm(`./src/media/${filename}`);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      try {
+        await db.delete(portfolios).where(eq(portfolios.title, title));
+      } catch (error) {
+        console.log(error);
+      }
+      return "deleted";
+    },
+  }),
 };
