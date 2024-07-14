@@ -31,9 +31,10 @@ export const brands = mysqlTable("brand", {
   logo: text("logo"),
 });
 
-export const meta = mysqlTable("meta", {
+export const store = mysqlTable("store", {
   id: int("id").notNull().primaryKey().autoincrement(),
-  key: text("key"),
+  section: varchar("section", { length: 255 }),
+  key: varchar("key", { length: 255 }),
   value: text("value"),
-  lang: text("lang"),
+  lang: varchar("lang", { length: 6 }),
 });

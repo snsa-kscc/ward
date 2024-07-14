@@ -1,12 +1,21 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
-import Grid from "../components/Grid.astro";
+import Layout from "@/layouts/Layout.astro";
+import Grid from "@/components/Grid.astro";
+import { db } from "db";
+import { store } from "db/schema";
+import { eq } from "drizzle-orm";
+import { formatParagraph } from "@/lib/utils";
 
-import { db } from "../../db";
-// import { users } from "../../db/schema";
+const res = await db.select().from(store).where(eq(store.section, "hero"));
 
-// const entries = await db.select().from(users);
+const dict = res.reduce(
+  (acc, cur) => {
+    acc[cur.key as string] = cur.value as string;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
 const date = Date.now();
 
 const environ = process.env.NODE_ENV;
@@ -19,12 +28,17 @@ const home = process.env.HOME;
 
     <p>Last updated: {new Date(date).toLocaleString()}</p>
 
+    <p>Site title: {dict.siteTitle}</p>
+    <p>Site description: {dict.siteDescription}</p>
+    <p>About key: {dict.aboutKey}</p>
+    <p>About: {dict.about}</p>
+    <p set:html={formatParagraph(dict.specialities)} />
+
     <p>Environment: {environ}</p>
     <p>Home: {home}</p>
     <p>ip: {import.meta.env.MYSQL_HOST}</p>
     <p>cwd: {process.cwd()}</p>
     <img src="/img.jpg" alt="img" />
-    <Card title="Hello, world!" body="This is a card" />
 
     <p class="text-red-500">This is a paragraph.</p>
   </div>

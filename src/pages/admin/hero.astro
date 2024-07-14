@@ -1,0 +1,72 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { db } from "db";
+import { store } from "db/schema";
+import { eq } from "drizzle-orm";
+
+// type Hero = {
+//   key: string;
+//   value: string;
+//   lang: string;
+// };
+
+// if (Astro.request.method === "POST") {
+//   const formData = await Astro.request.formData();
+
+//   let arr: Hero[] = [];
+//   for (const [key, value] of formData.entries()) {
+//     const obj = { section: "hero", key: key, value: value as string, lang: "en" };
+//     arr.push(obj);
+//   }
+
+//   await db.insert(store).values(arr);
+// }
+
+const res = await db.select().from(store).where(eq(store.section, "hero"));
+
+const dict = res.reduce(
+  (acc, cur) => {
+    acc[cur.key as string] = cur.value as string;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  for (const [key, value] of formData.entries()) {
+    await db
+      .update(store)
+      .set({ value: value as string })
+      .where(eq(store.key, key as string));
+  }
+  return Astro.redirect("/admin/hero");
+}
+---
+
+<Layout title="Hero">
+  <div class="container px-8">
+    <h1 class="title text-3xl py-20">Hero</h1>
+    <form method="POST" class="flex flex-col gap-4 items-start">
+      <Label htmlFor="siteTitle">Site title</Label>
+      <Input type="text" name="siteTitle" required className="text-white bg-transparent" defaultValue={dict.siteTitle} />
+      <Label htmlFor="siteDescription">Site description</Label>
+      <Input type="text" name="siteDescription" className="text-white bg-transparent" defaultValue={dict.siteDescription} />
+      <Label htmlFor="aboutKey">About key</Label>
+      <Input type="text" name="aboutKey" className="text-white bg-transparent" defaultValue={dict.aboutKey} />
+      <Label htmlFor="about">About</Label>
+      <Textarea name="about" className="text-white bg-transparent" rows={5} defaultValue={dict.about} />
+      <Label htmlFor="specialitiesKey">Specialities key</Label>
+      <Input type="text" name="specialitiesKey" className="text-white bg-transparent" defaultValue={dict.specialitiesKey} />
+      <Label htmlFor="specialities">Specialities</Label>
+      <Textarea name="specialities" className="text-white bg-transparent" rows={5} defaultValue={dict.specialities} />
+      <Label htmlFor="specialitiesDescription">Specialities description</Label>
+      <Textarea name="specialitiesDescription" className="text-white bg-transparent" rows={5} defaultValue={dict.specialitiesDescription} />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
+  </div>
+</Layout>

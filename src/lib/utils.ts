@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function slugify(text: string) {
+export function slugify(text: string): string {
   return text
     .toString()
     .toLowerCase()
@@ -14,4 +14,8 @@ export function slugify(text: string) {
     .replace(/--+/g, "-") // Replace multiple - with single -
     .replace(/^-+/, "") // Trim - from start of text
     .replace(/-+$/, ""); // Trim - from end of text
+}
+
+export function formatParagraph(input: string): string {
+  return input.replace(/\r\n/g, "<br>");
 }
