@@ -1,0 +1,32 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { db } from "db";
+import { portfolios } from "db/schema";
+import { splitAndWrapImages } from "@/lib/utils";
+
+const res = await db.select().from(portfolios);
+
+const media = res.reduce((acc, cur) => {
+  acc.push(...JSON.parse(cur.media as string));
+  return acc;
+}, [] as string[]);
+
+const wrappedParts = splitAndWrapImages(media);
+---
+
+<Layout title="Item">
+  <div class="container px-8">
+    {
+      wrappedParts.map((part, index) => {
+        const className = index === 1 ? "" : "inverse";
+        return (
+          <div class={`${className} flex`}>
+            {part.map((image) => {
+              return <p class="p-4">{image}</p>;
+            })}
+          </div>
+        );
+      })
+    }
+  </div>
+</Layout>
