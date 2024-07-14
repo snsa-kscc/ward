@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { portfolio } from "db/schema";
 import { desc } from "drizzle-orm";
@@ -10,8 +11,9 @@ const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.
 ---
 
 <Layout title="Portfolio list" />
+<AdminNavbar />
 <div class="container px-8">
-  <h1 class="title text-3xl pt-20 pb-10">Dashboard</h1>
+  <h1 class="title text-3xl pt-20 pb-10">Portfolio</h1>
   <Button variant="secondary"><a href="/admin/portfolio/new">New item</a></Button>
 
   <Table>

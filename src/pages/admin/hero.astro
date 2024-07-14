@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import AdminNavbar from "@/components/AdminNavbar.astro";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,7 @@ if (Astro.request.method === "POST") {
 ---
 
 <Layout title="Hero">
+  <AdminNavbar />
   <div class="container px-8">
     <h1 class="title text-3xl py-20">Hero</h1>
     <form method="POST" class="flex flex-col gap-4 items-start">
