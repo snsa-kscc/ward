@@ -12,7 +12,7 @@ export const server = {
       const filenames: string[] = JSON.parse(res[0].media as string);
       const filteredFilenames = filenames.filter((filename) => filename !== item);
       try {
-        await rm(`./src/media/${item}`);
+        await rm(`./src/media/portfolio/${item}`);
       } catch (error) {
         console.log(error);
       }
@@ -31,7 +31,7 @@ export const server = {
       const filenames: string[] = JSON.parse(res[0].media as string);
       for (const filename of filenames) {
         try {
-          await rm(`./src/media/${filename}`);
+          await rm(`./src/media/portfolio/${filename}`);
         } catch (error) {
           console.log(error);
         }

@@ -9,9 +9,11 @@ import { Button } from "@/components/ui/button";
 const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
 ---
 
-<Layout title="Dashboard" />
+<Layout title="Portfolio list" />
 <div class="container px-8">
-  <h1 class="title text-3xl py-20">Dashboard</h1>
+  <h1 class="title text-3xl pt-20 pb-10">Dashboard</h1>
+  <Button variant="secondary"><a href="/admin/portfolio/new">New item</a></Button>
+
   <Table>
     <TableHeader>
       <TableRow>
