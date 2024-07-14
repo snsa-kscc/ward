@@ -20,8 +20,8 @@ export function formatParagraph(input: string): string {
   return input.replace(/\r\n/g, "<br>");
 }
 
-export function splitAndWrapImages(images: string[]): string[][] {
-  const n = images.length;
+export function splitItems(input: {}[]): Record<string, string>[][] {
+  const n = input.length;
   const partSize = Math.floor(n / 3);
   const remainder = n % 3;
 
@@ -34,6 +34,6 @@ export function splitAndWrapImages(images: string[]): string[][] {
   }
 
   // Split the array into three parts
-  const parts = [images.slice(0, sizes[0]), images.slice(sizes[0], sizes[0] + sizes[1]), images.slice(sizes[0] + sizes[1])];
+  const parts = [input.slice(0, sizes[0]), input.slice(sizes[0], sizes[0] + sizes[1]), input.slice(sizes[0] + sizes[1])];
   return parts;
 }

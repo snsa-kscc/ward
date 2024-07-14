@@ -1,14 +1,14 @@
 import { defineAction, z } from "astro:actions";
 import { rm } from "fs/promises";
 import { eq } from "drizzle-orm";
-import { portfolios } from "@/../db/schema";
+import { portfolio } from "@/../db/schema";
 import { db } from "@/../db";
 
 export const server = {
   deleteMedia: defineAction({
     input: z.object({ title: z.string(), item: z.string() }),
     handler: async ({ title, item }) => {
-      const res = await db.select().from(portfolios).where(eq(portfolios.title, title));
+      const res = await db.select().from(portfolio).where(eq(portfolio.title, title));
       const filenames: string[] = JSON.parse(res[0].media as string);
       const filteredFilenames = filenames.filter((filename) => filename !== item);
       try {
@@ -17,9 +17,9 @@ export const server = {
         console.log(error);
       }
       await db
-        .update(portfolios)
+        .update(portfolio)
         .set({ media: JSON.stringify(filteredFilenames) })
-        .where(eq(portfolios.title, title));
+        .where(eq(portfolio.title, title));
       return "deleted";
     },
   }),
@@ -27,7 +27,7 @@ export const server = {
   deletePortfolio: defineAction({
     input: z.object({ title: z.string() }),
     handler: async ({ title }) => {
-      const res = await db.select().from(portfolios).where(eq(portfolios.title, title));
+      const res = await db.select().from(portfolio).where(eq(portfolio.title, title));
       const filenames: string[] = JSON.parse(res[0].media as string);
       for (const filename of filenames) {
         try {
@@ -37,7 +37,7 @@ export const server = {
         }
       }
       try {
-        await db.delete(portfolios).where(eq(portfolios.title, title));
+        await db.delete(portfolio).where(eq(portfolio.title, title));
       } catch (error) {
         console.log(error);
       }

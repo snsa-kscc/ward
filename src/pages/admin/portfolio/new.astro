@@ -8,7 +8,7 @@ import { writeFile } from "fs/promises";
 import path from "path";
 import { rm } from "fs/promises";
 import { db } from "db";
-import { portfolios } from "db/schema";
+import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
 
 let filenames = [];
@@ -23,7 +23,7 @@ if (Astro.request.method === "POST") {
     filenames.push(file.name);
   }
   try {
-    await db.insert(portfolios).values({ title, slug, content, createdAt: new Date(), media: JSON.stringify(filenames), lang: "en" });
+    await db.insert(portfolio).values({ title, slug, content, createdAt: new Date(), media: JSON.stringify(filenames), lang: "en" });
   } catch (e) {
     console.error(e);
     for (const filename of filenames) {

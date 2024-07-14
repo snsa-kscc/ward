@@ -8,11 +8,11 @@ import { writeFile } from "fs/promises";
 import path from "path";
 import { db } from "db";
 import { eq } from "drizzle-orm";
-import { portfolios } from "db/schema";
+import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
 
 const { id } = Astro.params;
-const res = await db.select().from(portfolios).where(eq(portfolios.slug, id!));
+const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
 
 if (!res[0]) {
   return Astro.redirect("/admin/portfolio/new");
@@ -21,7 +21,7 @@ if (!res[0]) {
 let filenames: string[] = JSON.parse(res[0].media as string);
 
 if (Astro.request.method === "POST") {
-  const res = await db.select().from(portfolios).where(eq(portfolios.slug, id!));
+  const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
   filenames = JSON.parse(res[0].media as string);
   const formData = await Astro.request.formData();
   const title = formData.get("title") as string;
@@ -33,9 +33,9 @@ if (Astro.request.method === "POST") {
     filenames.unshift(file.name);
   }
   await db
-    .update(portfolios)
+    .update(portfolio)
     .set({ title, slug, content, media: JSON.stringify(filenames), lang: "en" })
-    .where(eq(portfolios.slug, id!));
+    .where(eq(portfolio.slug, id!));
   return Astro.redirect(`/admin/portfolio/${slug}`);
 }
 ---

@@ -8,7 +8,7 @@ export const pages = mysqlTable("page", {
   lang: text("lang"),
 });
 
-export const portfolios = mysqlTable("portfolio", {
+export const portfolio = mysqlTable("portfolio", {
   id: int("id").notNull().primaryKey().autoincrement(),
   slug: varchar("slug", { length: 512 }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),

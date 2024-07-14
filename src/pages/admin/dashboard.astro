@@ -1,12 +1,12 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { db } from "db";
-import { portfolios } from "db/schema";
+import { portfolio } from "db/schema";
 import { desc } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const portfolioItems = await db.select().from(portfolios).orderBy(desc(portfolios.createdAt));
+const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
 ---
 
 <Layout title="Dashboard" />
