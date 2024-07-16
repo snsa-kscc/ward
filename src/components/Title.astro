@@ -1,0 +1,63 @@
+---
+type Props = {
+  data: {
+    siteTitle: string;
+    siteDescription: string;
+  };
+};
+
+const { data } = Astro.props;
+---
+
+<div class="p-20 text-5xl">
+  {
+    data.siteTitle.split("").map((char) => {
+      if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
+        return (
+          <span id="letter" data-text={char}>
+            {char}
+          </span>
+        );
+      } else {
+        return char;
+      }
+    })
+  }
+</div>
+<h1 class="text-5xl font-bold">{data.siteDescription}</h1>
+<p class="text-3xl">{data.siteDescription}</p>
+
+<style>
+  #letter {
+    --color: hotpink;
+    position: relative;
+    color: transparent;
+  }
+
+  #letter::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    z-index: 69;
+    -webkit-text-stroke: 1px var(--color);
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+
+  const letters = document.querySelectorAll("#letter") as NodeListOf<HTMLElement>;
+
+  // gsap.to(
+  //   {},
+  //   {
+  //     duration: 3,
+  //     onUpdate: function () {
+  //       const progress = this.progress();
+  //       letters.forEach((letter) => {
+  //         letter.style.color = `hsla(330, 100%, 71%, ${progress})`;
+  //       });
+  //     },
+  //   }
+  // );
+</script>

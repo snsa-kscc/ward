@@ -79,3 +79,20 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+@layer base {
+  @font-face {
+    font-family: "Mont";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/Mont-Regular.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Mont";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/Mont-Bold.woff2) format("woff2");
+  }
+}

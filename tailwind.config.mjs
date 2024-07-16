@@ -1,10 +1,12 @@
+import defaultTheme from "tailwindcss/defaultTheme";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
-    "./components/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
-    "./app/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
+    // "./pages/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
+    // "./components/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
+    // "./app/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
     "./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
   ],
   prefix: "",
@@ -17,6 +19,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Mont", ...defaultTheme.fontFamily.sans],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

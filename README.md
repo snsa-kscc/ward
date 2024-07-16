@@ -8,3 +8,5 @@
 - [x] db schema
 - [x] admin dashboard delete items
 - [ ] index page pics
+- [ ] typo
+- [ ] intro animation
