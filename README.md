@@ -7,6 +7,7 @@
 - [x] admin page
 - [x] db schema
 - [x] admin dashboard delete items
-- [ ] index page pics
-- [ ] typo
-- [ ] intro animation
+- [x] index page pics
+- [x] typo
+- [x] intro animation
+- [ ] favicon
