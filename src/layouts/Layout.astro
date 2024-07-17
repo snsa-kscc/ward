@@ -20,7 +20,7 @@ const isNotAdmin = Astro.url.pathname.startsWith("/admin");
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class={cn("bg-zinc-900 text-slate-100", { "font-[system-ui]": isNotAdmin })}>
+  <body class={cn("bg-zinc-900 text-slate-100 tracking-tighter", { "font-[system-ui] tracking-normal": isNotAdmin })}>
     <slot />
   </body>
 </html>

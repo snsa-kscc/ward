@@ -54,8 +54,10 @@ if (Astro.request.method === "POST") {
   <div class="container px-8">
     <h1 class="title text-3xl py-20">Hero</h1>
     <form method="POST" class="flex flex-col gap-4 items-start">
-      <Label htmlFor="siteTitle">Site title</Label>
-      <Input type="text" name="siteTitle" required className="text-white bg-transparent" defaultValue={dict.siteTitle} />
+      <Label htmlFor="siteTitleFirst">Site title first</Label>
+      <Input type="text" name="siteTitleFirst" required className="text-white bg-transparent" defaultValue={dict.siteTitleFirst} />
+      <Label htmlFor="siteTitleSecond">Site title second</Label>
+      <Input type="text" name="siteTitleSecond" required className="text-white bg-transparent" defaultValue={dict.siteTitleSecond} />
       <Label htmlFor="siteDescription">Site description</Label>
       <Input type="text" name="siteDescription" className="text-white bg-transparent" defaultValue={dict.siteDescription} />
       <Label htmlFor="aboutKey">About key</Label>

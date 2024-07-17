@@ -2,6 +2,9 @@ import defaultTheme from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 export default {
+  // corePlugins: {
+  //   preflight: false,
+  // },
   darkMode: ["class"],
   content: [
     // "./pages/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
@@ -14,13 +17,19 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      // screens: {
+      //   "2xl": "1400px",
+      // },
     },
     extend: {
       fontFamily: {
         sans: ["Mont", ...defaultTheme.fontFamily.sans],
+      },
+      letterSpacing: {
+        tightest: "-.075em",
+      },
+      fontSize: {
+        "10xl": "10rem",
       },
       colors: {
         border: "hsl(var(--border))",

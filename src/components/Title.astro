@@ -1,7 +1,8 @@
 ---
 type Props = {
   data: {
-    siteTitle: string;
+    siteTitleFirst: string;
+    siteTitleSecond: string;
     siteDescription: string;
   };
 };
@@ -9,27 +10,43 @@ type Props = {
 const { data } = Astro.props;
 ---
 
-<div class="p-20 text-5xl">
-  {
-    data.siteTitle.split("").map((char) => {
-      if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
-        return (
-          <span id="letter" data-text={char}>
-            {char}
-          </span>
-        );
-      } else {
-        return char;
-      }
-    })
-  }
-</div>
-<h1 class="text-5xl font-bold">{data.siteDescription}</h1>
-<p class="text-3xl">{data.siteDescription}</p>
+<>
+  <div class="mt-28 sm:mt-48 text-7xl sm:text-8xl lg:text-9xl xl:text-10xl font-bold tracking-tightest text-center leading-none">
+    {
+      data.siteTitleFirst.split("").map((char) => {
+        if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
+          return (
+            <span id="letter" data-text={char}>
+              {char}
+            </span>
+          );
+        } else {
+          return char;
+        }
+      })
+    }
+  </div>
+  <div class="text-7xl sm:text-8xl lg:text-9xl xl:text-10xl font-bold tracking-tightest text-center leading-none">
+    {
+      data.siteTitleSecond.split("").map((char) => {
+        if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
+          return (
+            <span id="letter" data-text={char}>
+              {char}
+            </span>
+          );
+        } else {
+          return char;
+        }
+      })
+    }
+  </div>
+  <h1 class="mt-24 text-3xl sm:text-4xl font-bold lg:w-1/2 text-balance text-center lg:text-left">{data.siteDescription}</h1>
+</>
 
 <style>
   #letter {
-    --color: hotpink;
+    --color: #fff;
     position: relative;
     color: transparent;
   }
@@ -40,6 +57,7 @@ const { data } = Astro.props;
     inset: 0;
     z-index: 69;
     -webkit-text-stroke: 1px var(--color);
+    line-height: 0.9;
   }
 </style>
 
@@ -47,17 +65,18 @@ const { data } = Astro.props;
   import gsap from "gsap";
 
   const letters = document.querySelectorAll("#letter") as NodeListOf<HTMLElement>;
-
-  // gsap.to(
-  //   {},
-  //   {
-  //     duration: 3,
-  //     onUpdate: function () {
-  //       const progress = this.progress();
-  //       letters.forEach((letter) => {
-  //         letter.style.color = `hsla(330, 100%, 71%, ${progress})`;
-  //       });
-  //     },
-  //   }
-  // );
+  setTimeout(() => {
+    gsap.to(
+      {},
+      {
+        duration: 10,
+        onUpdate: function () {
+          const progress = this.progress();
+          letters.forEach((letter) => {
+            letter.style.color = `hsla(0, 0%, 100%, ${progress})`;
+          });
+        },
+      }
+    );
+  }, 1000);
 </script>

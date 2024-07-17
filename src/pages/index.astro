@@ -11,7 +11,8 @@ const hero = await db.select().from(store).where(eq(store.section, "hero"));
 
 type HeroData = {
   [key: string]: string;
-  siteTitle: string;
+  siteTitleFirst: string;
+  siteTitleSecond: string;
   siteDescription: string;
 };
 
@@ -22,8 +23,7 @@ const heroData: HeroData = hero.reduce((acc, cur) => {
 ---
 
 <Layout title="Home">
-  <div class="h-screen">
-    <p>navbar area</p>
+  <div class="h-screen container">
     <Title data={heroData} />
   </div>
   <Grid />
