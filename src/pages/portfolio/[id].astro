@@ -1,0 +1,33 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { db } from "db";
+import { eq } from "drizzle-orm";
+import { portfolio } from "db/schema";
+
+const { id } = Astro.params;
+const data = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
+const images = import.meta.glob<{ default: ImageMetadata }>("/src/media/portfolio/*.{jpeg,jpg,png,gif}");
+
+if (!data[0]) {
+  return Astro.redirect("/");
+}
+---
+
+<Layout title={data[0].title!}>
+  <div class="container px-8 pb-16">
+    <h1 class="title text-3xl py-20">{data[0].title}</h1>
+    <div class="my-4">
+      {
+        JSON.parse(data[0].media!).map((media: string) => {
+          return (
+            <div class="my-8">
+              <Image src={images[`/src/media/portfolio/${media}`]()} alt={data[0].title} />
+            </div>
+          );
+        })
+      }
+    </div>
+    <p>{data[0].content}</p>
+  </div>
+</Layout>
