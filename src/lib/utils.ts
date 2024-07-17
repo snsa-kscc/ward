@@ -20,7 +20,7 @@ export function formatParagraph(input: string): string {
   return input.replace(/\r\n/g, "<br>");
 }
 
-export function splitItems(input: {}[]): Record<string, string>[][] {
+export function splitItems(input: Record<string, string | Date | null | number>[]): Record<string, string | Date | null | number>[][] {
   const n = input.length;
   const partSize = Math.floor(n / 3);
   const remainder = n % 3;
@@ -30,10 +30,10 @@ export function splitItems(input: {}[]): Record<string, string>[][] {
   if (remainder === 1) {
     sizes[1] += 1;
   } else if (remainder === 2) {
-    sizes[1] += 2;
+    sizes[0] += 1;
+    sizes[2] += 1;
   }
 
-  // Split the array into three parts
   const parts = [input.slice(0, sizes[0]), input.slice(sizes[0], sizes[0] + sizes[1]), input.slice(sizes[0] + sizes[1])];
   return parts;
 }

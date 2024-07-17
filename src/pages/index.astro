@@ -1,13 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import Title from "@/components/Title.astro";
-import Grid from "@/components/Grid.astro";
+import PortfolioGrid from "@/components/PortfolioGrid.astro";
 import { db } from "db";
-import { store } from "db/schema";
+import { store, portfolio } from "db/schema";
 import { eq } from "drizzle-orm";
-import { formatParagraph } from "@/lib/utils";
-
-const hero = await db.select().from(store).where(eq(store.section, "hero"));
+import { splitItems } from "@/lib/utils";
 
 type HeroData = {
   [key: string]: string;
@@ -16,16 +14,28 @@ type HeroData = {
   siteDescription: string;
 };
 
+const hero = await db.select().from(store).where(eq(store.section, "hero"));
+
 const heroData: HeroData = hero.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
   return acc;
 }, {} as HeroData);
+
+type GridData = {
+  [key: string]: string | number | Date;
+  media: string;
+  title: string;
+  slug: string;
+}[][];
+
+const grid = await db.select().from(portfolio);
+const gridData: GridData = splitItems(grid) as GridData;
 ---
 
-<Layout title="Home">
-  <div class="h-screen container">
+<Layout title={heroData.siteTitleFirst + " " + heroData.siteTitleSecond}>
+  <div class="mt-28 sm:mt-48 container mb-28 md:mb-56">
     <Title data={heroData} />
   </div>
-  <Grid />
+  <PortfolioGrid data={gridData} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>

@@ -1,0 +1,56 @@
+---
+import { Image } from "astro:assets";
+
+type Props = {
+  data: {
+    media: string;
+    title: string;
+    slug: string;
+  }[][];
+};
+
+const { data } = Astro.props;
+const images = import.meta.glob<{ default: ImageMetadata }>("/src/media/portfolio/*.{jpeg,jpg,png,gif}");
+---
+
+<>
+  <div class="container grid grid-cols-3 gap-8 relative overflow-y-hidden mb-[10vh]">
+    {
+      data.map((part, index) => {
+        const className = index === 1 ? "flex-col" : "flex-col-reverse column-reverse";
+        return (
+          <div class={`flex ${className} py-[10vh]`}>
+            {part.map((item) => {
+              const mediaArray: string[] = JSON.parse(item.media);
+              const firstImage = mediaArray.length > 0 ? mediaArray[0] : "";
+              return (
+                <div class="py-4">
+                  <Image class="rounded-sm w-full aspect-[0.75] object-cover" src={images[`/src/media/portfolio/${firstImage}`]()} alt={item.title} />
+                  <p>{item.title}</p>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })
+    }
+  </div>
+  <div class="h-screen bg-slate-600"></div>
+</>
+
+<style>
+  @keyframes adjust-position {
+    from {
+      transform: translateY(-110%);
+    }
+
+    to {
+      transform: translateY(110%);
+    }
+  }
+
+  .column-reverse {
+    animation: adjust-position linear forwards;
+    animation-timeline: scroll(root block);
+  }
+</style>
