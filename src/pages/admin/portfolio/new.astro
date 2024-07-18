@@ -20,7 +20,7 @@ if (Astro.request.method === "POST") {
   const slug = slugify(title);
   for (const file of formData.getAll("file") as File[]) {
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join("./src/media/portfolio", file.name), buffer);
+    await writeFile(path.join("./public/assets/portfolio", file.name), buffer);
     filenames.push(file.name);
   }
   try {
@@ -29,7 +29,7 @@ if (Astro.request.method === "POST") {
     console.error(e);
     for (const filename of filenames) {
       try {
-        await rm(path.join("./src/media/portfolio", filename));
+        await rm(path.join("./public/assets/portfolio", filename));
       } catch (e) {
         console.error(e);
       }

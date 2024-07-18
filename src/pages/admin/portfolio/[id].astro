@@ -28,11 +28,15 @@ if (Astro.request.method === "POST") {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const slug = slugify(title);
+  let additionalFilenames: string[] = [];
   for (const file of formData.getAll("file") as File[]) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join("./src/media/portfolio", file.name), buffer);
-    filenames.unshift(file.name);
+    if (file.name) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      await writeFile(path.join("./public/assets/portfolio", file.name), buffer);
+      additionalFilenames.push(file.name);
+    }
   }
+  filenames.unshift(...additionalFilenames);
   await db
     .update(portfolio)
     .set({ title, slug, content, media: JSON.stringify(filenames), lang: "en" })
@@ -49,7 +53,7 @@ if (Astro.request.method === "POST") {
       <Label htmlFor="title">title</Label>
       <Input type="text" name="title" required className="text-white bg-transparent" defaultValue={res[0].title as string} />
       <Label htmlFor="file">media</Label>
-      <Input type="file" name="file" multiple accept="image/*, video/*" required className="text-black" />
+      <Input type="file" name="file" multiple accept="image/*, video/*" className="text-black" />
       {
         filenames.map((filename) => {
           return (

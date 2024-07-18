@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-
 type Props = {
   data: {
     media: string;
@@ -10,7 +8,6 @@ type Props = {
 };
 
 const { data } = Astro.props;
-const images = import.meta.glob<{ default: ImageMetadata }>("/src/media/portfolio/*.{jpeg,jpg,png,gif}");
 ---
 
 <>
@@ -26,7 +23,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>("/src/media/portfoli
               return (
                 <div class="py-4">
                   <a href={`/portfolio/${item.slug}`} class="block">
-                    <Image class="rounded-sm w-full aspect-[0.75] object-cover" src={images[`/src/media/portfolio/${firstImage}`]()} alt={item.title} />
+                    <img class="rounded-sm w-full aspect-[0.75] object-cover" src={`/assets/portfolio/${firstImage}`} alt={item.title} />
                   </a>
                   <p>{item.title}</p>
                 </div>
