@@ -6,6 +6,7 @@ const app = express();
 // They should match. The default value is "/".
 const base = "/";
 app.use(base, express.static("dist/client/"));
+app.use(base, express.static("public/"));
 app.use(ssrHandler);
 
 app.listen(3000);
