@@ -8,9 +8,14 @@ export const server = {
   deleteMedia: defineAction({
     input: z.object({ title: z.string(), item: z.string() }),
     handler: async ({ title, item }) => {
-      const res = await db.select().from(portfolio).where(eq(portfolio.title, title));
+      const res = await db
+        .select()
+        .from(portfolio)
+        .where(eq(portfolio.title, title));
       const filenames: string[] = JSON.parse(res[0].media as string);
-      const filteredFilenames = filenames.filter((filename) => filename !== item);
+      const filteredFilenames = filenames.filter(
+        (filename) => filename !== item,
+      );
       try {
         await rm(`./public/assets/portfolio/${item}`);
       } catch (error) {
@@ -27,7 +32,10 @@ export const server = {
   deletePortfolio: defineAction({
     input: z.object({ title: z.string() }),
     handler: async ({ title }) => {
-      const res = await db.select().from(portfolio).where(eq(portfolio.title, title));
+      const res = await db
+        .select()
+        .from(portfolio)
+        .where(eq(portfolio.title, title));
       const filenames: string[] = JSON.parse(res[0].media as string);
       for (const filename of filenames) {
         try {

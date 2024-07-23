@@ -7,9 +7,14 @@ export const onRequest = defineMiddleware((context, next) => {
     const basicAuth = context.request.headers.get("authorization");
 
     if (basicAuth) {
-      const [user, password] = Buffer.from(basicAuth.split(" ")[1], "base64").toString().split(":");
+      const [user, password] = Buffer.from(basicAuth.split(" ")[1], "base64")
+        .toString()
+        .split(":");
 
-      if (user === import.meta.env.SITE_USER && password === import.meta.env.SITE_PASSWORD) {
+      if (
+        user === import.meta.env.SITE_USER &&
+        password === import.meta.env.SITE_PASSWORD
+      ) {
         return next();
       }
     }

@@ -1,4 +1,10 @@
-import { int, text, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+  int,
+  text,
+  mysqlTable,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 export const pages = mysqlTable("page", {
   id: int("id").notNull().primaryKey().autoincrement(),
