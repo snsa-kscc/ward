@@ -52,24 +52,26 @@ if (Astro.request.method === "POST") {
 <Layout title="Hero">
   <AdminNavbar />
   <div class="container px-8">
-    <h1 class="title text-3xl py-20">Hero</h1>
-    <form method="POST" class="flex flex-col gap-4 items-start">
+    <h1 class="title py-20 text-3xl">Hero</h1>
+    <form method="POST" class="flex flex-col items-start gap-4">
       <Label htmlFor="siteTitleFirst">Site title first</Label>
-      <Input type="text" name="siteTitleFirst" required className="text-white bg-transparent" defaultValue={dict.siteTitleFirst} />
+      <Input type="text" name="siteTitleFirst" required className="bg-transparent text-white" defaultValue={dict.siteTitleFirst} />
       <Label htmlFor="siteTitleSecond">Site title second</Label>
-      <Input type="text" name="siteTitleSecond" required className="text-white bg-transparent" defaultValue={dict.siteTitleSecond} />
-      <Label htmlFor="siteDescription">Site description</Label>
-      <Input type="text" name="siteDescription" className="text-white bg-transparent" defaultValue={dict.siteDescription} />
+      <Input type="text" name="siteTitleSecond" required className="bg-transparent text-white" defaultValue={dict.siteTitleSecond} />
+      <Label htmlFor="siteDescriptionFirst">Site description first</Label>
+      <Input type="text" name="siteDescriptionFirst" className="bg-transparent text-white" defaultValue={dict.siteDescriptionFirst} />
+      <Label htmlFor="siteDescriptionSecond">Site description second</Label>
+      <Input type="text" name="siteDescriptionSecond" className="bg-transparent text-white" defaultValue={dict.siteDescriptionSecond} />
       <Label htmlFor="aboutKey">About key</Label>
-      <Input type="text" name="aboutKey" className="text-white bg-transparent" defaultValue={dict.aboutKey} />
+      <Input type="text" name="aboutKey" className="bg-transparent text-white" defaultValue={dict.aboutKey} />
       <Label htmlFor="about">About</Label>
-      <Textarea name="about" className="text-white bg-transparent" rows={5} defaultValue={dict.about} />
+      <Textarea name="about" className="bg-transparent text-white" rows={5} defaultValue={dict.about} />
       <Label htmlFor="specialitiesKey">Specialities key</Label>
-      <Input type="text" name="specialitiesKey" className="text-white bg-transparent" defaultValue={dict.specialitiesKey} />
+      <Input type="text" name="specialitiesKey" className="bg-transparent text-white" defaultValue={dict.specialitiesKey} />
       <Label htmlFor="specialities">Specialities</Label>
-      <Textarea name="specialities" className="text-white bg-transparent" rows={5} defaultValue={dict.specialities} />
+      <Textarea name="specialities" className="bg-transparent text-white" rows={5} defaultValue={dict.specialities} />
       <Label htmlFor="specialitiesDescription">Specialities description</Label>
-      <Textarea name="specialitiesDescription" className="text-white bg-transparent" rows={5} defaultValue={dict.specialitiesDescription} />
+      <Textarea name="specialitiesDescription" className="bg-transparent text-white" rows={5} defaultValue={dict.specialitiesDescription} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

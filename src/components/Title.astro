@@ -3,14 +3,15 @@ type Props = {
   data: {
     siteTitleFirst: string;
     siteTitleSecond: string;
-    siteDescription: string;
+    siteDescriptionFirst: string;
+    siteDescriptionSecond: string;
   };
 };
 
 const { data } = Astro.props;
 ---
 
-<>
+<div>
   <!-- <div class="text-center text-7xl font-bold leading-none tracking-tightest sm:text-8xl lg:text-9xl xl:text-10xl">
     {
       data.siteTitleFirst.split("").map((char) => {
@@ -63,10 +64,48 @@ const { data } = Astro.props;
       })
     }
   </div> -->
+  <div class="mt-24 flex overflow-hidden text-balance text-center text-3xl font-bold sm:text-4xl lg:w-1/2 lg:text-left">
+    {
+      data.siteDescriptionFirst.split("<split>").map((item, index) => {
+        if (index === 0) {
+          return <div class="inline-block pr-3">{item}</div>;
+        }
+        return (
+          <div class="foo relative inline-block">
+            {/* {item.split(";").map((word, idx) => {
+              if (idx === 0) {
+                return (
+                  <div class="absolute left-0 top-0 w-max" data-text={word}>
+                    <div class="overflow-hidden">
+                      {word.split("").map((char) => {
+                        return <span class="inline-block">{char}</span>;
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })} */}
+            {item.split(";").map((word) => {
+              return (
+                <div class="absolute left-0 top-0 w-max" data-text={word}>
+                  <div class="overflow-hidden">
+                    {word.split("").map((char) => {
+                      return <span class="inline-block">{char}</span>;
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })
+    }
+  </div>
   <h1 class="mt-24 text-balance text-center text-3xl font-bold sm:text-4xl lg:w-1/2 lg:text-left">
-    {data.siteDescription}
+    {data.siteDescriptionSecond}
   </h1>
-</>
+</div>
 
 <style>
   #letter {
@@ -92,6 +131,10 @@ const { data } = Astro.props;
   .words {
     transform-style: preserve-3d;
     perspective: 1000px;
+  }
+
+  .char {
+    will-change: transform, opacity;
   }
 </style>
 
@@ -128,7 +171,7 @@ const { data } = Astro.props;
   tl.from(
     secondLineChars,
     {
-      duration: 0.7,
+      duration: 0.6,
       yPercent: 100,
       stagger: 0.06,
       ease: "power2.out",

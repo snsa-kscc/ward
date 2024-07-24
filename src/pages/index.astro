@@ -11,7 +11,8 @@ type HeroData = {
   [key: string]: string;
   siteTitleFirst: string;
   siteTitleSecond: string;
-  siteDescription: string;
+  siteDescriptionFirst: string;
+  siteDescriptionSecond: string;
 };
 
 const hero = await db.select().from(store).where(eq(store.section, "hero"));
@@ -33,7 +34,7 @@ const gridData: GridData = splitItems(grid) as GridData;
 ---
 
 <Layout title={heroData.siteTitleFirst + " " + heroData.siteTitleSecond}>
-  <div class="mt-28 sm:mt-48 container mb-28 md:mb-56">
+  <div class="container mb-28 mt-28 sm:mt-48 md:mb-56">
     <Title data={heroData} />
   </div>
   <PortfolioGrid data={gridData} />
