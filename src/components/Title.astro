@@ -71,27 +71,13 @@ const { data } = Astro.props;
           return <div class="inline-block pr-3">{item}</div>;
         }
         return (
-          <div class="foo relative inline-block">
-            {/* {item.split(";").map((word, idx) => {
-              if (idx === 0) {
-                return (
-                  <div class="absolute left-0 top-0 w-max" data-text={word}>
-                    <div class="overflow-hidden">
-                      {word.split("").map((char) => {
-                        return <span class="inline-block">{char}</span>;
-                      })}
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })} */}
+          <div class="expertise relative inline-block">
             {item.split(";").map((word) => {
               return (
                 <div class="absolute left-0 top-0 w-max" data-text={word}>
                   <div class="overflow-hidden">
                     {word.split("").map((char) => {
-                      return <span class="inline-block">{char}</span>;
+                      return <span class="char inline-block">{char}</span>;
                     })}
                   </div>
                 </div>
@@ -178,4 +164,39 @@ const { data } = Astro.props;
     },
     "-=0.9"
   );
+
+  const expertises = document.querySelectorAll(".expertise > div") as NodeListOf<HTMLElement>;
+  const expertiseTl = gsap.timeline({
+    repeat: -1,
+  });
+  expertises.forEach((item) => {
+    const chars = item.querySelectorAll(".char") as NodeListOf<HTMLElement>;
+    expertiseTl
+      .fromTo(
+        chars,
+        {
+          yPercent: 100,
+          opacity: 0,
+        },
+        {
+          duration: 0.5,
+          yPercent: 0,
+          opacity: 1,
+          stagger: 0.05,
+          ease: "power2.out",
+        }
+      )
+      .to(
+        chars,
+        {
+          duration: 0.5,
+          yPercent: -100,
+          opacity: 0,
+          stagger: 0.05,
+          ease: "power2.in",
+        },
+        "+=1"
+      );
+  });
+  tl.add(expertiseTl, "-=0.5");
 </script>

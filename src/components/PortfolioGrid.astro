@@ -11,7 +11,7 @@ const { data } = Astro.props;
 ---
 
 <>
-  <div class="container grid grid-cols-3 gap-8 relative overflow-y-hidden mb-[10vh]">
+  <div class="container relative mb-[10vh] grid grid-cols-3 gap-8 overflow-y-hidden">
     {
       data.map((part, index) => {
         const className = index === 1 ? "flex-col" : "flex-col-reverse column-reverse";
@@ -21,11 +21,17 @@ const { data } = Astro.props;
               const mediaArray: string[] = JSON.parse(item.media);
               const firstImage = mediaArray.length > 0 ? mediaArray[0] : "";
               return (
-                <div class="py-4">
-                  <a href={`/portfolio/${item.slug}`} class="block">
-                    <img class="rounded-sm w-full aspect-[0.75] object-cover" src={`/assets/portfolio/${firstImage}`} alt={item.title} />
+                <div class="relative py-4">
+                  <a href={`/portfolio/${item.slug}`} class="group block">
+                    <img
+                      class="aspect-[0.75] w-full rounded-sm object-cover transition-opacity duration-500 group-hover:opacity-40"
+                      src={`/assets/portfolio/${firstImage}`}
+                      alt={item.title}
+                    />
+                    <p class="absolute left-8 top-1/2 text-3xl font-bold opacity-0 transition-all duration-700 group-hover:translate-x-20 group-hover:opacity-100">
+                      {item.title}
+                    </p>
                   </a>
-                  <p>{item.title}</p>
                 </div>
               );
             })}
