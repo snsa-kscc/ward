@@ -1,26 +1,28 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Title from "@/components/Title.astro";
+import Hero from "@/components/Hero.astro";
+import About from "@/components/About.astro";
 import PortfolioGrid from "@/components/PortfolioGrid.astro";
 import { db } from "db";
 import { store, portfolio } from "db/schema";
-import { eq } from "drizzle-orm";
 import { splitItems } from "@/lib/utils";
 
-type HeroData = {
+type StoreData = {
   [key: string]: string;
   siteTitleFirst: string;
   siteTitleSecond: string;
   siteDescriptionFirst: string;
   siteDescriptionSecond: string;
+  aboutKey: string;
+  about: string;
 };
 
-const hero = await db.select().from(store).where(eq(store.section, "hero"));
+const storeData = await db.select().from(store);
 
-const heroData: HeroData = hero.reduce((acc, cur) => {
+const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
   return acc;
-}, {} as HeroData);
+}, {} as StoreData);
 
 type GridData = {
   [key: string]: string | number | Date;
@@ -33,10 +35,9 @@ const grid = await db.select().from(portfolio);
 const gridData: GridData = splitItems(grid) as GridData;
 ---
 
-<Layout title={heroData.siteTitleFirst + " " + heroData.siteTitleSecond}>
-  <div class="container mb-28 mt-28 sm:mt-48 md:mb-56">
-    <Title data={heroData} />
-  </div>
+<Layout title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond}>
+  <Hero data={storeDataMap} />
   <PortfolioGrid data={gridData} />
+  <About data={storeDataMap} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>

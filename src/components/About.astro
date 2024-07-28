@@ -1,0 +1,110 @@
+---
+type Props = {
+  data: {
+    aboutKey: string;
+    about: string;
+  };
+};
+
+const { data } = Astro.props;
+
+const splitTag = "__";
+const regex = new RegExp(`${splitTag}(.*?)${splitTag}`, "g");
+---
+
+<>
+  <div class="container my-40 font-bold">
+    <h1 class="mb-20 text-4xl">{data.aboutKey}</h1>
+    <h1 class="highlighted inline-block text-6xl">
+      {
+        data.about.split(regex).map((part, index) => {
+          if (index % 2 === 1) {
+            const splitChars = part.split("").map((char) => {
+              if (char === " ") {
+                return (
+                  <span class="about-char inline-block" data-char={char}>
+                    &nbsp;
+                  </span>
+                );
+              }
+              return (
+                <span class="about-char inline-block" data-char={char}>
+                  {char}
+                </span>
+              );
+            });
+            return <mark data-char={part}>{splitChars}</mark>;
+          }
+          return part;
+        })
+      }
+    </h1>
+  </div>
+  <div class="py-40"></div>
+</>
+
+<style>
+  .highlighted mark {
+    --color-highlight-start: #fff;
+    --color-highlight-end: #03c52f;
+    --color-highlight-end-alt: #085ed0;
+    background: none;
+    color: var(--color-highlight-start);
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  const highlightedElement = document.querySelector(".highlighted mark") as HTMLElement;
+  const chars = document.querySelectorAll(".about-char") as NodeListOf<HTMLElement>;
+  const animationDefaults = {
+    duration: 0.3,
+    ease: "power3.in",
+  };
+
+  function animateChars() {
+    gsap
+      .timeline({ defaults: animationDefaults })
+      .set(chars, { willChange: "transform, color" })
+      .to(chars, {
+        stagger: 0.05,
+        scale: 1.45,
+        color: getComputedStyle(highlightedElement).getPropertyValue("--color-highlight-end"),
+      })
+      .to(
+        chars,
+        {
+          duration: 0.4,
+          ease: "sine",
+          stagger: 0.05,
+          scale: 1,
+          color: getComputedStyle(highlightedElement).getPropertyValue("--color-highlight-end-alt"),
+        },
+        animationDefaults.duration
+      );
+  }
+
+  function resetChars() {
+    gsap.killTweensOf(chars);
+    gsap.set(chars, {
+      scale: 1,
+      color: "",
+    });
+  }
+
+  ScrollTrigger.create({
+    trigger: highlightedElement,
+    start: "top bottom",
+    markers: true,
+    onEnter: () => animateChars(),
+    onEnterBack: () => animateChars(),
+    onLeave: () => resetChars(),
+    onLeaveBack: () => resetChars(),
+  });
+</script>
