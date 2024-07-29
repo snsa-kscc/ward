@@ -14,7 +14,7 @@ const regex = new RegExp(`${splitTag}(.*?)${splitTag}`, "g");
 
 <>
   <div class="container my-40 font-bold">
-    <h1 class="mb-20 text-4xl">{data.aboutKey}</h1>
+    <h2 class="mb-20 text-4xl">{data.aboutKey}</h2>
     <h1 class="highlighted inline-block text-6xl">
       {
         data.about.split(regex).map((part, index) => {
@@ -40,7 +40,6 @@ const regex = new RegExp(`${splitTag}(.*?)${splitTag}`, "g");
       }
     </h1>
   </div>
-  <div class="py-40"></div>
 </>
 
 <style>
@@ -101,7 +100,6 @@ const regex = new RegExp(`${splitTag}(.*?)${splitTag}`, "g");
   ScrollTrigger.create({
     trigger: highlightedElement,
     start: "top bottom",
-    markers: true,
     onEnter: () => animateChars(),
     onEnterBack: () => animateChars(),
     onLeave: () => resetChars(),

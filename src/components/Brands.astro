@@ -1,0 +1,56 @@
+---
+import { cn } from "@/lib/utils";
+
+type Props = {
+  data: {
+    specialitiesKey: string;
+    specialitiesDescription: string;
+    specialities: string;
+  };
+};
+
+const { data } = Astro.props;
+---
+
+<>
+  <div class="container overflow-hidden font-bold">
+    <h2 class="mb-20 text-4xl">{data.specialitiesKey}</h2>
+    {
+      data.specialities.split("\r\n").map((item, idx) => {
+        return (
+          <div class={cn("branding-marquee flex w-max gap-4", idx === 0 ? "first" : "additional")}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <p class="text-9xl" data-idx={`${idx}-${i}`}>
+                {item}
+              </p>
+            ))}
+            {/* <p class="text-9xl" data-idx={idx}>
+              {item}
+            </p> */}
+          </div>
+        );
+      })
+    }
+    <p class="foo ml-auto w-1/2 pt-40 text-4xl">
+      {data.specialitiesDescription}
+    </p>
+  </div>
+  <div class="py-20"></div>
+  <div class="h-screen bg-slate-600"></div>
+</>
+<script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  const brandingMarquee = document.querySelector(".branding-marquee") as HTMLElement;
+  const brandingMarqueeContent = brandingMarquee.firstElementChild as HTMLElement;
+
+  ScrollTrigger.create({
+    trigger: ".foo",
+    start: "top center",
+    end: "+=500",
+    markers: true,
+    onUpdate: (self) => console.log("velocity:", self.getVelocity()),
+  });
+</script>

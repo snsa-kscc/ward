@@ -6,6 +6,7 @@ import PortfolioGrid from "@/components/PortfolioGrid.astro";
 import { db } from "db";
 import { store, portfolio } from "db/schema";
 import { splitItems } from "@/lib/utils";
+import Brands from "@/components/Brands.astro";
 
 type StoreData = {
   [key: string]: string;
@@ -15,6 +16,9 @@ type StoreData = {
   siteDescriptionSecond: string;
   aboutKey: string;
   about: string;
+  specialitiesKey: string;
+  specialities: string;
+  specialitiesDescription: string;
 };
 
 const storeData = await db.select().from(store);
@@ -39,5 +43,6 @@ const gridData: GridData = splitItems(grid) as GridData;
   <Hero data={storeDataMap} />
   <PortfolioGrid data={gridData} />
   <About data={storeDataMap} />
+  <Brands data={storeDataMap} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
