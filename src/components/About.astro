@@ -56,10 +56,6 @@ const regex = new RegExp(`${splitTag}(.*?)${splitTag}`, "g");
 </style>
 
 <script>
-  import gsap from "gsap";
-  import ScrollTrigger from "gsap/ScrollTrigger";
-  gsap.registerPlugin(ScrollTrigger);
-
   const highlightedElement = document.querySelector(".highlighted mark") as HTMLElement;
   const chars = document.querySelectorAll(".about-char") as NodeListOf<HTMLElement>;
   const animationDefaults = {

@@ -2,11 +2,11 @@
 import Layout from "@/layouts/Layout.astro";
 import Hero from "@/components/Hero.astro";
 import About from "@/components/About.astro";
-import PortfolioGrid from "@/components/PortfolioGrid.astro";
+import Grid from "@/components/Grid.astro";
+import Brands from "@/components/Brands.astro";
 import { db } from "db";
 import { store, portfolio } from "db/schema";
 import { splitItems } from "@/lib/utils";
-import Brands from "@/components/Brands.astro";
 
 type StoreData = {
   [key: string]: string;
@@ -41,8 +41,17 @@ const gridData: GridData = splitItems(grid) as GridData;
 
 <Layout title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond}>
   <Hero data={storeDataMap} />
-  <PortfolioGrid data={gridData} />
+  <Grid data={gridData} />
   <About data={storeDataMap} />
   <Brands data={storeDataMap} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
+<script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  window.gsap = gsap;
+  window.ScrollTrigger = ScrollTrigger;
+</script>

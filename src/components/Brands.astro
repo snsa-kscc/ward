@@ -18,39 +18,57 @@ const { data } = Astro.props;
     {
       data.specialities.split("\r\n").map((item, idx) => {
         return (
-          <div class={cn("branding-marquee flex w-max gap-4", idx === 0 ? "first" : "additional")}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <p class="text-9xl" data-idx={`${idx}-${i}`}>
+          <div class={cn("specs-slider relative w-max whitespace-nowrap", idx === 0 ? "" : "reverse")}>
+            {Array.from({ length: 2 }).map((_, i) => (
+              <p class={cn("relative w-full pr-56 text-9xl will-change-transform", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
                 {item}
               </p>
             ))}
-            {/* <p class="text-9xl" data-idx={idx}>
-              {item}
-            </p> */}
           </div>
         );
       })
     }
-    <p class="foo ml-auto w-1/2 pt-40 text-4xl">
+    <p class="ml-auto w-1/2 pt-40 text-4xl">
       {data.specialitiesDescription}
     </p>
   </div>
   <div class="py-20"></div>
   <div class="h-screen bg-slate-600"></div>
 </>
-<script>
-  import gsap from "gsap";
-  import ScrollTrigger from "gsap/ScrollTrigger";
-  gsap.registerPlugin(ScrollTrigger);
 
-  const brandingMarquee = document.querySelector(".branding-marquee") as HTMLElement;
-  const brandingMarqueeContent = brandingMarquee.firstElementChild as HTMLElement;
+<script>
+  const sliders = document.querySelectorAll(".specs-slider") as NodeListOf<HTMLDivElement>;
+  let direction = -1;
+
+  function animateSlider(slider: HTMLDivElement, directionMultiplier: number) {
+    const firstElement = slider.firstElementChild;
+    const lastElement = slider.lastElementChild;
+    let xPercent = 0;
+
+    function animate() {
+      if (xPercent <= -100) {
+        xPercent = 0;
+      } else if (xPercent > 0) {
+        xPercent = -100;
+      }
+      gsap.set(firstElement, { xPercent });
+      gsap.set(lastElement, { xPercent });
+      xPercent += 0.15 * direction * directionMultiplier;
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  sliders.forEach((slider) => {
+    const isReverse = slider.classList.contains("reverse");
+    animateSlider(slider, isReverse ? -1 : 1);
+  });
 
   ScrollTrigger.create({
-    trigger: ".foo",
-    start: "top center",
-    end: "+=500",
-    markers: true,
-    onUpdate: (self) => console.log("velocity:", self.getVelocity()),
+    trigger: sliders[0].parentElement,
+    start: 0,
+    end: 0,
+    onUpdate: (self) => (direction = self.direction * -1),
   });
 </script>
