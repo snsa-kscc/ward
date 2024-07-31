@@ -13,15 +13,15 @@ const { data } = Astro.props;
 ---
 
 <>
-  <div class="container overflow-hidden font-bold">
+  <div class="overflow-hidden font-bold">
     <h2 class="mb-20 text-4xl">{data.specialitiesKey}</h2>
     {
       data.specialities.split("\r\n").map((item, idx) => {
         return (
           <div class={cn("specs-slider relative w-max whitespace-nowrap", idx === 0 ? "" : "reverse")}>
             {Array.from({ length: 2 }).map((_, i) => (
-              <p class={cn("relative w-full pr-56 text-9xl will-change-transform", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
-                {item}
+              <p class={cn("relative w-full text-9xl will-change-transform", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
+                {`${item} ${item}`}&nbsp;
               </p>
             ))}
           </div>
@@ -46,14 +46,14 @@ const { data } = Astro.props;
     let xPercent = 0;
 
     function animate() {
-      if (xPercent <= -100) {
+      if (xPercent < -100) {
         xPercent = 0;
       } else if (xPercent > 0) {
         xPercent = -100;
       }
       gsap.set(firstElement, { xPercent });
       gsap.set(lastElement, { xPercent });
-      xPercent += 0.15 * direction * directionMultiplier;
+      xPercent += 0.1 * direction * directionMultiplier;
       requestAnimationFrame(animate);
     }
 
