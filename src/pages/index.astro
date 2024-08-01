@@ -4,6 +4,7 @@ import Hero from "@/components/Hero.astro";
 import About from "@/components/About.astro";
 import Grid from "@/components/Grid.astro";
 import Brands from "@/components/Brands.astro";
+import IndexImage from "@/components/IndexImage.astro";
 import { db } from "db";
 import { store, portfolio } from "db/schema";
 import { splitItems } from "@/lib/utils";
@@ -44,6 +45,7 @@ const gridData: GridData = splitItems(grid) as GridData;
   <Grid data={gridData} />
   <About data={storeDataMap} />
   <Brands data={storeDataMap} />
+  <IndexImage />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
 <script>
