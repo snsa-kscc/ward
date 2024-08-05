@@ -2,19 +2,19 @@
 import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
-import { portfolio } from "db/schema";
+import { brands } from "db/schema";
 import { desc } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
+const logoItems = await db.select().from(brands).orderBy(desc(brands.id));
 ---
 
-<Layout title="Portfolio list" />
+<Layout title="Brand logo list" />
 <AdminNavbar />
 <div class="container px-8">
-  <h1 class="title pb-10 pt-20 text-3xl">Portfolio</h1>
-  <Button variant="secondary"><a href="/admin/portfolio/new">New item</a></Button>
+  <h1 class="title pb-10 pt-20 text-3xl">Brand logo list</h1>
+  <Button variant="secondary"><a href="/admin/brands/new">New item</a></Button>
 
   <Table>
     <TableHeader>
@@ -25,10 +25,10 @@ const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.
     </TableHeader>
     <TableBody>
       {
-        portfolioItems.map((item) => (
+        logoItems.map((item) => (
           <TableRow key={item.id}>
             <TableCell className="font-medium">
-              <a href={`/admin/portfolio/${item.slug}`}>{item.title}</a>
+              <a href={`/admin/brands/${item.slug}`}>{item.name}</a>
             </TableCell>
             <TableCell>
               <Button variant="destructive" className="btn">
@@ -46,12 +46,13 @@ const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.
   import { actions } from "astro:actions";
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+
   buttons.forEach((button) => {
     button.addEventListener("click", async (e) => {
       e.preventDefault();
       const tableRow = button.closest("tr");
       const title = tableRow?.querySelector("a")?.textContent;
-      const result = await actions.deletePortfolio({
+      const result = await actions.deleteBrand({
         title: title ?? "",
       });
       if (result.data === "deleted") {

@@ -14,13 +14,13 @@ if (!data[0]) {
 
 <Layout title={data[0].title!}>
   <div class="container px-8 pb-16">
-    <h1 class="title text-3xl py-20">{data[0].title}</h1>
+    <h1 class="title py-20 text-3xl">{data[0].title}</h1>
     <div class="my-4">
       {
-        JSON.parse(data[0].media!).map((media: string) => {
+        JSON.parse(data[0].media!).map((media: string, index: number) => {
           return (
             <div class="my-8">
-              <img src={`/assets/portfolio/${media}`} alt={data[0].title} />
+              <img src={`/assets/portfolio/${media}`} alt={`${data[0].title}-${index + 1}`} />
             </div>
           );
         })

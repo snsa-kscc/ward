@@ -1,0 +1,79 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AdminNavbar from "@/components/AdminNavbar.astro";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { writeFile } from "fs/promises";
+import path from "path";
+import { db } from "db";
+import { eq } from "drizzle-orm";
+import { brands } from "db/schema";
+import { slugify } from "@/lib/utils";
+
+const { id } = Astro.params;
+const res = await db.select().from(brands).where(eq(brands.slug, id!));
+
+if (!res[0]) {
+  return Astro.redirect("/admin/brands/new");
+}
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  const name = formData.get("name") as string;
+  const file = formData.get("file") as File;
+  const slug = slugify(name);
+  if (file) {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await writeFile(path.join("./public/assets/brands", file.name), buffer);
+    await db.update(brands).set({ name, logo: file.name, slug }).where(eq(brands.slug, id!));
+  } else {
+    await db.update(brands).set({ name, slug }).where(eq(brands.slug, id!));
+  }
+  return Astro.redirect(`/admin/brands/${slug}`);
+}
+---
+
+<Layout title={res[0].name!}>
+  <AdminNavbar />
+  <div class="container px-8">
+    <h1 class="title py-20 text-3xl">{res[0].name}</h1>
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
+      <Label htmlFor="name">name</Label>
+      <Input type="text" name="name" required className="bg-transparent text-white" defaultValue={res[0].name as string} />
+      {
+        res[0].logo && (
+          <div class="flex items-center gap-4 px-6 py-2">
+            <p>{res[0].logo}</p>
+            <Button className="btn" variant="destructive">
+              delete
+            </Button>
+          </div>
+        )
+      }
+      <Label htmlFor="file">logo</Label>
+      <Input type="file" name="file" accept="image/*" required className="text-black" disabled />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  import { actions } from "astro:actions";
+
+  const button = document.querySelector(".btn") as HTMLButtonElement;
+  const title = document.querySelector(".title") as HTMLTitleElement;
+  const file = document.querySelector("input[type=file]") as HTMLInputElement;
+
+  button.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const result = await actions.deleteLogo({
+      title: title.textContent as string,
+      item: button.previousElementSibling?.textContent ?? "",
+    });
+    if (result.data === "deleted") {
+      button.parentElement?.remove();
+      file.disabled = false;
+    }
+  });
+</script>

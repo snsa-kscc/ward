@@ -4,9 +4,11 @@ import Hero from "@/components/Hero.astro";
 import About from "@/components/About.astro";
 import Grid from "@/components/Grid.astro";
 import Brands from "@/components/Brands.astro";
+import Logos from "@/components/Logos.astro";
 import IndexImage from "@/components/IndexImage.astro";
 import { db } from "db";
-import { store, portfolio } from "db/schema";
+import { desc } from "drizzle-orm";
+import { store, portfolio, brands } from "db/schema";
 import { splitItems } from "@/lib/utils";
 
 type StoreData = {
@@ -38,6 +40,8 @@ type GridData = {
 
 const grid = await db.select().from(portfolio);
 const gridData: GridData = splitItems(grid) as GridData;
+
+const brandsData = await db.select().from(brands).orderBy(desc(brands.id));
 ---
 
 <Layout title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond}>
@@ -45,6 +49,7 @@ const gridData: GridData = splitItems(grid) as GridData;
   <Grid data={gridData} />
   <About data={storeDataMap} />
   <Brands data={storeDataMap} />
+  <Logos data={brandsData} />
   <IndexImage />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>

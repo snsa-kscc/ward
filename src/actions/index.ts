@@ -1,7 +1,7 @@
 import { defineAction, z } from "astro:actions";
 import { rm } from "fs/promises";
 import { eq } from "drizzle-orm";
-import { portfolio } from "@/../db/schema";
+import { brands, portfolio } from "@/../db/schema";
 import { db } from "@/../db";
 
 export const server = {
@@ -46,6 +46,37 @@ export const server = {
       }
       try {
         await db.delete(portfolio).where(eq(portfolio.title, title));
+      } catch (error) {
+        console.log(error);
+      }
+      return "deleted";
+    },
+  }),
+
+  deleteBrand: defineAction({
+    input: z.object({ title: z.string() }),
+    handler: async ({ title }) => {
+      const res = await db.select().from(brands).where(eq(brands.name, title));
+      const logo = res[0].logo as string;
+      try {
+        await rm(`./public/assets/brands/${logo}`);
+        await db.delete(brands).where(eq(brands.name, title));
+      } catch (error) {
+        console.log(error);
+      }
+      return "deleted";
+    },
+  }),
+
+  deleteLogo: defineAction({
+    input: z.object({ title: z.string(), item: z.string() }),
+    handler: async ({ title, item }) => {
+      try {
+        await rm(`./public/assets/brands/${item}`);
+        await db
+          .update(brands)
+          .set({ logo: null })
+          .where(eq(brands.name, title));
       } catch (error) {
         console.log(error);
       }

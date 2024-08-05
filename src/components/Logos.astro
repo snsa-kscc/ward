@@ -1,0 +1,23 @@
+---
+type Props = {
+  data: {
+    name: string | null;
+    slug: string | null;
+    logo: string | null;
+  }[];
+};
+
+const { data } = Astro.props;
+---
+
+<div class="flex gap-4">
+  {
+    data.map((brand) => {
+      return (
+        <div class="flex items-center">
+          <img src={`/assets/brands/${brand.logo}`} alt={brand.name} />
+        </div>
+      );
+    })
+  }
+</div>

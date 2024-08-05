@@ -41,7 +41,9 @@
       "compositePrimaryKeys": {
         "accolade_id": {
           "name": "accolade_id",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {}
@@ -76,13 +78,15 @@
       "compositePrimaryKeys": {
         "brand_id": {
           "name": "brand_id",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {}
     },
-    "meta": {
-      "name": "meta",
+    "store": {
+      "name": "store",
       "columns": {
         "id": {
           "name": "id",
@@ -116,9 +120,11 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "meta_id": {
-          "name": "meta_id",
-          "columns": ["id"]
+        "store_id": {
+          "name": "store_id",
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {}
@@ -167,7 +173,9 @@
       "compositePrimaryKeys": {
         "page_id": {
           "name": "page_id",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {}
@@ -230,7 +238,9 @@
       "compositePrimaryKeys": {
         "portfolio_id": {
           "name": "portfolio_id",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {}

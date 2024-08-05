@@ -13,12 +13,12 @@ CREATE TABLE `brand` (
 	CONSTRAINT `brand_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `meta` (
+CREATE TABLE `store` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`key` text,
 	`value` text,
 	`lang` text,
-	CONSTRAINT `meta_id` PRIMARY KEY(`id`)
+	CONSTRAINT `store_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `page` (

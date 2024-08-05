@@ -48,16 +48,16 @@ if (Astro.request.method === "POST") {
 <Layout title={res[0].title!}>
   <AdminNavbar />
   <div class="container px-8">
-    <h1 class="title text-3xl py-20">{res[0].title}</h1>
-    <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 items-start">
+    <h1 class="title py-20 text-3xl">{res[0].title}</h1>
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
       <Label htmlFor="title">title</Label>
-      <Input type="text" name="title" required className="text-white bg-transparent" defaultValue={res[0].title as string} />
+      <Input type="text" name="title" required className="bg-transparent text-white" defaultValue={res[0].title as string} />
       <Label htmlFor="file">media</Label>
       <Input type="file" name="file" multiple accept="image/*, video/*" className="text-black" />
       {
         filenames.map((filename) => {
           return (
-            <div class="flex gap-4 px-6 py-2 items-center">
+            <div class="flex items-center gap-4 px-6 py-2">
               <p>{filename}</p>
               <Button className="btn" variant="destructive">
                 delete
@@ -67,7 +67,7 @@ if (Astro.request.method === "POST") {
         })
       }
       <Label htmlFor="content">description</Label>
-      <Textarea name="content" className="text-white bg-transparent" defaultValue={res[0].content as string} rows={15} />
+      <Textarea name="content" className="bg-transparent text-white" defaultValue={res[0].content as string} rows={15} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
@@ -86,7 +86,7 @@ if (Astro.request.method === "POST") {
         title: title.textContent ?? "",
         item: button.previousElementSibling?.textContent ?? "",
       });
-      if (result === "deleted") {
+      if (result.data === "deleted") {
         button.parentElement?.remove();
       }
     });
