@@ -2,45 +2,80 @@
 import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
-import { brands } from "db/schema";
-import { desc } from "drizzle-orm";
+import { brands, store } from "db/schema";
+import { desc, eq } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
 const logoItems = await db.select().from(brands).orderBy(desc(brands.id));
+const res = await db.select().from(store).where(eq(store.section, "brands"));
+
+const dict = res.reduce(
+  (acc, cur) => {
+    acc[cur.key as string] = cur.value as string;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  for (const [key, value] of formData.entries()) {
+    await db
+      .update(store)
+      .set({ value: value as string })
+      .where(eq(store.key, key as string));
+  }
+  return Astro.redirect("/admin/brands");
+}
 ---
 
-<Layout title="Brand logo list" />
-<AdminNavbar />
-<div class="container px-8">
-  <h1 class="title pb-10 pt-20 text-3xl">Brand logo list</h1>
-  <Button variant="secondary"><a href="/admin/brands/new">New item</a></Button>
+<Layout title="Brand logo list">
+  <AdminNavbar />
+  <div class="container px-8">
+    <h1 class="title pb-10 pt-20 text-3xl">Brand logo list</h1>
+    <Button variant="secondary"><a href="/admin/brands/new">New item</a></Button>
 
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead>Item</TableHead>
-        <TableHead>Delete</TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {
-        logoItems.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell className="font-medium">
-              <a href={`/admin/brands/${item.slug}`}>{item.name}</a>
-            </TableCell>
-            <TableCell>
-              <Button variant="destructive" className="btn">
-                delete
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))
-      }
-    </TableBody>
-  </Table>
-</div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Item</TableHead>
+          <TableHead>Delete</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          logoItems.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell className="font-medium">
+                <a href={`/admin/brands/${item.slug}`}>{item.name}</a>
+              </TableCell>
+              <TableCell>
+                <Button variant="destructive" className="btn">
+                  delete
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  </div>
+  <div class="container px-8 pt-16">
+    <form method="POST" class="flex flex-col items-start gap-4">
+      <Label htmlFor="projects">Projects</Label>
+      <Textarea name="projects" className="bg-transparent text-white" rows={5} defaultValue={dict.projects} />
+      <Label htmlFor="ctaHook">Cta Hook</Label>
+      <Input name="ctaHook" className="bg-transparent text-white" defaultValue={dict.ctaHook} />
+      <Label htmlFor="ctaButton">Cta Button</Label>
+      <Input name="ctaButton" className="bg-transparent text-white" defaultValue={dict.ctaButton} />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
+  </div>
+</Layout>
 
 <script>
   import { actions } from "astro:actions";

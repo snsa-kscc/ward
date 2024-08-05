@@ -2,33 +2,35 @@
 import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
-import { portfolio } from "db/schema";
+import { accolades } from "db/schema";
 import { desc } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { shortenText } from "@/lib/utils";
 
-const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
+const accoladeData = await db.select().from(accolades).orderBy(desc(accolades.createdAt));
 ---
 
-<Layout title="Portfolio list">
+<Layout title="Accolades list">
   <AdminNavbar />
   <div class="container px-8">
-    <h1 class="title pb-10 pt-20 text-3xl">Portfolio</h1>
-    <Button variant="secondary"><a href="/admin/portfolio/new">New item</a></Button>
-
+    <h1 class="title py-20 text-3xl">Accolades list</h1>
+    <Button variant="secondary"><a href="/admin/accolades/new">New accolade</a></Button>
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Item</TableHead>
+          <TableHead>Accolade</TableHead>
           <TableHead>Delete</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {
-          portfolioItems.map((item) => (
+          accoladeData.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">
-                <a href={`/admin/portfolio/${item.slug}`}>{item.title}</a>
+                <a href={`/admin/accolades/${item.id}`} data-id={item.id}>
+                  {shortenText(item.item!)}
+                </a>
               </TableCell>
               <TableCell>
                 <Button variant="destructive" className="btn">
@@ -47,13 +49,14 @@ const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.
   import { actions } from "astro:actions";
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+
   buttons.forEach((button) => {
     button.addEventListener("click", async (e) => {
       e.preventDefault();
       const tableRow = button.closest("tr");
-      const title = tableRow?.querySelector("a")?.textContent;
-      const result = await actions.deletePortfolio({
-        title: title ?? "",
+      const id = tableRow?.querySelector("a")?.dataset.id;
+      const result = await actions.deleteAccolade({
+        id: +id!,
       });
       if (result.data === "deleted") {
         tableRow?.remove();

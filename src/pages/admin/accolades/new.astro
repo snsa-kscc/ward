@@ -1,0 +1,33 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AdminNavbar from "@/components/AdminNavbar.astro";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { db } from "db";
+import { accolades } from "db/schema";
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  const item = formData.get("item") as string;
+  try {
+    const res = await db.insert(accolades).values({ item, createdAt: new Date(), lang: "en" });
+    return Astro.redirect(`/admin/accolades/${res[0].insertId}`);
+  } catch (e) {
+    console.log(e);
+    return Astro.redirect("/admin/accolades/new");
+  }
+}
+---
+
+<Layout title="New accolade">
+  <AdminNavbar />
+  <div class="container px-8">
+    <h1 class="title py-20 text-3xl">New accolade</h1>
+    <form method="POST" class="flex flex-col items-start gap-4">
+      <Label htmlFor="item">Accolade</Label>
+      <Textarea name="item" className="bg-transparent text-white" required rows={10} />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
+  </div>
+</Layout>

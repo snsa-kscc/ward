@@ -79,16 +79,18 @@ if (Astro.request.method === "POST") {
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
   const title = document.querySelector(".title") as HTMLTitleElement;
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", async (e) => {
-      e.preventDefault();
-      const result = await actions.deleteMedia({
-        title: title.textContent ?? "",
-        item: button.previousElementSibling?.textContent ?? "",
+  if (buttons) {
+    buttons.forEach((button) => {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const result = await actions.deleteMedia({
+          title: title.textContent ?? "",
+          item: button.previousElementSibling?.textContent ?? "",
+        });
+        if (result.data === "deleted") {
+          button.parentElement?.remove();
+        }
       });
-      if (result.data === "deleted") {
-        button.parentElement?.remove();
-      }
     });
-  });
+  }
 </script>

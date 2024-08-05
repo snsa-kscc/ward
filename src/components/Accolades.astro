@@ -1,0 +1,33 @@
+---
+type Props = {
+  data: {
+    id: number;
+    createdAt: Date;
+    item: string | null;
+  }[];
+};
+
+const { data } = Astro.props;
+const halfLength = Math.ceil(data.length / 2);
+const firstHalf = data.slice(0, halfLength);
+const secondHalf = data.slice(halfLength);
+---
+
+<>
+  <div class="container flex p-8">
+    <div>
+      {
+        firstHalf.map((item) => {
+          return <p class="text-3xl">{item.item}</p>;
+        })
+      }
+    </div>
+    <div>
+      {
+        secondHalf.map((item) => {
+          return <p class="text-3xl">{item.item}</p>;
+        })
+      }
+    </div>
+  </div>
+</>

@@ -52,7 +52,7 @@ if (Astro.request.method === "POST") {
         )
       }
       <Label htmlFor="file">logo</Label>
-      <Input type="file" name="file" accept="image/*" required className="text-black" disabled />
+      <Input type="file" name="file" accept="image/*" required className="text-black" disabled={res[0].logo ? true : false} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
@@ -64,16 +64,17 @@ if (Astro.request.method === "POST") {
   const button = document.querySelector(".btn") as HTMLButtonElement;
   const title = document.querySelector(".title") as HTMLTitleElement;
   const file = document.querySelector("input[type=file]") as HTMLInputElement;
-
-  button.addEventListener("click", async (e) => {
-    e.preventDefault();
-    const result = await actions.deleteLogo({
-      title: title.textContent as string,
-      item: button.previousElementSibling?.textContent ?? "",
+  if (button) {
+    button.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const result = await actions.deleteLogo({
+        title: title.textContent as string,
+        item: button.previousElementSibling?.textContent ?? "",
+      });
+      if (result.data === "deleted") {
+        button.parentElement?.remove();
+        file.disabled = false;
+      }
     });
-    if (result.data === "deleted") {
-      button.parentElement?.remove();
-      file.disabled = false;
-    }
-  });
+  }
 </script>
