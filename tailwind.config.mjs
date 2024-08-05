@@ -64,6 +64,8 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        wardGreen: "#03c52f",
+        wardBlue: "#085ed0",
       },
       borderRadius: {
         lg: "var(--radius)",

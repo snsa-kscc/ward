@@ -38,7 +38,7 @@ if (Astro.request.method === "POST") {
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">New brand logo</h1>
     <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
-      <Label htmlFor="name">name</Label>
+      <Label htmlFor="name">name (alt)</Label>
       <Input type="text" name="name" required className="bg-transparent text-white" />
       <Label htmlFor="file">logo</Label>
       <Input type="file" name="file" accept="image/*" required className="text-black" />

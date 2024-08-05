@@ -10,14 +10,33 @@ type Props = {
 const { data } = Astro.props;
 ---
 
-<div class="flex gap-4">
-  {
-    data.map((brand) => {
-      return (
-        <div class="flex items-center">
-          <img src={`/assets/brands/${brand.logo}`} alt={brand.name} />
+<>
+  <div class="from-wardGreen to-wardBlue flex gap-16 overflow-hidden bg-gradient-to-r p-16">
+    {
+      Array.from({ length: 2 }).map(() => (
+        <div class="marquee-scroll flex w-full flex-shrink-0 justify-around gap-16">
+          {data.map((brand) => (
+            <div class="flex items-center">
+              <img src={`/assets/brands/${brand.logo}`} alt={brand.name} />
+            </div>
+          ))}
         </div>
-      );
-    })
+      ))
+    }
+  </div>
+</>
+
+<style>
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(calc(-100% - 1rem));
+    }
   }
-</div>
+  .marquee-scroll {
+    animation: scroll 20s linear infinite;
+  }
+</style>
