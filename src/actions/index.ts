@@ -1,7 +1,7 @@
 import { defineAction, z } from "astro:actions";
 import { rm } from "fs/promises";
 import { eq } from "drizzle-orm";
-import { accolades, brands, portfolio } from "@/../db/schema";
+import { accolades, brands, portfolio, store } from "@/../db/schema";
 import { db } from "@/../db";
 
 export const server = {
@@ -89,6 +89,22 @@ export const server = {
     handler: async ({ id }) => {
       try {
         await db.delete(accolades).where(eq(accolades.id, id));
+      } catch (error) {
+        console.log(error);
+      }
+      return "deleted";
+    },
+  }),
+
+  deletePicture: defineAction({
+    input: z.object({ title: z.string() }),
+    handler: async ({ title }) => {
+      try {
+        await rm(`./public/assets/${title}`);
+        await db
+          .update(store)
+          .set({ value: null })
+          .where(eq(store.value, title));
       } catch (error) {
         console.log(error);
       }

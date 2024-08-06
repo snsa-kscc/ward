@@ -1,11 +1,87 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
+import { writeFile } from "fs/promises";
+import path from "path";
+import { db } from "db";
+import { store } from "db/schema";
+import { eq } from "drizzle-orm";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+const res = await db.select().from(store).where(eq(store.section, "footer"));
+
+const resMap = res.reduce(
+  (acc, cur) => {
+    acc[cur.key as string] = cur.value as string;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+
+  for (const [key, value] of formData.entries()) {
+    if (key === "ctaPicture") {
+      const buffer = Buffer.from(await (value as File).arrayBuffer());
+      await writeFile(path.join("./public/assets", (value as File).name), buffer);
+      await db
+        .update(store)
+        .set({ value: (value as File).name })
+        .where(eq(store.key, key as string));
+    } else {
+      await db
+        .update(store)
+        .set({ value: value as string })
+        .where(eq(store.key, key as string));
+    }
+  }
+
+  return Astro.redirect("/admin/contact");
+}
 ---
 
 <Layout title="Contact">
   <AdminNavbar />
   <div class="container px-8">
-    <h1 class="title text-3xl py-20">Contact</h1>
+    <h1 class="title py-20 text-3xl">Contact</h1>
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
+      <Label htmlFor="ctaHeading">Cta Heading</Label>
+      <Input type="text" name="ctaHeading" required className="bg-transparent text-white" defaultValue={resMap.ctaHeading} />
+      {
+        resMap.ctaPicture && (
+          <div class="flex items-center gap-4 px-6 py-2">
+            <p>{resMap.ctaPicture}</p>
+            <Button className="btn" variant="destructive">
+              delete
+            </Button>
+          </div>
+        )
+      }
+      <Label htmlFor="ctaPicture">Cta Picture</Label>
+      <Input type="file" name="ctaPicture" accept="image/*" required className="text-black" disabled={resMap.ctaPicture ? true : false} />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
   </div>
 </Layout>
+
+<script>
+  import { actions } from "astro:actions";
+
+  const button = document.querySelector(".btn") as HTMLButtonElement;
+  const file = document.querySelector("input[type=file]") as HTMLInputElement;
+  if (button) {
+    button.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const result = await actions.deletePicture({
+        title: button.previousElementSibling?.textContent ?? "",
+      });
+      if (result.data === "deleted") {
+        button.parentElement?.remove();
+        file.disabled = false;
+      }
+    });
+  }
+</script>

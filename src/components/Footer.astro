@@ -1,17 +1,24 @@
 ---
-const props = Astro.props;
+type Props = {
+  data: {
+    ctaHeading: string;
+    ctaPicture: string;
+  };
+};
+
+const { data } = Astro.props;
 ---
 
 <>
-  <div class="bg-slate-700 py-60"></div>
+  <div class="py-60"></div>
   <div class="relative h-screen">
     {
       Array.from({ length: 9 }).map((_, idx) => (
-        <div class={`mask absolute left-0 top-0 h-full w-full bg-[url('/assets/portfolio/niege.jpg')] bg-contain bg-center bg-no-repeat mask-${idx + 1}`} />
+        <div class={`mask absolute left-0 top-0 h-full w-full bg-[url('/assets/${data.ctaPicture}')] bg-contain bg-center bg-no-repeat mask-${idx + 1}`} />
       ))
     }
   </div>
-  <div class="h-screen bg-slate-700"></div>
+  <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p>
 </>
 
 <script>
