@@ -34,14 +34,14 @@ if (Astro.request.method === "POST") {
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Legal pages</h1>
+    <form method="POST" class="flex flex-col items-start gap-4">
+      <Label htmlFor="cookie-policy">Cookie Policy</Label>
+      <Textarea name="cookie-policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["cookie-policy"]} />
+      <Label htmlFor="privacy-policy">Privacy Policy</Label>
+      <Textarea name="privacy-policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["privacy-policy"]} />
+      <Label htmlFor="terms-of-use">Terms of Use</Label>
+      <Textarea name="terms-of-use" className="bg-transparent text-white" rows={20} defaultValue={resMap["terms-of-use"]} />
+      <Button type="submit" variant="secondary">send</Button>
+    </form>
   </div>
-  <form method="POST" class="flex flex-col items-start gap-4">
-    <Label htmlFor="cookie-policy">Cookie Policy</Label>
-    <Textarea name="cookie-policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["cookie-policy"]} />
-    <Label htmlFor="privacy-policy">Privacy Policy</Label>
-    <Textarea name="privacy-policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["privacy-policy"]} />
-    <Label htmlFor="terms-of-use">Terms of Use</Label>
-    <Textarea name="terms-of-use" className="bg-transparent text-white" rows={20} defaultValue={resMap["terms-of-use"]} />
-    <Button type="submit" variant="secondary">send</Button>
-  </form>
 </Layout>

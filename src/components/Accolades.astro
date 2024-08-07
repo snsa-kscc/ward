@@ -1,19 +1,29 @@
 ---
 type Props = {
-  data: {
+  accoladesData: {
     id: number;
     createdAt: Date;
     item: string | null;
   }[];
+  storeDataMap: {
+    projects: string;
+    ctaHook: string;
+    ctaButton: string;
+  };
 };
 
-const { data } = Astro.props;
-const halfLength = Math.ceil(data.length / 2);
-const firstHalf = data.slice(0, halfLength);
-const secondHalf = data.slice(halfLength);
+const { accoladesData, storeDataMap } = Astro.props;
+const halfLength = Math.ceil(accoladesData.length / 2);
+const firstHalf = accoladesData.slice(0, halfLength);
+const secondHalf = accoladesData.slice(halfLength);
 ---
 
 <>
+  <div class="container py-20">
+    <p>{storeDataMap.projects}</p>
+    <p>{storeDataMap.ctaHook}</p>
+    <p>{storeDataMap.ctaButton}</p>
+  </div>
   <div class="container flex p-8">
     <div>
       {

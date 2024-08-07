@@ -23,6 +23,9 @@ type StoreData = {
   specialitiesKey: string;
   specialities: string;
   specialitiesDescription: string;
+  projects: string;
+  ctaHook: string;
+  ctaButton: string;
   ctaHeading: string;
   ctaPicture: string;
 };
@@ -54,7 +57,7 @@ const accoladesData = await db.select().from(accolades).orderBy(desc(accolades.c
   <About data={storeDataMap} />
   <Brands data={storeDataMap} />
   <Logos data={brandsData} />
-  <Accolades data={accoladesData} />
+  <Accolades accoladesData={accoladesData} storeDataMap={storeDataMap} />
   <Footer data={storeDataMap} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
