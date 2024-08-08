@@ -14,7 +14,7 @@ const { data } = Astro.props;
 
 <>
   <div class="overflow-hidden font-bold">
-    <h2 class="mb-20 text-4xl">{data.specialitiesKey}</h2>
+    <h2 class="container mb-20 text-4xl">{data.specialitiesKey}</h2>
     {
       data.specialities.split("\r\n").map((item, idx) => {
         return (

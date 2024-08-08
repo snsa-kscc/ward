@@ -2,7 +2,6 @@
 type Props = {
   data: {
     ctaHeading: string;
-    ctaPicture: string;
   };
 };
 
@@ -10,15 +9,16 @@ const { data } = Astro.props;
 ---
 
 <>
-  <div class="py-60"></div>
   <div class="relative h-screen">
     {
       Array.from({ length: 9 }).map((_, idx) => (
-        <div class={`mask absolute left-0 top-0 h-full w-full bg-[url('/assets/${data.ctaPicture}')] bg-contain bg-center bg-no-repeat mask-${idx + 1}`} />
+        <div class={`mask absolute left-0 top-0 h-full w-full bg-[url('/assets/cta.jpg')] bg-contain bg-center bg-no-repeat mask-${idx + 1}`} />
       ))
     }
   </div>
-  <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p>
+  <div class="container">
+    <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p>
+  </div>
 </>
 
 <script>
@@ -53,7 +53,7 @@ const { data } = Astro.props;
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: masks[0].parentElement,
-      start: "top 30%",
+      start: "top 50%",
     },
   });
   const animationOrder = [[".mask-1"], [".mask-2", ".mask-4"], [".mask-3", ".mask-5", ".mask-7"], [".mask-6", ".mask-8"], [".mask-9"]] as string[][];
