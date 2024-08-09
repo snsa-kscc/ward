@@ -41,13 +41,16 @@ const { data } = Astro.props;
 </div>
 
 <style>
+  .column-reverse {
+    transform: translateY(calc(-100% + 100vh));
+  }
   @keyframes adjust-position {
     from {
-      transform: translateY(-110%);
+      transform: translateY(calc(-100% + 100vh));
     }
 
     to {
-      transform: translateY(110%);
+      transform: translateY(calc(100% - 100vh));
     }
   }
 
