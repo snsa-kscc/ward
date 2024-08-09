@@ -18,10 +18,26 @@ const firstHalf = accoladesData.slice(0, halfLength);
 const secondHalf = accoladesData.slice(halfLength);
 ---
 
-<b>
+<>
   <div class="container py-20">
-    <div class="text-5xl font-bold leading-tight">
+    <div class="mb-20 text-5xl font-bold leading-tight">
       <p>{storeDataMap.projects}</p>
+    </div>
+    <div class="py-20"></div>
+    <div class="bar-char-wrapper text-5xl font-bold leading-tight">
+      {
+        storeDataMap.projects
+          .split(/(\s)/)
+          .map((word) => (
+            <div class="word-wrapper inline-block">
+              {word === " " ? (
+                <span class="bar-char inline-block">&nbsp;</span>
+              ) : (
+                word.split("").map((char) => <span class="bar-char inline-block">{char}</span>)
+              )}
+            </div>
+          ))
+      }
     </div>
     <div class="my-40 flex justify-between gap-8">
       <p class="w-1/3 text-5xl font-bold">{storeDataMap.ctaHook}</p>
@@ -46,4 +62,31 @@ const secondHalf = accoladesData.slice(halfLength);
       }
     </div>
   </div>
-</b>
+</>
+
+<script>
+  const barChars = document.querySelectorAll(".bar-char") as NodeListOf<HTMLElement>;
+  gsap.fromTo(
+    barChars,
+    {
+      scaleY: 0.1,
+      scaleX: 1.8,
+      filter: "blur(10px) brightness(50%)",
+      willChange: "filter, transform",
+    },
+    {
+      ease: "none",
+      scaleY: 1,
+      scaleX: 1,
+      filter: "blur(0px) brightness(100%)",
+      stagger: 0.05,
+      scrollTrigger: {
+        trigger: ".bar-char-wrapper",
+        start: "top 85%",
+        end: "bottom 30%",
+        scrub: true,
+        markers: true,
+      },
+    }
+  );
+</script>

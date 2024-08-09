@@ -18,7 +18,18 @@ const { data } = Astro.props;
   </div>
   <div class="container">
     <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p>
+    <div class="text-9xl font-bold">
+      {
+        data.ctaHeading.split("").map((char) => {
+          if (char === " ") {
+            return <span class="foo-foo inline-block">&nbsp;</span>;
+          }
+          return <span class="foo-foo inline-block">{char}</span>;
+        })
+      }
+    </div>
   </div>
+  <div class="h-screen bg-gray-500"></div>
 </>
 
 <script>
@@ -69,4 +80,28 @@ const { data } = Astro.props;
       index * 0.125
     );
   });
+
+  const charsFoo = document.querySelectorAll(".foo-foo") as NodeListOf<HTMLElement>;
+  gsap.fromTo(
+    charsFoo,
+    {
+      opacity: 0,
+      skewX: -20,
+      willChange: "filter, transform",
+      filter: "blur(8px)",
+    },
+    {
+      ease: "sine",
+      opacity: 1,
+      skewX: 0,
+      filter: "blur(0px)",
+      stagger: 0.04,
+      scrollTrigger: {
+        trigger: ".foo-foo",
+        start: "top center",
+        end: "bottom 35%",
+        scrub: true,
+      },
+    }
+  );
 </script>
