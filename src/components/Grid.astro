@@ -10,7 +10,7 @@ type Props = {
 const { data } = Astro.props;
 ---
 
-<div class="container relative grid grid-cols-3 gap-8 overflow-y-hidden">
+<div class="container relative grid grid-cols-3 gap-8 overflow-y-clip">
   {
     data.map((part, index) => {
       const className = index === 1 ? "flex-col" : "flex-col-reverse column-reverse";
@@ -41,21 +41,21 @@ const { data } = Astro.props;
 </div>
 
 <style>
-  .column-reverse {
-    transform: translateY(calc(-100% + 100vh));
-  }
+  /* .column-reverse {
+    transform: translateY(calc(1px - 80%));
+  } */
   @keyframes adjust-position {
     from {
-      transform: translateY(calc(-100% + 100vh));
+      transform: translateY(-110%);
     }
 
     to {
-      transform: translateY(calc(100% - 100vh));
+      transform: translateY(120%);
     }
   }
 
   .column-reverse {
     animation: adjust-position linear forwards;
-    animation-timeline: scroll(root block);
+    animation-timeline: view();
   }
 </style>
