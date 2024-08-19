@@ -17,8 +17,8 @@ const { data } = Astro.props;
     }
   </div>
   <div class="container">
-    <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p>
-    <div class="text-9xl font-bold">
+    <!-- <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p> -->
+    <div class="py-20 text-9xl font-bold">
       {
         data.ctaHeading.split("").map((char) => {
           if (char === " ") {
@@ -29,7 +29,7 @@ const { data } = Astro.props;
       }
     </div>
   </div>
-  <div class="h-screen bg-gray-500"></div>
+  <div class="h-screen"></div>
 </>
 
 <script>
@@ -98,7 +98,7 @@ const { data } = Astro.props;
       stagger: 0.04,
       scrollTrigger: {
         trigger: ".foo-foo",
-        start: "top center",
+        start: "top 80%",
         end: "bottom 35%",
         scrub: true,
       },
