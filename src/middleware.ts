@@ -1,6 +1,7 @@
-import { defineMiddleware } from "astro:middleware";
+import { defineMiddleware, sequence } from "astro:middleware";
+import { middleware } from "astro:i18n";
 
-export const onRequest = defineMiddleware((context, next) => {
+export const userMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
 
   if (url.pathname.startsWith("/admin")) {
@@ -29,3 +30,5 @@ export const onRequest = defineMiddleware((context, next) => {
 
   return next();
 });
+
+export const onRequest = sequence(userMiddleware);
