@@ -29,20 +29,21 @@ type StoreData = {
   ctaHeading: string;
 };
 
-const storeData = await db.select().from(store);
-
-const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
-  acc[cur.key as string] = cur.value as string;
-
-  return acc;
-}, {} as StoreData);
-
 type GridData = {
   [key: string]: string | number | Date;
   media: string;
   title: string;
   slug: string;
 }[][];
+
+const { locale } = Astro.params;
+
+const storeData = await db.select().from(store);
+const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
+  acc[cur.key as string] = cur.value as string;
+
+  return acc;
+}, {} as StoreData);
 
 const grid = await db.select().from(portfolio);
 const gridData: GridData = splitItems(grid) as GridData;

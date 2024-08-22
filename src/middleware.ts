@@ -1,31 +1,22 @@
 import { defineMiddleware, sequence } from "astro:middleware";
 
-// Define supported locales and default locale
 const locales = ["en", "es", "fr"];
 const defaultLocale = "en";
 
 export const i18nMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
-  const [, segment] = url.pathname.split("/");
+  const [_, segment] = url.pathname.split("/");
 
   if (locales.includes(segment)) {
-    // If the segment is a valid locale, proceed
     return next();
   } else {
-    // If no locale is specified or it's the root path
-    if (defaultLocale !== "en") {
-      // For non-English default, redirect to include the locale
-      url.pathname = `/${defaultLocale}${url.pathname}`;
-      return context.redirect(url.toString());
-    }
-    // For English (default), continue without changing the URL
-    return next();
+    return context.rewrite(`/${defaultLocale}${url.pathname}`);
   }
 });
 
 export const authMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
-  const [, locale, path] = url.pathname.split("/");
+  const [_, locale, path] = url.pathname.split("/");
 
   if (path === "admin") {
     const basicAuth = context.request.headers.get("authorization");

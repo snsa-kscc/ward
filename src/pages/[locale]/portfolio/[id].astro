@@ -4,7 +4,7 @@ import { db } from "db";
 import { eq } from "drizzle-orm";
 import { portfolio } from "db/schema";
 
-const { id } = Astro.params;
+const { id, locale } = Astro.params;
 const data = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
 
 if (!data[0]) {
