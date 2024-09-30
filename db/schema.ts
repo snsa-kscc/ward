@@ -21,7 +21,6 @@ export const portfolio = mysqlTable("portfolio", {
   title: varchar("title", { length: 512 }).unique(),
   content: text("content"),
   media: varchar("media", { length: 1024 }),
-  lang: varchar("lang", { length: 6 }),
 });
 
 export const accolades = mysqlTable("accolade", {

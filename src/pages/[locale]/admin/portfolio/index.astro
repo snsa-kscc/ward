@@ -3,19 +3,19 @@ import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { portfolio } from "db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
 const { locale } = Astro.params;
-const portfolioItems = await db.select().from(portfolio).where(eq(portfolio.lang, locale!)).orderBy(desc(portfolio.createdAt));
+const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
 ---
 
 <Layout lang={locale!} title="Portfolio list">
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title pb-10 pt-20 text-3xl">Portfolio</h1>
-    <Button variant="secondary"><a href="/admin/portfolio/new">New item</a></Button>
+    <Button variant="secondary"><a href={`/${locale}/admin/portfolio/new`}>New item</a></Button>
 
     <Table>
       <TableHeader>
@@ -29,7 +29,7 @@ const portfolioItems = await db.select().from(portfolio).where(eq(portfolio.lang
           portfolioItems.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">
-                <a href={`/admin/portfolio/${item.slug}`}>{item.title}</a>
+                <a href={`/${locale}/admin/portfolio/${item.slug}`}>{item.title}</a>
               </TableCell>
               <TableCell>
                 <Button variant="destructive" className="btn">
@@ -48,7 +48,6 @@ const portfolioItems = await db.select().from(portfolio).where(eq(portfolio.lang
   import { actions } from "astro:actions";
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
-  const locale = document.documentElement.lang;
 
   buttons.forEach((button) => {
     button.addEventListener("click", async (e) => {
@@ -57,7 +56,6 @@ const portfolioItems = await db.select().from(portfolio).where(eq(portfolio.lang
       const title = tableRow?.querySelector("a")?.textContent;
       const result = await actions.deletePortfolio({
         title: title ?? "",
-        lang: locale ?? "",
       });
       if (result.data === "deleted") {
         tableRow?.remove();

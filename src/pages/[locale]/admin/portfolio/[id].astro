@@ -8,27 +8,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { db } from "db";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
 
 const { locale, id } = Astro.params;
-const res = await db
-  .select()
-  .from(portfolio)
-  .where(and(eq(portfolio.slug, id!), eq(portfolio.lang, locale!)));
+const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
 
 if (!res[0]) {
-  return Astro.redirect("/admin/portfolio/new");
+  return Astro.redirect(`/${locale}/admin/portfolio/new`);
 }
 
 let filenames: string[] = JSON.parse(res[0].media as string);
+let contentObject: Record<string, string> = JSON.parse(res[0].content as string);
 
 if (Astro.request.method === "POST") {
-  const res = await db
-    .select()
-    .from(portfolio)
-    .where(and(eq(portfolio.slug, id!), eq(portfolio.lang, locale!)));
+  const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
   filenames = JSON.parse(res[0].media as string);
   const formData = await Astro.request.formData();
   const title = formData.get("title") as string;
@@ -43,12 +38,23 @@ if (Astro.request.method === "POST") {
     }
   }
   filenames.unshift(...additionalFilenames);
+
+  contentObject[locale!] = content;
+
   await db
     .update(portfolio)
-    .set({ title, slug, content, media: JSON.stringify(filenames), lang: locale })
-    .where(and(eq(portfolio.slug, id!), eq(portfolio.lang, locale!)));
-  return Astro.redirect(`/admin/portfolio/${slug}`);
+    .set({
+      title,
+      slug,
+      content: JSON.stringify(contentObject),
+      media: JSON.stringify(filenames),
+    })
+    .where(eq(portfolio.slug, id!));
+
+  return Astro.redirect(`/${locale}/admin/portfolio/${slug}`);
 }
+
+const currentLocaleContent = contentObject[locale!];
 ---
 
 <Layout lang={locale!} title={res[0].title!}>
@@ -61,19 +67,17 @@ if (Astro.request.method === "POST") {
       <Label htmlFor="file">media</Label>
       <Input type="file" name="file" multiple accept="image/*, video/*" className="text-black" />
       {
-        filenames.map((filename) => {
-          return (
-            <div class="flex items-center gap-4 px-6 py-2">
-              <p>{filename}</p>
-              <Button className="btn" variant="destructive">
-                delete
-              </Button>
-            </div>
-          );
-        })
+        filenames.map((filename) => (
+          <div class="flex items-center gap-4 px-6 py-2">
+            <p>{filename}</p>
+            <Button className="btn" variant="destructive">
+              delete
+            </Button>
+          </div>
+        ))
       }
       <Label htmlFor="content">description</Label>
-      <Textarea name="content" className="bg-transparent text-white" defaultValue={res[0].content as string} rows={15} />
+      <Textarea name="content" className="bg-transparent text-white" defaultValue={currentLocaleContent} rows={15} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
@@ -84,7 +88,6 @@ if (Astro.request.method === "POST") {
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
   const title = document.querySelector(".title") as HTMLTitleElement;
-  const locale = document.documentElement.lang;
 
   if (buttons) {
     buttons.forEach((button) => {
@@ -93,7 +96,6 @@ if (Astro.request.method === "POST") {
         const result = await actions.deleteMedia({
           title: title.textContent ?? "",
           item: button.previousElementSibling?.textContent ?? "",
-          lang: locale ?? "",
         });
         if (result.data === "deleted") {
           button.parentElement?.remove();

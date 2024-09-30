@@ -6,12 +6,12 @@ import { db } from "@/../db";
 
 export const server = {
   deleteMedia: defineAction({
-    input: z.object({ title: z.string(), item: z.string(), lang: z.string() }),
-    handler: async ({ title, item, lang }) => {
+    input: z.object({ title: z.string(), item: z.string() }),
+    handler: async ({ title, item }) => {
       const res = await db
         .select()
         .from(portfolio)
-        .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
+        .where(eq(portfolio.title, title));
       const filenames: string[] = JSON.parse(res[0].media as string);
       const filteredFilenames = filenames.filter(
         (filename) => filename !== item,
@@ -24,18 +24,18 @@ export const server = {
       await db
         .update(portfolio)
         .set({ media: JSON.stringify(filteredFilenames) })
-        .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
+        .where(eq(portfolio.title, title));
       return "deleted";
     },
   }),
 
   deletePortfolio: defineAction({
-    input: z.object({ title: z.string(), lang: z.string() }),
-    handler: async ({ title, lang }) => {
+    input: z.object({ title: z.string() }),
+    handler: async ({ title }) => {
       const res = await db
         .select()
         .from(portfolio)
-        .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
+        .where(eq(portfolio.title, title));
       const filenames: string[] = JSON.parse(res[0].media as string);
       for (const filename of filenames) {
         try {
@@ -45,9 +45,7 @@ export const server = {
         }
       }
       try {
-        await db
-          .delete(portfolio)
-          .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
+        await db.delete(portfolio).where(eq(portfolio.title, title));
       } catch (error) {
         console.log(error);
       }

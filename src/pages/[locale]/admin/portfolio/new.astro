@@ -24,8 +24,17 @@ if (Astro.request.method === "POST") {
     await writeFile(path.join("./public/assets/portfolio", file.name), buffer);
     filenames.push(file.name);
   }
+
+  const contentObject = { [locale!]: content };
+
   try {
-    await db.insert(portfolio).values({ title, slug, content, createdAt: new Date(), media: JSON.stringify(filenames), lang: locale });
+    await db.insert(portfolio).values({
+      title,
+      slug,
+      content: JSON.stringify(contentObject),
+      createdAt: new Date(),
+      media: JSON.stringify(filenames),
+    });
   } catch (e) {
     console.error(e);
     for (const filename of filenames) {
@@ -35,9 +44,9 @@ if (Astro.request.method === "POST") {
         console.error(e);
       }
     }
-    return Astro.redirect("/admin/portfolio/new");
+    return Astro.redirect(`/${locale}/admin/portfolio/new`);
   }
-  return Astro.redirect(`/admin/portfolio/${slug}`);
+  return Astro.redirect(`/${locale}/admin/portfolio/${slug}`);
 }
 ---
 
