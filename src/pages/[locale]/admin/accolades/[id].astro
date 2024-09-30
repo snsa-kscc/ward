@@ -9,7 +9,7 @@ import { accolades } from "db/schema";
 import { eq } from "drizzle-orm";
 import { shortenText } from "@/lib/utils";
 
-const { id } = Astro.params;
+const { locale, id } = Astro.params;
 const res = await db.select().from(accolades).where(eq(accolades.id, +id!));
 
 if (!res[0]) {
@@ -24,7 +24,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title={shortenText(res[0].item!)}>
+<Layout lang={locale!} title={shortenText(res[0].item!)}>
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">{shortenText(res[0].item!)}</h1>

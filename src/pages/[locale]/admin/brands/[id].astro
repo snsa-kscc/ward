@@ -11,7 +11,7 @@ import { eq } from "drizzle-orm";
 import { brands } from "db/schema";
 import { slugify } from "@/lib/utils";
 
-const { id } = Astro.params;
+const { locale, id } = Astro.params;
 const res = await db.select().from(brands).where(eq(brands.slug, id!));
 
 if (!res[0]) {
@@ -34,7 +34,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title={res[0].name!}>
+<Layout lang={locale!} title={res[0].name!}>
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">{res[0].name}</h1>

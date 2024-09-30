@@ -9,6 +9,11 @@ export function slugify(text: string): string {
   return text
     .toString()
     .toLowerCase()
+    .replace(/[š]/g, "s")
+    .replace(/[đ]/g, "d")
+    .replace(/[č]/g, "c")
+    .replace(/[ć]/g, "c")
+    .replace(/[ž]/g, "z")
     .replace(/\s+/g, "-") // Replace spaces with -
     .replace(/[^\w-]+/g, "") // Remove all non-word chars
     .replace(/--+/g, "-") // Replace multiple - with single -

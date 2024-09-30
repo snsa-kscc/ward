@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { db } from "db";
 import { accolades } from "db/schema";
 
+const { locale } = Astro.params;
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const item = formData.get("item") as string;
@@ -20,7 +21,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="New accolade">
+<Layout lang={locale!} title="New accolade">
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">New accolade</h1>

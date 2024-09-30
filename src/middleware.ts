@@ -1,11 +1,15 @@
 import { defineMiddleware, sequence } from "astro:middleware";
 
-const locales = ["en", "es", "fr"];
+const locales = ["en", "hr"];
 const defaultLocale = "en";
 
 export const i18nMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
   const [_, segment] = url.pathname.split("/");
+
+  if (url.pathname.startsWith("/_actions")) {
+    return next();
+  }
 
   if (locales.includes(segment)) {
     return next();

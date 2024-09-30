@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { eq } from "drizzle-orm";
 
+const { locale } = Astro.params;
 const res = await db.select().from(pages);
 
 const resMap = res.reduce(
@@ -30,7 +31,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="Legal Pages">
+<Layout lang={locale!} title="Legal Pages">
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Legal pages</h1>

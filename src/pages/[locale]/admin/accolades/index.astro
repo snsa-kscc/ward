@@ -8,10 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { shortenText } from "@/lib/utils";
 
+const { locale } = Astro.params;
+
 const accoladeData = await db.select().from(accolades).orderBy(desc(accolades.createdAt));
 ---
 
-<Layout title="Accolades list">
+<Layout lang={locale!} title="Accolades list">
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Accolades list</h1>

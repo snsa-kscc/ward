@@ -52,7 +52,7 @@ const brandsData = await db.select().from(brands).orderBy(desc(brands.id));
 const accoladesData = await db.select().from(accolades).orderBy(desc(accolades.createdAt));
 ---
 
-<Layout title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond}>
+<Layout lang={locale!} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
   <Hero data={storeDataMap} />
   <Grid data={gridData} />
   <About data={storeDataMap} />

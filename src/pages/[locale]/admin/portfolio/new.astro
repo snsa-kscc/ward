@@ -12,6 +12,8 @@ import { db } from "db";
 import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
 
+const { locale } = Astro.params;
+
 let filenames = [];
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
@@ -40,17 +42,17 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="New portfolio item">
+<Layout lang={locale!} title="New portfolio item">
   <AdminNavbar />
   <div class="container px-8">
-    <h1 class="text-3xl py-20">New portfolio item</h1>
-    <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 items-start">
+    <h1 class="py-20 text-3xl">New portfolio item</h1>
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
       <Label htmlFor="title">title</Label>
-      <Input type="text" name="title" required className="text-white bg-transparent" />
+      <Input type="text" name="title" required className="bg-transparent text-white" />
       <Label htmlFor="file">media</Label>
       <Input type="file" name="file" multiple accept="image/*, video/*" required className="text-black" />
       <Label htmlFor="content">description</Label>
-      <Textarea name="content" className="text-white bg-transparent" rows={15} />
+      <Textarea name="content" className="bg-transparent text-white" rows={15} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

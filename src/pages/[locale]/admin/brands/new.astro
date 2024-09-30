@@ -11,6 +11,7 @@ import { db } from "db";
 import { brands } from "db/schema";
 import { slugify } from "@/lib/utils";
 
+const { locale } = Astro.params;
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const name = formData.get("name") as string;
@@ -33,7 +34,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="New brand logo">
+<Layout lang={locale!} title="New brand logo">
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">New brand logo</h1>

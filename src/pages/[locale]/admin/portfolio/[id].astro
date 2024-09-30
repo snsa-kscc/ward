@@ -12,7 +12,7 @@ import { eq } from "drizzle-orm";
 import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
 
-const { id, locale } = Astro.params;
+const { locale, id } = Astro.params;
 
 const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
 
@@ -46,7 +46,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title={res[0].title!}>
+<Layout lang={locale!} title={res[0].title!}>
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">{res[0].title}</h1>

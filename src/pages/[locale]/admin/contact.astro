@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+const { locale } = Astro.params;
+
 const res = await db.select().from(store).where(eq(store.section, "footer"));
 
 const resMap = res.reduce(
@@ -43,7 +45,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="Contact">
+<Layout lang={locale!} title="Contact">
   <AdminNavbar />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Contact</h1>

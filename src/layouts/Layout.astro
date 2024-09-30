@@ -3,21 +3,24 @@ import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 
 interface Props {
+  lang: string;
   title: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const { lang, title, description } = Astro.props;
 const isNotAdmin = Astro.url.pathname.startsWith("/admin");
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Astro description" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
     <title>{title}</title>
   </head>
   <body class={cn("bg-zinc-900 text-slate-100 tracking-tighter", { "font-[system-ui] tracking-normal": isNotAdmin })}>
