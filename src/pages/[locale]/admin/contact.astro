@@ -62,7 +62,7 @@ if (Astro.request.method === "POST") {
           </div>
         )
       }
-      <Label htmlFor="ctaPicture">Cta Picture - make sure the file is called cta.jpg - won't render otherwise</Label>
+      <Label htmlFor="ctaPicture">Cta Picture - make sure the file is called cta-{locale}.jpg - won't render otherwise</Label>
       <Input type="file" name="ctaPicture" accept="image/*" required className="text-black" disabled={resMap.ctaPicture ? true : false} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
