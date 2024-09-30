@@ -1,18 +1,27 @@
 ---
 import { Button } from "@/components/ui/button";
+
+type Props = {
+  lang: string;
+};
+
+const { lang } = Astro.props;
 ---
 
-<div class="container py-4 mx-auto">
-  <div>
-    <Button variant="secondary"><a href="/admin">Home</a></Button>
-    <Button variant="secondary"><a href="/admin/hero">Hero section</a></Button>
-    <Button variant="secondary"><a href="/admin/portfolio">Portfolio section</a></Button>
-    <Button variant="secondary"><a href="/admin/brands">Brands section</a></Button>
-    <Button variant="secondary"><a href="/admin/accolades">Accolades section</a></Button>
-    <Button variant="secondary"><a href="/admin/contact">Contact section</a></Button>
-    <Button variant="secondary"><a href="/admin/pages">Legal pages</a></Button>
+<div class="container mx-auto py-4">
+  <div class="flex gap-4">
+    <Button variant={lang === "en" ? "destructive" : "secondary"}><a href={"/en/admin/"}>EN Home</a></Button>
+    <Button variant={lang === "hr" ? "destructive" : "secondary"}><a href={"/hr/admin/"}>HR Home</a></Button>
   </div>
   <div class="pt-4">
-    <Button variant="secondary"><a href="/">View site</a></Button>
+    <Button variant="secondary"><a href={`/${lang}/admin/hero`}>Hero section</a></Button>
+    <Button variant="secondary"><a href={`/${lang}/admin/portfolio`}>Portfolio section</a></Button>
+    <Button variant="secondary"><a href={`/${lang}/admin/brands`}>Brands section</a></Button>
+    <Button variant="secondary"><a href={`/${lang}/admin/accolades`}>Accolades section</a></Button>
+    <Button variant="secondary"><a href={`/${lang}/admin/contact`}>Contact section</a></Button>
+    <Button variant="secondary"><a href={`/${lang}/admin/pages`}>Legal pages</a></Button>
+  </div>
+  <div class="pt-4">
+    <Button variant="secondary"><a href={`/${lang}`}>View {lang === "en" ? "English" : "Croatian"} site</a></Button>
   </div>
 </div>

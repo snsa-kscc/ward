@@ -1,17 +1,17 @@
 import { defineAction, z } from "astro:actions";
 import { rm } from "fs/promises";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { accolades, brands, portfolio, store } from "@/../db/schema";
 import { db } from "@/../db";
 
 export const server = {
   deleteMedia: defineAction({
-    input: z.object({ title: z.string(), item: z.string() }),
-    handler: async ({ title, item }) => {
+    input: z.object({ title: z.string(), item: z.string(), lang: z.string() }),
+    handler: async ({ title, item, lang }) => {
       const res = await db
         .select()
         .from(portfolio)
-        .where(eq(portfolio.title, title));
+        .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
       const filenames: string[] = JSON.parse(res[0].media as string);
       const filteredFilenames = filenames.filter(
         (filename) => filename !== item,
@@ -24,18 +24,18 @@ export const server = {
       await db
         .update(portfolio)
         .set({ media: JSON.stringify(filteredFilenames) })
-        .where(eq(portfolio.title, title));
+        .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
       return "deleted";
     },
   }),
 
   deletePortfolio: defineAction({
-    input: z.object({ title: z.string() }),
-    handler: async ({ title }) => {
+    input: z.object({ title: z.string(), lang: z.string() }),
+    handler: async ({ title, lang }) => {
       const res = await db
         .select()
         .from(portfolio)
-        .where(eq(portfolio.title, title));
+        .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
       const filenames: string[] = JSON.parse(res[0].media as string);
       for (const filename of filenames) {
         try {
@@ -45,7 +45,9 @@ export const server = {
         }
       }
       try {
-        await db.delete(portfolio).where(eq(portfolio.title, title));
+        await db
+          .delete(portfolio)
+          .where(and(eq(portfolio.title, title), eq(portfolio.lang, lang)));
       } catch (error) {
         console.log(error);
       }
@@ -85,10 +87,12 @@ export const server = {
   }),
 
   deleteAccolade: defineAction({
-    input: z.object({ id: z.number() }),
-    handler: async ({ id }) => {
+    input: z.object({ id: z.number(), lang: z.string() }),
+    handler: async ({ id, lang }) => {
       try {
-        await db.delete(accolades).where(eq(accolades.id, id));
+        await db
+          .delete(accolades)
+          .where(and(eq(accolades.id, id), eq(accolades.lang, lang)));
       } catch (error) {
         console.log(error);
       }

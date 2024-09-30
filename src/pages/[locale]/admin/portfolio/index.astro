@@ -3,17 +3,16 @@ import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { portfolio } from "db/schema";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
-
 const { locale } = Astro.params;
+const portfolioItems = await db.select().from(portfolio).where(eq(portfolio.lang, locale!)).orderBy(desc(portfolio.createdAt));
 ---
 
 <Layout lang={locale!} title="Portfolio list">
-  <AdminNavbar />
+  <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title pb-10 pt-20 text-3xl">Portfolio</h1>
     <Button variant="secondary"><a href="/admin/portfolio/new">New item</a></Button>
@@ -49,6 +48,8 @@ const { locale } = Astro.params;
   import { actions } from "astro:actions";
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+  const locale = document.documentElement.lang;
+
   buttons.forEach((button) => {
     button.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -56,6 +57,7 @@ const { locale } = Astro.params;
       const title = tableRow?.querySelector("a")?.textContent;
       const result = await actions.deletePortfolio({
         title: title ?? "",
+        lang: locale ?? "",
       });
       if (result.data === "deleted") {
         tableRow?.remove();

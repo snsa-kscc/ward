@@ -10,5 +10,6 @@
 - [x] index page pics
 - [x] typo
 - [x] intro animation
+- [ ] locale images
 - [ ] db schema locale
 - [ ] favicon

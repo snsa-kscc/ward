@@ -32,7 +32,7 @@ if (Astro.request.method === "POST") {
 ---
 
 <Layout lang={locale!} title="Legal Pages">
-  <AdminNavbar />
+  <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Legal pages</h1>
     <form method="POST" class="flex flex-col items-start gap-4">

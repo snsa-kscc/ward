@@ -3,21 +3,20 @@ import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { accolades } from "db/schema";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { shortenText } from "@/lib/utils";
 
 const { locale } = Astro.params;
-
-const accoladeData = await db.select().from(accolades).orderBy(desc(accolades.createdAt));
+const accoladeData = await db.select().from(accolades).where(eq(accolades.lang, locale!)).orderBy(desc(accolades.createdAt));
 ---
 
 <Layout lang={locale!} title="Accolades list">
-  <AdminNavbar />
+  <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Accolades list</h1>
-    <Button variant="secondary"><a href="/admin/accolades/new">New accolade</a></Button>
+    <Button variant="secondary"><a href={`/${locale}/admin/accolades/new`}>New accolade</a></Button>
     <Table>
       <TableHeader>
         <TableRow>
@@ -30,7 +29,7 @@ const accoladeData = await db.select().from(accolades).orderBy(desc(accolades.cr
           accoladeData.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">
-                <a href={`/admin/accolades/${item.id}`} data-id={item.id}>
+                <a href={`/${locale}/admin/accolades/${item.id}`} data-id={item.id}>
                   {shortenText(item.item!)}
                 </a>
               </TableCell>
@@ -51,6 +50,7 @@ const accoladeData = await db.select().from(accolades).orderBy(desc(accolades.cr
   import { actions } from "astro:actions";
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+  const locale = document.documentElement.lang;
 
   buttons.forEach((button) => {
     button.addEventListener("click", async (e) => {
@@ -59,6 +59,7 @@ const accoladeData = await db.select().from(accolades).orderBy(desc(accolades.cr
       const id = tableRow?.querySelector("a")?.dataset.id;
       const result = await actions.deleteAccolade({
         id: +id!,
+        lang: locale,
       });
       if (result.data === "deleted") {
         tableRow?.remove();

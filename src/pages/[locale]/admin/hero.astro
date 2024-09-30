@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { db } from "db";
 import { store } from "db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 const { locale } = Astro.params;
 
@@ -29,7 +29,10 @@ const { locale } = Astro.params;
 //   await db.insert(store).values(arr);
 // }
 
-const res = await db.select().from(store).where(eq(store.section, "hero"));
+const res = await db
+  .select()
+  .from(store)
+  .where(and(eq(store.section, "hero"), eq(store.lang, locale!)));
 
 const dict = res.reduce(
   (acc, cur) => {
@@ -45,14 +48,14 @@ if (Astro.request.method === "POST") {
     await db
       .update(store)
       .set({ value: value as string })
-      .where(eq(store.key, key as string));
+      .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
   }
   return Astro.redirect("/admin/hero");
 }
 ---
 
 <Layout lang={locale!} title="Hero">
-  <AdminNavbar />
+  <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Hero</h1>
     <form method="POST" class="flex flex-col items-start gap-4">

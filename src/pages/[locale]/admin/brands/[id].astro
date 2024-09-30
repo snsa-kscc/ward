@@ -35,7 +35,7 @@ if (Astro.request.method === "POST") {
 ---
 
 <Layout lang={locale!} title={res[0].name!}>
-  <AdminNavbar />
+  <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">{res[0].name}</h1>
     <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">

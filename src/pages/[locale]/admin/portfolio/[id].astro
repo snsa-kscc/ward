@@ -8,13 +8,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { db } from "db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
 
 const { locale, id } = Astro.params;
-
-const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
+const res = await db
+  .select()
+  .from(portfolio)
+  .where(and(eq(portfolio.slug, id!), eq(portfolio.lang, locale!)));
 
 if (!res[0]) {
   return Astro.redirect("/admin/portfolio/new");
@@ -23,7 +25,10 @@ if (!res[0]) {
 let filenames: string[] = JSON.parse(res[0].media as string);
 
 if (Astro.request.method === "POST") {
-  const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
+  const res = await db
+    .select()
+    .from(portfolio)
+    .where(and(eq(portfolio.slug, id!), eq(portfolio.lang, locale!)));
   filenames = JSON.parse(res[0].media as string);
   const formData = await Astro.request.formData();
   const title = formData.get("title") as string;
@@ -40,14 +45,14 @@ if (Astro.request.method === "POST") {
   filenames.unshift(...additionalFilenames);
   await db
     .update(portfolio)
-    .set({ title, slug, content, media: JSON.stringify(filenames), lang: "en" })
-    .where(eq(portfolio.slug, id!));
+    .set({ title, slug, content, media: JSON.stringify(filenames), lang: locale })
+    .where(and(eq(portfolio.slug, id!), eq(portfolio.lang, locale!)));
   return Astro.redirect(`/admin/portfolio/${slug}`);
 }
 ---
 
 <Layout lang={locale!} title={res[0].title!}>
-  <AdminNavbar />
+  <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">{res[0].title}</h1>
     <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
@@ -79,6 +84,7 @@ if (Astro.request.method === "POST") {
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
   const title = document.querySelector(".title") as HTMLTitleElement;
+  const locale = document.documentElement.lang;
 
   if (buttons) {
     buttons.forEach((button) => {
@@ -87,6 +93,7 @@ if (Astro.request.method === "POST") {
         const result = await actions.deleteMedia({
           title: title.textContent ?? "",
           item: button.previousElementSibling?.textContent ?? "",
+          lang: locale ?? "",
         });
         if (result.data === "deleted") {
           button.parentElement?.remove();
