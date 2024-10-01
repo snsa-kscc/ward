@@ -3,6 +3,15 @@ type Props = {
   locale: string;
   storeData: {
     ctaHeading: string;
+    contactKey: string;
+    contactEmail: string;
+    contactPhone: string;
+    contactAddress: string;
+    infoKey: string;
+    newsletterKey: string;
+    newsletterButton: string;
+    newsletterDisclaimer: string;
+    copyright: string;
   };
   pagesData: {
     title: string | null;
@@ -45,6 +54,20 @@ const { locale, storeData, pagesData } = Astro.props;
       </div>
     ))
   }
+  <div class="h-screen"></div>
+  <div class="container">
+    <div class="flex flex-row items-center gap-4 p-20 text-2xl">
+      <p>{storeData.contactKey}</p>
+      <p>{storeData.contactEmail}</p>
+      <p>{storeData.contactPhone}</p>
+      <p>{storeData.contactAddress}</p>
+      <p>{storeData.infoKey}</p>
+      <p>{storeData.newsletterKey}</p>
+      <p>{storeData.newsletterButton}</p>
+      <p>{storeData.newsletterDisclaimer}</p>
+    </div>
+    <p class="py-20 text-2xl">{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p>
+  </div>
 </>
 
 <script>

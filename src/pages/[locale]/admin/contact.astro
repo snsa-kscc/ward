@@ -67,6 +67,28 @@ if (Astro.request.method === "POST") {
       }
       <Label htmlFor="ctaPicture">Cta Picture - make sure the file is called cta-{locale}.jpg - won't render otherwise</Label>
       <Input type="file" name="ctaPicture" accept="image/*" required className="text-black" disabled={resMap.ctaPicture ? true : false} />
+      <Label htmlFor="contactKey">Contact Key</Label>
+      <Input type="text" name="contactKey" required className="bg-transparent text-white" defaultValue={resMap.contactKey} />
+      <div class="flex w-full flex-col items-center gap-4 md:flex-row">
+        <Label htmlFor="contactEmail">Email</Label>
+        <Input type="email" name="contactEmail" required className="bg-transparent text-white" defaultValue={resMap.contactEmail} />
+        <Label htmlFor="contactPhone">Phone</Label>
+        <Input type="tel" name="contactPhone" required className="bg-transparent text-white" defaultValue={resMap.contactPhone} />
+        <Label htmlFor="contactAddress">Address</Label>
+        <Input type="text" name="contactAddress" required className="bg-transparent text-white" defaultValue={resMap.contactAddress} />
+      </div>
+      <Label htmlFor="infoKey">Info Key</Label>
+      <Input type="text" name="infoKey" required className="bg-transparent text-white" defaultValue={resMap.infoKey} />
+      <Label htmlFor="newsletterKey">Newsletter Key</Label>
+      <Input type="text" name="newsletterKey" required className="bg-transparent text-white" defaultValue={resMap.newsletterKey} />
+      <div class="flex w-full flex-col items-center gap-4 md:flex-row">
+        <Label htmlFor="newsletterButton">Newsletter Button</Label>
+        <Input type="text" name="newsletterButton" required className="bg-transparent text-white" defaultValue={resMap.newsletterButton} />
+        <Label htmlFor="newsletterDisclaimer">Newsletter Disclaimer</Label>
+        <Input type="text" name="newsletterDisclaimer" required className="bg-transparent text-white" defaultValue={resMap.newsletterDisclaimer} />
+      </div>
+      <Label htmlFor="copyright">Copyright</Label>
+      <Input type="text" name="copyright" required className="bg-transparent text-white" defaultValue={resMap.copyright} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

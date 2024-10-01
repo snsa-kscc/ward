@@ -12,30 +12,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import { store, portfolio, brands, accolades, pages } from "db/schema";
 import { splitItems } from "@/lib/utils";
 import Header from "@/components/Header.astro";
-
-type StoreData = {
-  [key: string]: string;
-  siteTitleFirst: string;
-  siteTitleSecond: string;
-  siteDescriptionFirst: string;
-  siteDescriptionSecond: string;
-  aboutKey: string;
-  about: string;
-  specialitiesKey: string;
-  specialities: string;
-  specialitiesDescription: string;
-  projects: string;
-  ctaHook: string;
-  ctaButton: string;
-  ctaHeading: string;
-};
-
-type GridData = {
-  [key: string]: string | number | Date;
-  media: string;
-  title: string;
-  slug: string;
-}[][];
+import type { StoreData, GridData } from "@/types/global";
 
 const { locale } = Astro.params;
 
