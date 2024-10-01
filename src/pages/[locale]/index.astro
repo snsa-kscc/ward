@@ -8,9 +8,10 @@ import Logos from "@/components/Logos.astro";
 import Accolades from "@/components/Accolades.astro";
 import Footer from "@/components/Footer.astro";
 import { db } from "db";
-import { desc } from "drizzle-orm";
-import { store, portfolio, brands, accolades } from "db/schema";
+import { asc, desc, eq } from "drizzle-orm";
+import { store, portfolio, brands, accolades, pages } from "db/schema";
 import { splitItems } from "@/lib/utils";
+import Header from "@/components/Header.astro";
 
 type StoreData = {
   [key: string]: string;
@@ -50,16 +51,18 @@ const gridData: GridData = splitItems(grid) as GridData;
 
 const brandsData = await db.select().from(brands).orderBy(desc(brands.id));
 const accoladesData = await db.select().from(accolades).orderBy(desc(accolades.createdAt));
+const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
 ---
 
 <Layout lang={locale!} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
+  <Header lang={locale!} />
   <Hero data={storeDataMap} />
-  <Grid data={gridData} />
+  <Grid locale={locale!} data={gridData} />
   <About data={storeDataMap} />
   <Brands data={storeDataMap} />
   <Logos data={brandsData} />
   <Accolades accoladesData={accoladesData} storeDataMap={storeDataMap} />
-  <Footer data={storeDataMap} />
+  <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
 <script>

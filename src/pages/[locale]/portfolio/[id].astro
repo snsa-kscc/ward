@@ -1,4 +1,5 @@
 ---
+import Header from "@/components/Header.astro";
 import Layout from "@/layouts/Layout.astro";
 import { db } from "db";
 import { eq } from "drizzle-orm";
@@ -13,6 +14,7 @@ if (!data[0]) {
 ---
 
 <Layout lang={locale!} title={data[0].title!} description={data[0].content!}>
+  <Header lang={locale!} id={id} />
   <div class="container px-8 pb-16">
     <h1 class="title py-20 text-3xl">{data[0].title}</h1>
     <div class="my-4">

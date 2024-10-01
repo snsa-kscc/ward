@@ -1,0 +1,54 @@
+---
+import { Button } from "./ui/button";
+import { db } from "db";
+import { eq, and } from "drizzle-orm";
+import { pages } from "db/schema";
+
+type Props = {
+  lang: string;
+  id?: string;
+  slug?: string;
+};
+
+const { lang, id, slug } = Astro.props;
+const anotherLocale = lang === "hr" ? "en" : "hr";
+let anotherSlug;
+
+if (slug) {
+  const res = await db
+    .select({
+      name: pages.name,
+    })
+    .from(pages)
+    .where(and(eq(pages.slug, slug), eq(pages.lang, lang)));
+  anotherSlug = await db
+    .select({
+      slug: pages.slug,
+    })
+    .from(pages)
+    .where(and(eq(pages.name, res[0].name!), eq(pages.lang, anotherLocale)));
+}
+
+let href: string;
+
+switch (true) {
+  case !!id:
+    href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}portfolio/${id}`;
+    break;
+  case !!slug:
+    href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}${anotherSlug?.[0].slug}`;
+    break;
+  default:
+    href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}`;
+}
+
+const buttonText = anotherLocale === "hr" ? "Hrvatski" : "English";
+---
+
+<header>
+  <div class="container">
+    <Button>
+      <a href={href}>{buttonText}</a>
+    </Button>
+  </div>
+</header>

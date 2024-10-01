@@ -5,14 +5,17 @@ import { writeFile } from "fs/promises";
 import path from "path";
 import { db } from "db";
 import { store } from "db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const { locale } = Astro.params;
 
-const res = await db.select().from(store).where(eq(store.section, "footer"));
+const res = await db
+  .select()
+  .from(store)
+  .where(and(eq(store.section, "footer"), eq(store.lang, locale!)));
 
 const resMap = res.reduce(
   (acc, cur) => {
@@ -32,16 +35,16 @@ if (Astro.request.method === "POST") {
       await db
         .update(store)
         .set({ value: (value as File).name })
-        .where(eq(store.key, key as string));
+        .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
     } else {
       await db
         .update(store)
         .set({ value: value as string })
-        .where(eq(store.key, key as string));
+        .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
     }
   }
 
-  return Astro.redirect("/admin/contact");
+  return Astro.redirect(`/${locale}/admin/contact`);
 }
 ---
 

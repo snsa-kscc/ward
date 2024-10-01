@@ -15,7 +15,7 @@ const { locale, id } = Astro.params;
 const res = await db.select().from(brands).where(eq(brands.slug, id!));
 
 if (!res[0]) {
-  return Astro.redirect("/admin/brands/new");
+  return Astro.redirect(`/${locale}/admin/brands/new`);
 }
 
 if (Astro.request.method === "POST") {
@@ -30,7 +30,7 @@ if (Astro.request.method === "POST") {
   } else {
     await db.update(brands).set({ name, slug }).where(eq(brands.slug, id!));
   }
-  return Astro.redirect(`/admin/brands/${slug}`);
+  return Astro.redirect(`/${locale}/admin/brands/${slug}`);
 }
 ---
 

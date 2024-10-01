@@ -1,0 +1,23 @@
+---
+import Header from "@/components/Header.astro";
+import Layout from "@/layouts/Layout.astro";
+import { db } from "db";
+import { eq, and } from "drizzle-orm";
+import { pages } from "db/schema";
+
+const { locale, slug } = Astro.params;
+const res = await db
+  .select()
+  .from(pages)
+  .where(and(eq(pages.slug, slug!), eq(pages.lang, locale!)));
+
+const truncatedDescription = res[0].content!.length > 50 ? res[0].content!.slice(0, 50) + "..." : res[0].content;
+---
+
+<Layout lang={locale!} title={res[0].title!} description={truncatedDescription!}>
+  <Header lang={locale!} slug={slug} />
+  <div class="container">
+    <div class="py-20 text-9xl font-bold">{res[0].title}</div>
+    <div class="py-20 text-xl font-bold">{res[0].content}</div>
+  </div>
+</Layout>

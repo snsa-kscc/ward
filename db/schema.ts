@@ -8,10 +8,11 @@ import {
 
 export const pages = mysqlTable("page", {
   id: int("id").notNull().primaryKey().autoincrement(),
-  slug: text("slug"),
-  title: text("title"),
+  name: varchar("name", { length: 512 }),
+  slug: varchar("slug", { length: 512 }),
+  title: varchar("title", { length: 512 }),
   content: text("content"),
-  lang: text("lang"),
+  lang: varchar("lang", { length: 6 }),
 });
 
 export const portfolio = mysqlTable("portfolio", {

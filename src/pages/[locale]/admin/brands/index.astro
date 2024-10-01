@@ -30,7 +30,7 @@ if (Astro.request.method === "POST") {
       .set({ value: value as string })
       .where(eq(store.key, key as string));
   }
-  return Astro.redirect("/admin/brands");
+  return Astro.redirect(`/${locale}/admin/brands`);
 }
 ---
 
@@ -38,7 +38,7 @@ if (Astro.request.method === "POST") {
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title pb-10 pt-20 text-3xl">Brand logo list</h1>
-    <Button variant="secondary"><a href="/admin/brands/new">New item</a></Button>
+    <Button variant="secondary"><a href={`/${locale}/admin/brands/new`}>New item</a></Button>
 
     <Table>
       <TableHeader>
@@ -52,7 +52,7 @@ if (Astro.request.method === "POST") {
           logoItems.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">
-                <a href={`/admin/brands/${item.slug}`}>{item.name}</a>
+                <a href={`/${locale}/admin/brands/${item.slug}`}>{item.name}</a>
               </TableCell>
               <TableCell>
                 <Button variant="destructive" className="btn">

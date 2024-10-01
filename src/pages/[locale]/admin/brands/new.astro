@@ -28,9 +28,9 @@ if (Astro.request.method === "POST") {
     } catch (e) {
       console.log(e);
     }
-    return Astro.redirect("/admin/brands/new");
+    return Astro.redirect(`/${locale}/admin/brands/new`);
   }
-  return Astro.redirect(`/admin/brands/${slug}`);
+  return Astro.redirect(`/${locale}/admin/brands/${slug}`);
 }
 ---
 

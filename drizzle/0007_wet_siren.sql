@@ -1,0 +1,1 @@
+ALTER TABLE `page` DROP INDEX `page_name_unique`;

@@ -6,14 +6,14 @@ import { pages } from "db/schema";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 const { locale } = Astro.params;
-const res = await db.select().from(pages);
+const res = await db.select().from(pages).where(eq(pages.lang, locale!));
 
 const resMap = res.reduce(
   (acc, cur) => {
-    acc[cur.slug as string] = cur.content as string;
+    acc[cur.name as string] = cur.content as string;
     return acc;
   },
   {} as Record<string, string>
@@ -25,9 +25,9 @@ if (Astro.request.method === "POST") {
     await db
       .update(pages)
       .set({ content: value as string })
-      .where(eq(pages.slug, key as string));
+      .where(and(eq(pages.name, key as string), eq(pages.lang, locale!)));
   }
-  return Astro.redirect("/admin/pages");
+  return Astro.redirect(`/${locale}/admin/pages`);
 }
 ---
 
@@ -36,12 +36,12 @@ if (Astro.request.method === "POST") {
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Legal pages</h1>
     <form method="POST" class="flex flex-col items-start gap-4">
-      <Label htmlFor="cookie-policy">Cookie Policy</Label>
-      <Textarea name="cookie-policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["cookie-policy"]} />
-      <Label htmlFor="privacy-policy">Privacy Policy</Label>
-      <Textarea name="privacy-policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["privacy-policy"]} />
-      <Label htmlFor="terms-of-use">Terms of Use</Label>
-      <Textarea name="terms-of-use" className="bg-transparent text-white" rows={20} defaultValue={resMap["terms-of-use"]} />
+      <Label htmlFor="cookie policy">Cookie Policy</Label>
+      <Textarea name="cookie policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["cookie policy"]} />
+      <Label htmlFor="privacy policy">Privacy Policy</Label>
+      <Textarea name="privacy policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["privacy policy"]} />
+      <Label htmlFor="terms of use">Terms of Use</Label>
+      <Textarea name="terms of use" className="bg-transparent text-white" rows={20} defaultValue={resMap["terms of use"]} />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
