@@ -17,7 +17,10 @@ const { locale, storeData, pagesData } = Astro.props;
   <div class="relative h-screen">
     {
       Array.from({ length: 9 }).map((_, idx) => (
-        <div class={`mask absolute left-0 top-0 h-full w-full bg-[url('/assets/cta.jpg')] bg-contain bg-center bg-no-repeat mask-${idx + 1}`} />
+        <div
+          style={`background-image: url('/assets/cta-${locale}.jpg')`}
+          class={`mask absolute left-0 top-0 h-full w-full bg-contain bg-center bg-no-repeat mask-${idx + 1}`}
+        />
       ))
     }
   </div>

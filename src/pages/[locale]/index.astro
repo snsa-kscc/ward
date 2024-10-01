@@ -39,7 +39,7 @@ type GridData = {
 
 const { locale } = Astro.params;
 
-const storeData = await db.select().from(store);
+const storeData = await db.select().from(store).where(eq(store.lang, locale!));
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
 
@@ -50,7 +50,7 @@ const grid = await db.select().from(portfolio);
 const gridData: GridData = splitItems(grid) as GridData;
 
 const brandsData = await db.select().from(brands).orderBy(desc(brands.id));
-const accoladesData = await db.select().from(accolades).orderBy(desc(accolades.createdAt));
+const accoladesData = await db.select().from(accolades).where(eq(accolades.lang, locale!)).orderBy(desc(accolades.createdAt));
 const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
 ---
 

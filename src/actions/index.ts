@@ -99,14 +99,14 @@ export const server = {
   }),
 
   deletePicture: defineAction({
-    input: z.object({ title: z.string() }),
-    handler: async ({ title }) => {
+    input: z.object({ title: z.string(), lang: z.string() }),
+    handler: async ({ title, lang }) => {
       try {
         await rm(`./public/assets/${title}`);
         await db
           .update(store)
           .set({ value: null })
-          .where(eq(store.value, title));
+          .where(and(eq(store.value, title), eq(store.lang, lang)));
       } catch (error) {
         console.log(error);
       }
