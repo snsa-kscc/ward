@@ -44,9 +44,9 @@ if (Astro.request.method === "POST") {
         console.error(e);
       }
     }
-    return Astro.redirect(`/${locale}/admin/portfolio/new`);
+    return Astro.redirect(`/${locale}/admin/portfolio/new?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/portfolio/${slug}`);
+  return Astro.redirect(`/${locale}/admin/portfolio/${slug}?update=success`);
 }
 ---
 
@@ -65,3 +65,13 @@ if (Astro.request.method === "POST") {
     </form>
   </div>
 </Layout>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
+</script>

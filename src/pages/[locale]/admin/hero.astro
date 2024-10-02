@@ -42,15 +42,22 @@ const dict = res.reduce(
   {} as Record<string, string>
 );
 
+let updateStatus;
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
-  for (const [key, value] of formData.entries()) {
-    await db
-      .update(store)
-      .set({ value: value as string })
-      .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+  try {
+    for (const [key, value] of formData.entries()) {
+      await db
+        .update(store)
+        .set({ value: value as string })
+        .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+    }
+    updateStatus = "success";
+  } catch (error) {
+    console.error("Error updating data:", error);
+    updateStatus = "error";
   }
-  return Astro.redirect(`/${locale}/admin/hero`);
+  return Astro.redirect(`/${locale}/admin/hero?update=${updateStatus}`);
 }
 ---
 
@@ -81,3 +88,13 @@ if (Astro.request.method === "POST") {
     </form>
   </div>
 </Layout>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
+</script>

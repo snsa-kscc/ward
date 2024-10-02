@@ -28,9 +28,9 @@ if (Astro.request.method === "POST") {
     } catch (e) {
       console.log(e);
     }
-    return Astro.redirect(`/${locale}/admin/brands/new`);
+    return Astro.redirect(`/${locale}/admin/brands/new?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/brands/${slug}`);
+  return Astro.redirect(`/${locale}/admin/brands/${slug}?update=success`);
 }
 ---
 
@@ -47,3 +47,13 @@ if (Astro.request.method === "POST") {
     </form>
   </div>
 </Layout>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
+</script>

@@ -14,6 +14,8 @@ const { locale } = Astro.params;
 const logoItems = await db.select().from(brands).orderBy(desc(brands.id));
 const res = await db.select().from(store).where(eq(store.section, "brands"));
 
+let updateStatus;
+
 const dict = res.reduce(
   (acc, cur) => {
     acc[cur.key as string] = cur.value as string;
@@ -23,14 +25,21 @@ const dict = res.reduce(
 );
 
 if (Astro.request.method === "POST") {
-  const formData = await Astro.request.formData();
-  for (const [key, value] of formData.entries()) {
-    await db
-      .update(store)
-      .set({ value: value as string })
-      .where(eq(store.key, key as string));
+  try {
+    const formData = await Astro.request.formData();
+    for (const [key, value] of formData.entries()) {
+      await db
+        .update(store)
+        .set({ value: value as string })
+        .where(eq(store.key, key as string));
+    }
+    updateStatus = "success";
+  } catch (error) {
+    console.error("Error updating data:", error);
+    updateStatus = "error";
   }
-  return Astro.redirect(`/${locale}/admin/brands`);
+
+  return Astro.redirect(`/${locale}/admin/brands?update=${updateStatus}`);
 }
 ---
 
@@ -80,6 +89,15 @@ if (Astro.request.method === "POST") {
 
 <script>
   import { actions } from "astro:actions";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
 

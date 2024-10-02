@@ -19,15 +19,22 @@ const resMap = res.reduce(
   {} as Record<string, string>
 );
 
+let updateStatus;
 if (Astro.request.method === "POST") {
-  const formData = await Astro.request.formData();
-  for (const [key, value] of formData.entries()) {
-    await db
-      .update(pages)
-      .set({ content: value as string })
-      .where(and(eq(pages.name, key as string), eq(pages.lang, locale!)));
+  try {
+    const formData = await Astro.request.formData();
+    for (const [key, value] of formData.entries()) {
+      await db
+        .update(pages)
+        .set({ content: value as string })
+        .where(and(eq(pages.name, key as string), eq(pages.lang, locale!)));
+    }
+    updateStatus = "success";
+  } catch (error) {
+    console.error("Error updating data:", error);
+    updateStatus = "error";
   }
-  return Astro.redirect(`/${locale}/admin/pages`);
+  return Astro.redirect(`/${locale}/admin/pages?update=${updateStatus}`);
 }
 ---
 
@@ -46,3 +53,13 @@ if (Astro.request.method === "POST") {
     </form>
   </div>
 </Layout>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
+</script>

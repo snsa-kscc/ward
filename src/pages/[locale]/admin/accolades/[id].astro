@@ -15,18 +15,26 @@ const res = await db
   .from(accolades)
   .where(and(eq(accolades.id, +id!), eq(accolades.lang, locale!)));
 
+let updateStatus;
+
 if (!res[0]) {
   return Astro.redirect(`/${locale}/admin/accolades/new`);
 }
 
 if (Astro.request.method === "POST") {
-  const formData = await Astro.request.formData();
-  const item = formData.get("item") as string;
-  await db
-    .update(accolades)
-    .set({ item, lang: locale })
-    .where(and(eq(accolades.id, +id!), eq(accolades.lang, locale!)));
-  return Astro.redirect(`/${locale}/admin/accolades/${id}`);
+  try {
+    const formData = await Astro.request.formData();
+    const item = formData.get("item") as string;
+    await db
+      .update(accolades)
+      .set({ item, lang: locale })
+      .where(and(eq(accolades.id, +id!), eq(accolades.lang, locale!)));
+    updateStatus = "success";
+  } catch (error) {
+    console.log(error);
+    updateStatus = "error";
+  }
+  return Astro.redirect(`/${locale}/admin/accolades/${id}?update=${updateStatus}`);
 }
 ---
 
@@ -41,3 +49,14 @@ if (Astro.request.method === "POST") {
     </form>
   </div>
 </Layout>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
+</script>

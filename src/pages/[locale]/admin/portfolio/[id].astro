@@ -21,37 +21,44 @@ if (!res[0]) {
 
 let filenames: string[] = JSON.parse(res[0].media as string);
 let contentObject: Record<string, string> = JSON.parse(res[0].content as string);
+let updateStatus;
 
 if (Astro.request.method === "POST") {
-  const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
-  filenames = JSON.parse(res[0].media as string);
-  const formData = await Astro.request.formData();
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
-  const slug = slugify(title);
-  let additionalFilenames: string[] = [];
-  for (const file of formData.getAll("file") as File[]) {
-    if (file.name) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      await writeFile(path.join("./public/assets/portfolio", file.name), buffer);
-      additionalFilenames.push(file.name);
+  try {
+    const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
+    filenames = JSON.parse(res[0].media as string);
+    const formData = await Astro.request.formData();
+    const title = formData.get("title") as string;
+    const content = formData.get("content") as string;
+    const slug = slugify(title);
+    let additionalFilenames: string[] = [];
+    for (const file of formData.getAll("file") as File[]) {
+      if (file.name) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        await writeFile(path.join("./public/assets/portfolio", file.name), buffer);
+        additionalFilenames.push(file.name);
+      }
     }
+    filenames.unshift(...additionalFilenames);
+
+    contentObject[locale!] = content;
+
+    await db
+      .update(portfolio)
+      .set({
+        title,
+        slug,
+        content: JSON.stringify(contentObject),
+        media: JSON.stringify(filenames),
+      })
+      .where(eq(portfolio.slug, id!));
+    updateStatus = "success";
+  } catch (error) {
+    console.error("Error updating data:", error);
+    updateStatus = "error";
   }
-  filenames.unshift(...additionalFilenames);
 
-  contentObject[locale!] = content;
-
-  await db
-    .update(portfolio)
-    .set({
-      title,
-      slug,
-      content: JSON.stringify(contentObject),
-      media: JSON.stringify(filenames),
-    })
-    .where(eq(portfolio.slug, id!));
-
-  return Astro.redirect(`/${locale}/admin/portfolio/${slug}`);
+  return Astro.redirect(`/${locale}/admin/portfolio/${slug}?update=${updateStatus}`);
 }
 
 const currentLocaleContent = contentObject[locale!];
@@ -85,6 +92,15 @@ const currentLocaleContent = contentObject[locale!];
 
 <script>
   import { actions } from "astro:actions";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
   const title = document.querySelector(".title") as HTMLTitleElement;

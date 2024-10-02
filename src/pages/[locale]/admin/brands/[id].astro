@@ -14,23 +14,31 @@ import { slugify } from "@/lib/utils";
 const { locale, id } = Astro.params;
 const res = await db.select().from(brands).where(eq(brands.slug, id!));
 
+let updateStatus;
+
 if (!res[0]) {
   return Astro.redirect(`/${locale}/admin/brands/new`);
 }
 
 if (Astro.request.method === "POST") {
-  const formData = await Astro.request.formData();
-  const name = formData.get("name") as string;
-  const file = formData.get("file") as File;
-  const slug = slugify(name);
-  if (file) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join("./public/assets/brands", file.name), buffer);
-    await db.update(brands).set({ name, logo: file.name, slug }).where(eq(brands.slug, id!));
-  } else {
-    await db.update(brands).set({ name, slug }).where(eq(brands.slug, id!));
+  try {
+    const formData = await Astro.request.formData();
+    const name = formData.get("name") as string;
+    const file = formData.get("file") as File;
+    const slug = slugify(name);
+    if (file) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      await writeFile(path.join("./public/assets/brands", file.name), buffer);
+      await db.update(brands).set({ name, logo: file.name, slug }).where(eq(brands.slug, id!));
+    } else {
+      await db.update(brands).set({ name, slug }).where(eq(brands.slug, id!));
+    }
+    updateStatus = "success";
+  } catch (error) {
+    console.error(error);
+    updateStatus = "error";
   }
-  return Astro.redirect(`/${locale}/admin/brands/${slug}`);
+  return Astro.redirect(`/${locale}/admin/brands/${slug}?update=${updateStatus}`);
 }
 ---
 
@@ -60,6 +68,15 @@ if (Astro.request.method === "POST") {
 
 <script>
   import { actions } from "astro:actions";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
 
   const button = document.querySelector(".btn") as HTMLButtonElement;
   const title = document.querySelector(".title") as HTMLTitleElement;
