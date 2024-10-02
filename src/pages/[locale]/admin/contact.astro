@@ -25,26 +25,32 @@ const resMap = res.reduce(
   {} as Record<string, string>
 );
 
+let updateStatus;
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
 
-  for (const [key, value] of formData.entries()) {
-    if (key === "ctaPicture") {
-      const buffer = Buffer.from(await (value as File).arrayBuffer());
-      await writeFile(path.join("./public/assets", (value as File).name), buffer);
-      await db
-        .update(store)
-        .set({ value: (value as File).name })
-        .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
-    } else {
-      await db
-        .update(store)
-        .set({ value: value as string })
-        .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+  try {
+    for (const [key, value] of formData.entries()) {
+      if (key === "ctaPicture") {
+        const buffer = Buffer.from(await (value as File).arrayBuffer());
+        await writeFile(path.join("./public/assets", (value as File).name), buffer);
+        await db
+          .update(store)
+          .set({ value: (value as File).name })
+          .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+      } else {
+        await db
+          .update(store)
+          .set({ value: value as string })
+          .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+      }
     }
+    updateStatus = "success";
+  } catch (error) {
+    console.error("Error updating data:", error);
+    updateStatus = "error";
   }
-
-  return Astro.redirect(`/${locale}/admin/contact`);
+  return Astro.redirect(`/${locale}/admin/contact?update=${updateStatus}`);
 }
 ---
 
@@ -96,6 +102,15 @@ if (Astro.request.method === "POST") {
 
 <script>
   import { actions } from "astro:actions";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const updateStatus = urlParams.get("update");
+
+  if (updateStatus === "success") {
+    alert("Update successful!");
+  } else if (updateStatus === "error") {
+    alert("Update failed.");
+  }
 
   const button = document.querySelector(".btn") as HTMLButtonElement;
   const file = document.querySelector("input[type=file]") as HTMLInputElement;
