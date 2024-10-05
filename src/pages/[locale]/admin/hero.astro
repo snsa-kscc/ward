@@ -11,24 +11,6 @@ import { eq, and } from "drizzle-orm";
 
 const { locale } = Astro.params;
 
-// type Hero = {
-//   key: string;
-//   value: string;
-//   lang: string;
-// };
-
-// if (Astro.request.method === "POST") {
-//   const formData = await Astro.request.formData();
-
-//   let arr: Hero[] = [];
-//   for (const [key, value] of formData.entries()) {
-//     const obj = { section: "hero", key: key, value: value as string, lang: "en" };
-//     arr.push(obj);
-//   }
-
-//   await db.insert(store).values(arr);
-// }
-
 const res = await db
   .select()
   .from(store)
@@ -66,6 +48,8 @@ if (Astro.request.method === "POST") {
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Hero</h1>
     <form method="POST" class="flex flex-col items-start gap-4">
+      <Label htmlFor="navbarLinks">Navbar links</Label>
+      <Input type="text" name="navbarLinks" required className="bg-transparent text-white" defaultValue={dict.navbarLinks} />
       <Label htmlFor="siteTitleFirst">Site title first</Label>
       <Input type="text" name="siteTitleFirst" required className="bg-transparent text-white" defaultValue={dict.siteTitleFirst} />
       <Label htmlFor="siteTitleSecond">Site title second</Label>

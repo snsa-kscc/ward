@@ -32,7 +32,7 @@ const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).o
 ---
 
 <Layout lang={locale!} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
-  <Header lang={locale!} />
+  <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
   <Grid locale={locale!} data={gridData} />
   <About data={storeDataMap} />

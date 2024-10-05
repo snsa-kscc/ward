@@ -16,6 +16,7 @@ export type GridData = {
 
 export type StoreData = {
   [key: string]: string;
+  navbarLinks: string;
   siteTitleFirst: string;
   siteTitleSecond: string;
   siteDescriptionFirst: string;

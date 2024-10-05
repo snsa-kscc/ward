@@ -11,7 +11,7 @@ type Props = {
 const { locale, data } = Astro.props;
 ---
 
-<div class="container relative grid grid-cols-3 gap-8 overflow-y-clip">
+<div id="portfolio" class="container relative grid grid-cols-3 gap-8 overflow-y-clip">
   {
     data.map((part, index) => {
       const className = index === 1 ? "flex-col" : "flex-col-reverse column-reverse";
