@@ -2,7 +2,6 @@
 import Layout from "@/layouts/Layout.astro";
 
 const isHr = Astro.url.pathname.startsWith("/hr/");
-console.log(Astro.url.pathname);
 ---
 
 <Layout lang={isHr ? "hr" : "en"} title="404" description="404">
