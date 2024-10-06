@@ -63,7 +63,7 @@ function capitalizeLink(str: string) {
     <div>
       {
         linksArray?.map((link) => (
-          <a href={`#${link}`} class="ml-4">
+          <a href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`} class="ml-4">
             {capitalizeLink(link.replaceAll("-", " "))}
           </a>
         ))

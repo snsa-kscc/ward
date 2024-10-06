@@ -3,9 +3,18 @@ import Header from "@/components/Header.astro";
 import Layout from "@/layouts/Layout.astro";
 import { db } from "db";
 import { eq, and } from "drizzle-orm";
-import { pages } from "db/schema";
+import { pages, store } from "db/schema";
+import type { StoreData } from "@/types/global";
 
 const { locale, slug } = Astro.params;
+
+const storeData = await db.select().from(store).where(eq(store.lang, locale!));
+const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
+  acc[cur.key as string] = cur.value as string;
+
+  return acc;
+}, {} as StoreData);
+
 const data = await db
   .select()
   .from(pages)
@@ -19,7 +28,7 @@ const truncatedDescription = data[0].content!.length > 50 ? data[0].content!.sli
 ---
 
 <Layout lang={locale} title={data[0].title!} description={truncatedDescription!}>
-  <Header lang={locale!} slug={slug} />
+  <Header lang={locale!} slug={slug} links={storeDataMap.navbarLinks} />
   <div class="container">
     <div class="py-20 text-9xl font-bold">{data[0].title}</div>
     <div class="py-20 text-xl font-bold">{data[0].content}</div>
