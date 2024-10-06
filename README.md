@@ -11,5 +11,5 @@
 - [x] typo
 - [x] intro animation
 - [x] locale images
-- [ ] db schema locale
+- [x] db schema locale
 - [ ] favicon
