@@ -19,7 +19,7 @@ export const server = {
       try {
         await rm(`./public/assets/portfolio/${item}`);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       await db
         .update(portfolio)
@@ -41,13 +41,13 @@ export const server = {
         try {
           await rm(`./public/assets/portfolio/${filename}`);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
       try {
         await db.delete(portfolio).where(eq(portfolio.title, title));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       return "deleted";
     },
@@ -62,7 +62,7 @@ export const server = {
         await rm(`./public/assets/brands/${logo}`);
         await db.delete(brands).where(eq(brands.name, title));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       return "deleted";
     },
@@ -78,7 +78,7 @@ export const server = {
           .set({ logo: null })
           .where(eq(brands.name, title));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       return "deleted";
     },
@@ -92,7 +92,7 @@ export const server = {
           .delete(accolades)
           .where(and(eq(accolades.id, id), eq(accolades.lang, lang)));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       return "deleted";
     },
@@ -108,7 +108,7 @@ export const server = {
           .set({ value: null })
           .where(and(eq(store.value, title), eq(store.lang, lang)));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       return "deleted";
     },

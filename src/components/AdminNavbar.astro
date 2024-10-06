@@ -22,6 +22,6 @@ const { lang } = Astro.props;
     <Button variant="secondary"><a href={`/${lang}/admin/pages`}>Legal pages</a></Button>
   </div>
   <div class="pt-4">
-    <Button variant="secondary"><a href={`/${lang}`}>View {lang === "en" ? "English" : "Croatian"} site</a></Button>
+    <Button variant="secondary"><a href={lang === "hr" ? `/${lang}` : "/"}>View {lang === "en" ? "English" : "Croatian"} site</a></Button>
   </div>
 </div>

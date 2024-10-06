@@ -14,8 +14,8 @@ if (Astro.request.method === "POST") {
   try {
     const res = await db.insert(accolades).values({ item, createdAt: new Date(), lang: locale });
     return Astro.redirect(`/${locale}/admin/accolades/${res[0].insertId}?update=success`);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.error(error);
     return Astro.redirect(`/${locale}/admin/accolades/new?update=error`);
   }
 }

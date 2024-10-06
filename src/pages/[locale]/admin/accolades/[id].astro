@@ -31,7 +31,7 @@ if (Astro.request.method === "POST") {
       .where(and(eq(accolades.id, +id!), eq(accolades.lang, locale!)));
     updateStatus = "success";
   } catch (error) {
-    console.log(error);
+    console.error(error);
     updateStatus = "error";
   }
   return Astro.redirect(`/${locale}/admin/accolades/${id}?update=${updateStatus}`);

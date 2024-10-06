@@ -35,13 +35,13 @@ if (Astro.request.method === "POST") {
       createdAt: new Date(),
       media: JSON.stringify(filenames),
     });
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     for (const filename of filenames) {
       try {
         await rm(path.join("./public/assets/portfolio", filename));
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
       }
     }
     return Astro.redirect(`/${locale}/admin/portfolio/new?update=error`);

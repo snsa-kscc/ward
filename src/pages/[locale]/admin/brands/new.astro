@@ -21,12 +21,12 @@ if (Astro.request.method === "POST") {
   await writeFile(path.join("./public/assets/brands", file.name), buffer);
   try {
     await db.insert(brands).values({ name, logo: file.name, slug });
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     try {
       await rm(path.join("./public/assets/brands", file.name));
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error(error);
     }
     return Astro.redirect(`/${locale}/admin/brands/new?update=error`);
   }
