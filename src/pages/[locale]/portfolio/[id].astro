@@ -1,13 +1,15 @@
 ---
 import Header from "@/components/Header.astro";
 import Layout from "@/layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
 import { db } from "db";
-import { eq } from "drizzle-orm";
-import { portfolio, store } from "db/schema";
+import { eq, asc } from "drizzle-orm";
+import { portfolio, store, pages } from "db/schema";
 import type { StoreData } from "@/types/global";
 
 const { id, locale } = Astro.params;
 
+const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
 const storeData = await db.select().from(store).where(eq(store.lang, locale!));
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
@@ -39,4 +41,5 @@ if (!data[0]) {
     </div>
     <p>{JSON.parse(data[0].content!)[locale!]}</p>
   </div>
+  <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>

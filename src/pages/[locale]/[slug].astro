@@ -1,13 +1,15 @@
 ---
 import Header from "@/components/Header.astro";
 import Layout from "@/layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
 import { db } from "db";
-import { eq, and } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 import { pages, store } from "db/schema";
 import type { StoreData } from "@/types/global";
 
 const { locale, slug } = Astro.params;
 
+const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
 const storeData = await db.select().from(store).where(eq(store.lang, locale!));
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
@@ -15,10 +17,7 @@ const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   return acc;
 }, {} as StoreData);
 
-const data = await db
-  .select()
-  .from(pages)
-  .where(and(eq(pages.slug, slug!), eq(pages.lang, locale!)));
+const data = pagesData.filter((page) => page.slug === slug);
 
 if (!data[0]) {
   return Astro.redirect(`/404?locale=${locale}`);
@@ -33,4 +32,5 @@ const truncatedDescription = data[0].content!.length > 50 ? data[0].content!.sli
     <div class="py-20 text-9xl font-bold">{data[0].title}</div>
     <div class="py-20 text-xl font-bold">{data[0].content}</div>
   </div>
+  <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
