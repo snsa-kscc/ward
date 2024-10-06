@@ -9,11 +9,11 @@ const { id, locale } = Astro.params;
 const data = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
 
 if (!data[0]) {
-  return Astro.redirect("/");
+  return Astro.redirect(`/404?locale=${locale}`);
 }
 ---
 
-<Layout lang={locale!} title={data[0].title!} description={data[0].content!}>
+<Layout lang={locale} title={data[0].title!} description={data[0].content!}>
   <Header lang={locale!} id={id} />
   <div class="container px-8 pb-16">
     <h1 class="title py-20 text-3xl">{data[0].title}</h1>

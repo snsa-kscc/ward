@@ -5,7 +5,7 @@ import AdminNavbar from "@/components/AdminNavbar.astro";
 const { locale } = Astro.params;
 ---
 
-<Layout lang={locale!} title="Admin">
+<Layout lang={locale} title="Admin">
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Admin dashboard</h1>
     <AdminNavbar lang={locale!} />

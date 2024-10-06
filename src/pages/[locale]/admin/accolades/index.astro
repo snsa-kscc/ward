@@ -12,7 +12,7 @@ const { locale } = Astro.params;
 const accoladeData = await db.select().from(accolades).where(eq(accolades.lang, locale!)).orderBy(desc(accolades.createdAt));
 ---
 
-<Layout lang={locale!} title="Accolades list">
+<Layout lang={locale} title="Accolades list">
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Accolades list</h1>

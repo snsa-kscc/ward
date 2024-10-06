@@ -1,0 +1,24 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+const isHr = Astro.url.pathname.startsWith("/hr/");
+console.log(Astro.url.pathname);
+---
+
+<Layout lang={isHr ? "hr" : "en"} title="404" description="404">
+  <div class="container">
+    <div class="py-20 text-9xl font-bold">404</div>
+    <div class="foo py-20 text-xl font-bold">
+      {isHr ? "Dummy tekst na hrvatskom" : "Some English dummy text"}
+    </div>
+  </div>
+</Layout>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const html = document.documentElement;
+  const foo = document.querySelector(".foo");
+  if (urlParams.get("locale") == "hr") {
+    html.lang = "hr";
+    foo!.innerHTML = "Dummy tekst na hrvatskom";
+  }
+</script>

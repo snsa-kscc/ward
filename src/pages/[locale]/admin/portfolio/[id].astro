@@ -64,7 +64,7 @@ if (Astro.request.method === "POST") {
 const currentLocaleContent = contentObject[locale!];
 ---
 
-<Layout lang={locale!} title={res[0].title!}>
+<Layout lang={locale} title={res[0].title!}>
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">{res[0].title}</h1>

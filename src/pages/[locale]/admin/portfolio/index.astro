@@ -11,7 +11,7 @@ const { locale } = Astro.params;
 const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
 ---
 
-<Layout lang={locale!} title="Portfolio list">
+<Layout lang={locale} title="Portfolio list">
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title pb-10 pt-20 text-3xl">Portfolio</h1>

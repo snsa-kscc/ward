@@ -7,7 +7,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
   const [_, segment] = url.pathname.split("/");
 
-  if (url.pathname.startsWith("/_actions")) {
+  if (url.pathname.startsWith("/_actions") || url.pathname.startsWith("/404")) {
     return next();
   }
 
