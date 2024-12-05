@@ -1,4 +1,5 @@
-import { defineAction, z } from "astro:actions";
+import { defineAction } from "astro:actions";
+import { z } from "astro:schema";
 import { rm } from "fs/promises";
 import { eq, and } from "drizzle-orm";
 import { accolades, brands, portfolio, store } from "@/../db/schema";

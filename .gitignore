@@ -2,8 +2,10 @@
 dist/
 
 # generated types
-
 .astro/
+
+# public assets
+public/
 
 # dependencies
 node_modules/

@@ -20,7 +20,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
 
 export const authMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
-  const [_, locale, path] = url.pathname.split("/");
+  const [path] = url.pathname.split("/");
 
   if (path === "admin") {
     const basicAuth = context.request.headers.get("authorization");
