@@ -20,7 +20,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
 
 export const authMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
-  const [path] = url.pathname.split("/");
+  const [_, __, path] = url.pathname.split("/");
 
   if (path === "admin") {
     const basicAuth = context.request.headers.get("authorization");
@@ -29,8 +29,8 @@ export const authMiddleware = defineMiddleware((context, next) => {
       const [user, password] = atob(basicAuth.split(" ")[1]).split(":");
 
       if (
-        user === import.meta.env.SITE_USER &&
-        password === import.meta.env.SITE_PASSWORD
+        user === import.meta.env.PUBLIC_SITE_USER &&
+        password === import.meta.env.PUBLIC_SITE_PASSWORD
       ) {
         return next();
       }
