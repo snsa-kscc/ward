@@ -31,6 +31,15 @@ const accoladesData = await db.select().from(accolades).where(eq(accolades.lang,
 const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
 ---
 
+<script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  window.gsap = gsap;
+  window.ScrollTrigger = ScrollTrigger;
+</script>
 <Layout lang={locale} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
@@ -42,12 +51,3 @@ const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).o
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
-<script>
-  import gsap from "gsap";
-  import ScrollTrigger from "gsap/ScrollTrigger";
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  window.gsap = gsap;
-  window.ScrollTrigger = ScrollTrigger;
-</script>
