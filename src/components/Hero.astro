@@ -9,6 +9,9 @@ type Props = {
 };
 
 const { data } = Astro.props;
+
+const splitTag = "__";
+const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(Boolean);
 ---
 
 <div class="container mb-28 mt-28 sm:mt-48 md:mb-56">
@@ -66,7 +69,7 @@ const { data } = Astro.props;
   </div> -->
   <div class="mt-24 flex overflow-hidden text-balance text-center text-3xl font-bold sm:text-4xl lg:w-1/2 lg:text-left">
     {
-      data.siteDescriptionFirst.split("<split>").map((item, index) => {
+      parts(data.siteDescriptionFirst).map((item, index) => {
         if (index === 0) {
           return <div class="inline-block pr-3">{item}</div>;
         }

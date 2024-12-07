@@ -40,7 +40,7 @@ switch (true) {
     href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}${anotherSlug?.[0].slug}`;
     break;
   default:
-    href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}`;
+    href = `/${anotherLocale !== "en" ? `${anotherLocale}` : ""}`;
 }
 
 const buttonText = anotherLocale === "hr" ? "Hrvatski" : "English";

@@ -98,8 +98,10 @@ const currentLocaleContent = contentObject[locale!];
 
   if (updateStatus === "success") {
     alert("Update successful!");
+    location.replace(location.pathname);
   } else if (updateStatus === "error") {
     alert("Update failed.");
+    location.replace(location.pathname);
   }
 
   const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;

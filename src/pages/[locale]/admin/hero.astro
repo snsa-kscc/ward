@@ -54,13 +54,13 @@ if (Astro.request.method === "POST") {
       <Input type="text" name="siteTitleFirst" required className="bg-transparent text-white" defaultValue={dict.siteTitleFirst} />
       <Label htmlFor="siteTitleSecond">Site title second</Label>
       <Input type="text" name="siteTitleSecond" required className="bg-transparent text-white" defaultValue={dict.siteTitleSecond} />
-      <Label htmlFor="siteDescriptionFirst">Site description first</Label>
+      <Label htmlFor="siteDescriptionFirst">Site description first (__ for super-powers)</Label>
       <Input type="text" name="siteDescriptionFirst" className="bg-transparent text-white" defaultValue={dict.siteDescriptionFirst} />
       <Label htmlFor="siteDescriptionSecond">Site description second</Label>
       <Input type="text" name="siteDescriptionSecond" className="bg-transparent text-white" defaultValue={dict.siteDescriptionSecond} />
       <Label htmlFor="aboutKey">About key</Label>
       <Input type="text" name="aboutKey" className="bg-transparent text-white" defaultValue={dict.aboutKey} />
-      <Label htmlFor="about">About</Label>
+      <Label htmlFor="about">About (__ for super-powers)</Label>
       <Textarea name="about" className="bg-transparent text-white" rows={5} defaultValue={dict.about} />
       <Label htmlFor="specialitiesKey">Specialities key</Label>
       <Input type="text" name="specialitiesKey" className="bg-transparent text-white" defaultValue={dict.specialitiesKey} />
@@ -78,7 +78,9 @@ if (Astro.request.method === "POST") {
 
   if (updateStatus === "success") {
     alert("Update successful!");
+    location.replace(location.pathname);
   } else if (updateStatus === "error") {
     alert("Update failed.");
+    location.replace(location.pathname);
   }
 </script>

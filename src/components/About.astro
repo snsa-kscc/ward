@@ -9,7 +9,7 @@ type Props = {
 const { data } = Astro.props;
 
 const splitTag = "__";
-const regex = new RegExp(`${splitTag}(.*?)${splitTag}`, "g");
+const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(Boolean);
 ---
 
 <>
@@ -17,7 +17,7 @@ const regex = new RegExp(`${splitTag}(.*?)${splitTag}`, "g");
     <h2 class="mb-20 text-4xl">{data.aboutKey}</h2>
     <h1 class="highlighted inline-block text-6xl">
       {
-        data.about.split(regex).map((part, index) => {
+        parts(data.about).map((part, index) => {
           if (index % 2 === 1) {
             const splitChars = part.split("").map((char) => {
               if (char === " ") {
