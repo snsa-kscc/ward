@@ -8,8 +8,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
+      - name: Check if npm install is needed
+        id: check-npm
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" == *"[npm]"* ]]; then
+            echo "run_npm_install=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_npm_install=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Deploy using SSH
         uses: appleboy/ssh-action@master
         with:
@@ -20,5 +30,8 @@ jobs:
           script: |
             cd www/feature.ward.hr
             git pull
+            if [[ "${{ steps.check-npm.outputs.run_npm_install }}" == "true" ]]; then
+              npm install
+            fi
             npm run build
             pkill lsnode || true
