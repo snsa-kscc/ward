@@ -70,7 +70,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
   <div class="mt-24 flex overflow-hidden text-balance text-center text-3xl font-bold sm:text-4xl lg:w-1/2 lg:text-left">
     {
       parts(data.siteDescriptionFirst).map((item, index) => {
-        if (index === 0) {
+        if (index % 2 === 0) {
           return <div class="inline-block pr-3">{item}</div>;
         }
         return (
@@ -107,7 +107,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     content: attr(data-text);
     position: absolute;
     inset: 0;
-    z-index: 69;
+    z-index: 5;
     -webkit-text-stroke: 1px var(--color);
     line-height: 0.9;
   }

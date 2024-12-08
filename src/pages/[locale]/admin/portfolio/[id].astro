@@ -22,6 +22,7 @@ if (!res[0]) {
 let filenames: string[] = JSON.parse(res[0].media as string);
 let contentObject: Record<string, string> = JSON.parse(res[0].content as string);
 let updateStatus;
+let slug;
 
 if (Astro.request.method === "POST") {
   try {
@@ -30,7 +31,7 @@ if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
-    const slug = slugify(title);
+    slug = slugify(title);
     let additionalFilenames: string[] = [];
     for (const file of formData.getAll("file") as File[]) {
       if (file.name) {

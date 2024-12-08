@@ -10,6 +10,7 @@ interface Props {
 
 const { lang, title, description } = Astro.props;
 const isAdmin = Astro.url.pathname.includes("admin");
+const cleanDescription = description?.replaceAll("__", "");
 ---
 
 <!doctype html>
@@ -20,22 +21,24 @@ const isAdmin = Astro.url.pathname.includes("admin");
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
+    <meta name="description" content={cleanDescription} />
     <title>{title}</title>
   </head>
   <body class={cn("bg-zinc-900 text-slate-100 tracking-tighter", { "font-[system-ui] tracking-normal": isAdmin })}>
     <slot />
+    {!isAdmin && <div class="pointer-events-none fixed inset-0 z-10 h-full w-full bg-[url('/noise.png')] bg-repeat opacity-[0.03]" />}
   </body>
 </html>
 <script>
   import Lenis from "lenis";
+  if (!location.pathname.includes("admin")) {
+    const lenis = new Lenis();
 
-  const lenis = new Lenis();
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
 
-  function raf(time: number) {
-    lenis.raf(time);
     requestAnimationFrame(raf);
   }
-
-  requestAnimationFrame(raf);
 </script>

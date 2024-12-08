@@ -23,7 +23,7 @@ const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   return acc;
 }, {} as StoreData);
 
-const grid = await db.select().from(portfolio);
+const grid = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
 const gridData: GridData = splitItems(grid) as GridData;
 
 const brandsData = await db.select().from(brands).orderBy(desc(brands.id));

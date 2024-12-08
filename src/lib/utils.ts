@@ -22,7 +22,7 @@ export function slugify(text: string): string {
 }
 
 export function formatParagraph(input: string): string {
-  return input.replace(/\r\n/g, "<br>");
+  return input.replaceAll(/\r\n/g, "<br>");
 }
 
 export function splitItems(

@@ -1,4 +1,6 @@
 ---
+import { formatParagraph } from "@/lib/utils";
+
 type Props = {
   data: {
     aboutKey: string;
@@ -9,38 +11,36 @@ type Props = {
 const { data } = Astro.props;
 
 const splitTag = "__";
-const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(Boolean);
+const parts: (text: string) => string[] = (text) => formatParagraph(text).split(splitTag).filter(Boolean);
 ---
 
-<>
-  <div id="about" class="container my-40 font-bold">
-    <h2 class="mb-20 text-4xl">{data.aboutKey}</h2>
-    <h1 class="highlighted inline-block text-6xl">
-      {
-        parts(data.about).map((part, index) => {
-          if (index % 2 === 1) {
-            const splitChars = part.split("").map((char) => {
-              if (char === " ") {
-                return (
-                  <span class="about-char inline-block" data-char={char}>
-                    &nbsp;
-                  </span>
-                );
-              }
+<div id="about" class="container my-40 font-bold">
+  <h2 class="mb-20 text-4xl">{data.aboutKey}</h2>
+  <h1 class="highlighted inline-block text-6xl">
+    {
+      parts(data.about).map((part, index) => {
+        if (index % 2 === 1) {
+          const splitChars = part.split("").map((char) => {
+            if (char === " ") {
               return (
                 <span class="about-char inline-block" data-char={char}>
-                  {char}
+                  &nbsp;
                 </span>
               );
-            });
-            return <mark data-char={part}>{splitChars}</mark>;
-          }
-          return part;
-        })
-      }
-    </h1>
-  </div>
-</>
+            }
+            return (
+              <span class="about-char inline-block" data-char={char}>
+                {char}
+              </span>
+            );
+          });
+          return <mark data-char={part}>{splitChars}</mark>;
+        }
+        return <span set:html={part} />;
+      })
+    }
+  </h1>
+</div>
 
 <style>
   .highlighted mark {
@@ -97,8 +97,9 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     trigger: highlightedElement,
     start: "top bottom",
     onEnter: () => animateChars(),
-    onEnterBack: () => animateChars(),
-    onLeave: () => resetChars(),
-    onLeaveBack: () => resetChars(),
+    once: true,
+    //onEnterBack: () => animateChars(),
+    //onLeave: () => resetChars(),
+    //onLeaveBack: () => resetChars(),
   });
 </script>
