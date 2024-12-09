@@ -24,6 +24,16 @@ if (!data[0]) {
 }
 ---
 
+<script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  window.gsap = gsap;
+  window.ScrollTrigger = ScrollTrigger;
+</script>
+
 <Layout lang={locale} title={data[0].title!} description={data[0].content!}>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
   <div class="container px-8 pb-16">
