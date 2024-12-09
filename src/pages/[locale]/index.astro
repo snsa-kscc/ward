@@ -31,9 +31,25 @@ const accoladesData = await db.select().from(accolades).where(eq(accolades.lang,
 const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
 ---
 
+<style>
+  .loading-overlay {
+    position: fixed;
+    pointer-events: none;
+    inset: 0;
+    z-index: 100;
+  }
+  .loading-overlay.js-loaded {
+    visibility: hidden;
+    opacity: 0;
+  }
+</style>
+
 <script>
   import gsap from "gsap";
   import ScrollTrigger from "gsap/ScrollTrigger";
+
+  const loadingOverlay = document.querySelector(".loading-overlay") as HTMLDivElement;
+  loadingOverlay.classList.add("js-loaded");
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -41,6 +57,7 @@ const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).o
   window.ScrollTrigger = ScrollTrigger;
 </script>
 <Layout lang={locale} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
+  <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
   <Grid locale={locale!} data={gridData} />
