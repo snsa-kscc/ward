@@ -49,8 +49,9 @@ const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).o
   import ScrollTrigger from "gsap/ScrollTrigger";
 
   const loadingOverlay = document.querySelector(".loading-overlay") as HTMLDivElement;
-  loadingOverlay.classList.add("js-loaded");
-
+  document.addEventListener("DOMContentLoaded", () => {
+    loadingOverlay.classList.add("js-loaded");
+  });
   gsap.registerPlugin(ScrollTrigger);
 
   window.gsap = gsap;
