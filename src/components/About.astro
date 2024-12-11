@@ -15,8 +15,8 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
 ---
 
 <div id="about" class="container my-40 font-bold">
-  <h2 class="mb-20 text-4xl">{data.aboutKey}</h2>
-  <h1 class="highlighted inline-block text-6xl">
+  <h2 class="mb-20 text-xl lg:text-4xl">{data.aboutKey}</h2>
+  <h1 class="highlighted inline-block text-xl lg:text-6xl">
     {
       parts(data.about).map((part, index) => {
         if (index % 2 === 1) {

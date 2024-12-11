@@ -35,7 +35,7 @@ const { locale, storeData, pagesData } = Astro.props;
   </div>
   <div id="contact" class="container">
     <!-- <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p> -->
-    <div class="py-20 text-9xl font-bold">
+    <div class="py-20 text-xl font-bold lg:text-9xl">
       {
         storeData.ctaHeading.split("").map((char) => {
           if (char === " ") {
@@ -46,17 +46,15 @@ const { locale, storeData, pagesData } = Astro.props;
       }
     </div>
   </div>
-  <div class="h-screen"></div>
   {
     pagesData.map((page) => (
-      <div class="text-9xl font-bold">
+      <div class="text-xl font-bold lg:text-9xl">
         <a href={`/${locale !== "en" ? `${locale}/` : ""}${page.slug}`}>{page.title}</a>
       </div>
     ))
   }
-  <div class="h-screen"></div>
   <div class="container">
-    <div class="flex flex-row items-center gap-4 p-20 text-2xl">
+    <div class="flex flex-col items-center gap-4 p-20 text-xl lg:text-2xl">
       <p>{storeData.contactKey}</p>
       <p>{storeData.contactEmail}</p>
       <p>{storeData.contactPhone}</p>
@@ -66,7 +64,7 @@ const { locale, storeData, pagesData } = Astro.props;
       <p>{storeData.newsletterButton}</p>
       <p>{storeData.newsletterDisclaimer}</p>
     </div>
-    <p class="py-20 text-2xl">{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p>
+    <p class="py-20 text-xl lg:text-2xl">{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p>
   </div>
 </>
 

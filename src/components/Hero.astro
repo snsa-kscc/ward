@@ -31,7 +31,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     }
   </div> -->
   <div class="flex flex-col items-center justify-center">
-    <div class="words inline-block overflow-hidden text-7xl font-bold leading-none tracking-tighter sm:text-8xl lg:text-9xl xl:text-10xl">
+    <div class="words ~text-5xl/10xl inline-block overflow-hidden font-bold leading-none tracking-tighter">
       {
         data.siteTitleFirst.split("").map((char) => {
           if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
@@ -41,7 +41,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
         })
       }
     </div>
-    <div class="words inline-block overflow-hidden text-7xl font-bold leading-none tracking-tighter sm:text-8xl lg:text-9xl xl:text-10xl">
+    <div class="words ~text-5xl/10xl inline-block overflow-hidden font-bold leading-none tracking-tighter">
       {
         data.siteTitleSecond.split("").map((char) => {
           if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
@@ -67,14 +67,16 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
       })
     }
   </div> -->
-  <div class="mt-24 flex overflow-hidden text-balance text-center text-3xl font-bold sm:text-4xl lg:w-1/2 lg:text-left">
+  <div
+    class="expertise expertise-wrapper mt-24 flex overflow-hidden text-balance text-center text-3xl font-bold will-change-transform sm:text-4xl lg:w-1/2 lg:text-left"
+  >
     {
       parts(data.siteDescriptionFirst).map((item, index) => {
         if (index % 2 === 0) {
           return <div class="inline-block pr-3">{item}</div>;
         }
         return (
-          <div class="expertise relative inline-block">
+          <div class="expertise-animation relative inline-block">
             {item.split(";").map((word) => {
               return (
                 <div class="absolute left-0 top-0 w-max" data-text={word}>
@@ -91,7 +93,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
       })
     }
   </div>
-  <h1 class="mt-24 text-balance text-center text-3xl font-bold sm:text-4xl lg:w-1/2 lg:text-left">
+  <h1 class="expertise expertise-hook mt-24 text-balance text-center text-3xl font-bold will-change-transform sm:text-4xl lg:w-1/2 lg:text-left">
     {data.siteDescriptionSecond}
   </h1>
 </div>
@@ -122,6 +124,12 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     perspective: 1000px;
   }
 
+  .expertise {
+    transform-style: preserve-3d;
+    transform: perspective(800px);
+    transform-origin: bottom center;
+  }
+
   .hero-char {
     will-change: transform, opacity;
   }
@@ -146,7 +154,11 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
 
   const firstLineChars = document.querySelectorAll(".words:first-of-type .hero-char") as NodeListOf<HTMLElement>;
   const secondLineChars = document.querySelectorAll(".words:last-of-type .hero-char") as NodeListOf<HTMLElement>;
-  const tl = gsap.timeline();
+  const expertiseWrapper = document.querySelector(".expertise-wrapper") as HTMLElement;
+  const expertiseHook = document.querySelector(".expertise-hook") as HTMLElement;
+  const expertises = document.querySelectorAll(".expertise-animation > div") as NodeListOf<HTMLElement>;
+
+  const tl = gsap.timeline({ delay: 0.8 });
   tl.from(firstLineChars, {
     duration: 0.7,
     yPercent: 85,
@@ -155,18 +167,23 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     stagger: 0.04,
     ease: "power2.out",
   });
-  tl.from(
-    secondLineChars,
-    {
-      duration: 0.6,
-      yPercent: 100,
-      stagger: 0.06,
-      ease: "power2.out",
-    },
-    "-=0.9"
-  );
+  tl.from(secondLineChars, {
+    duration: 0.6,
+    yPercent: 100,
+    stagger: 0.06,
+    ease: "power2.out",
+  });
+  tl.from(expertiseWrapper, {
+    duration: 0.4,
+    opacity: 0,
+    rotateX: "55",
+  });
+  tl.from(expertiseHook, {
+    duration: 0.4,
+    opacity: 0,
+    rotateX: "55",
+  });
 
-  const expertises = document.querySelectorAll(".expertise > div") as NodeListOf<HTMLElement>;
   const expertiseTl = gsap.timeline({
     repeat: -1,
   });
@@ -199,5 +216,5 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
         "+=1"
       );
   });
-  tl.add(expertiseTl, "-=0.5");
+  tl.add(expertiseTl);
 </script>

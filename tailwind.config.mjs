@@ -1,4 +1,5 @@
 import defaultTheme from "tailwindcss/defaultTheme";
+import fluid, { extract, screens, fontSize } from "fluid-tailwind";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -6,14 +7,14 @@ export default {
   //   preflight: false,
   // },
   darkMode: ["class"],
-  content: [
-    // "./pages/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
-    // "./components/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
-    // "./app/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
-    "./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
-  ],
+  content: {
+    files: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
+    extract,
+  },
   prefix: "",
   theme: {
+    screens,
+    fontSize,
     container: {
       center: true,
       // screens: {
@@ -88,5 +89,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), fluid({ checkSC144: false })],
 };
