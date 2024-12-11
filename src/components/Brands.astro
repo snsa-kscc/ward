@@ -14,13 +14,13 @@ const { data } = Astro.props;
 
 <>
   <div class="overflow-hidden font-bold">
-    <h2 class="container mb-20 text-xl lg:text-4xl">{data.specialitiesKey}</h2>
+    <h2 class="container mb-20 ~lg:~text-xl/4xl">{data.specialitiesKey}</h2>
     {
       data.specialities.split("\r\n").map((item, idx) => {
         return (
           <div class={cn("specs-slider relative w-max whitespace-nowrap", idx === 0 ? "" : "reverse")}>
             {Array.from({ length: 2 }).map((_, i) => (
-              <p class={cn("relative w-full text-xl will-change-transform lg:text-9xl", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
+              <p class={cn("relative w-full will-change-transform ~lg:~text-xl/9xl", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
                 {`${item} ${item}`}&nbsp;
               </p>
             ))}
@@ -28,7 +28,7 @@ const { data } = Astro.props;
         );
       })
     }
-    <p class="ml-auto w-1/2 pt-40 text-xl lg:text-4xl">
+    <p class="ml-auto w-1/2 pt-40 ~lg:~text-xl/4xl">
       {data.specialitiesDescription}
     </p>
   </div>
