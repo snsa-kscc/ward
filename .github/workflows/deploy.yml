@@ -28,6 +28,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            set -e
             cd www/feature.ward.hr
             git pull
             if [[ "${{ steps.check-npm.outputs.run_npm_install }}" == "true" ]]; then
