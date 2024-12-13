@@ -14,9 +14,9 @@ const splitTag = "__";
 const parts: (text: string) => string[] = (text) => formatParagraph(text).split(splitTag).filter(Boolean);
 ---
 
-<div id="about" class="container my-40 px-4 font-bold">
-  <h2 class="mb-20 ~lg:~text-xl/4xl">{data.aboutKey}</h2>
-  <h1 class="highlighted inline-block ~lg:~text-xl/6xl">
+<div id="about" class="container px-4 font-bold ~my-40/96">
+  <h2 class="~text-base/3xl ~mb-14/24">{data.aboutKey}</h2>
+  <div class="highlighted inline-block ~text-lg/4xl">
     {
       parts(data.about).map((part, index) => {
         if (index % 2 === 1) {
@@ -39,7 +39,7 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
         return <span set:html={part} />;
       })
     }
-  </h1>
+  </div>
 </div>
 
 <style>

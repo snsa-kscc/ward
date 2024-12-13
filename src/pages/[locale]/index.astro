@@ -29,6 +29,8 @@ const gridData: GridData = splitItems(grid) as GridData;
 const brandsData = await db.select().from(brands).orderBy(desc(brands.id));
 const accoladesData = await db.select().from(accolades).where(eq(accolades.lang, locale!)).orderBy(desc(accolades.createdAt));
 const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
+
+const isProd = process.env.NODE_ENV === "production";
 ---
 
 <style>
@@ -56,17 +58,20 @@ const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).o
     loadingOverlay.classList.add("js-loaded");
   });
 
-  onload = () => {
-    if (window.scrollY !== 0) {
-      window.scrollTo(0, 0);
-    }
-  };
+  const isProd = loadingOverlay.dataset.isProd === "true";
+  if (isProd) {
+    onload = () => {
+      if (window.scrollY !== 0) {
+        window.scrollTo(0, 0);
+      }
+    };
+  }
 
   window.gsap = gsap;
   window.ScrollTrigger = ScrollTrigger;
 </script>
 <Layout lang={locale} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
-  <div class="loading-overlay bg-zinc-900"></div>
+  <div class="loading-overlay bg-zinc-900" data-is-prod={isProd}></div>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
   <Grid locale={locale!} data={gridData} />
