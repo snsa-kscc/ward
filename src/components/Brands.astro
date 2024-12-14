@@ -14,7 +14,21 @@ const { data } = Astro.props;
 
 <>
   <div class="overflow-hidden font-bold ~my-40/96">
-    <h2 class="container px-4 ~text-base/3xl ~mb-14/24">{data.specialitiesKey}</h2>
+    <div class="specs-wrapper container px-4 ~text-base/3xl ~my-14/24">
+      {
+        data.specialitiesKey
+          .split(/(\s)/)
+          .map((word) => (
+            <div class="specs-word inline-block">
+              {word === " " ? (
+                <span class="specs-char inline-block">&nbsp;</span>
+              ) : (
+                word.split("").map((char) => <span class="specs-char inline-block">{char}</span>)
+              )}
+            </div>
+          ))
+      }
+    </div>
     {
       data.specialities.split("\r\n").map((item, idx) => {
         return (
@@ -28,14 +42,65 @@ const { data } = Astro.props;
         );
       })
     }
-    <p class="ml-auto w-1/2 pt-40 ~lg:~text-xl/4xl">
+    <p class="ml-auto w-full px-4 pt-40 ~lg:~text-xl/4xl sm:w-1/2">
       {data.specialitiesDescription}
     </p>
   </div>
   <div class="py-20"></div>
 </>
 
+<style>
+  .specs-wrapper {
+    --color-highlight-start: #03c52f;
+    background: none;
+    color: var(--color-highlight-start);
+    position: relative;
+    white-space: nowrap;
+  }
+</style>
+
 <script>
+  const specsElement = document.querySelector(".specs-wrapper span") as HTMLElement;
+  const specsChars = document.querySelectorAll(".specs-char") as NodeListOf<HTMLElement>;
+  const animationDefaults = {
+    duration: 0.3,
+    ease: "power3.in",
+  };
+
+  function animateKeyChars() {
+    specsChars.forEach((char) => {
+      gsap.timeline({ defaults: animationDefaults }).fromTo(
+        char,
+        {
+          filter: "brightness(100%) drop-shadow(0px 0px 30px #0000ff)",
+          willChange: "filter",
+        },
+        {
+          delay: gsap.utils.random(0, 1),
+          repeat: 10,
+          yoyo: true,
+          filter: "brightness(300%) drop-shadow(0px 0px 40px #00ff00)",
+        }
+      );
+    });
+  }
+
+  function resetKeyChars() {
+    gsap.killTweensOf(specsChars);
+    gsap.set(specsChars, {
+      opacity: 1,
+    });
+  }
+
+  ScrollTrigger.create({
+    trigger: specsElement,
+    start: "top bottom",
+    onEnter: () => animateKeyChars(),
+    onEnterBack: () => animateKeyChars(),
+    onLeave: () => resetKeyChars(),
+    onLeaveBack: () => resetKeyChars(),
+  });
+
   const sliders = document.querySelectorAll(".specs-slider") as NodeListOf<HTMLDivElement>;
   let direction = -1;
 

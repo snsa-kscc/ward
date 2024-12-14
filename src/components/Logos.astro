@@ -11,10 +11,10 @@ const { data } = Astro.props;
 ---
 
 <>
-  <div class="from-wardGreen to-wardBlue flex gap-16 overflow-hidden bg-gradient-to-r p-16">
+  <div class="flex overflow-hidden bg-gradient-to-r from-wardGreen to-wardBlue ~gap-8/32 ~py-8/16">
     {
       Array.from({ length: 2 }).map(() => (
-        <div class="marquee-scroll flex w-full flex-shrink-0 justify-around gap-16">
+        <div class="marquee-scroll flex flex-shrink-0 justify-around ~gap-8/32">
           {data.map((brand) => (
             <div class="flex items-center">
               <img src={`/assets/brands/${brand.logo}`} alt={brand.name} />

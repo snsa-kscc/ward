@@ -34,14 +34,13 @@ const { locale, storeData, pagesData } = Astro.props;
     }
   </div>
   <div id="contact" class="container">
-    <!-- <p class="py-20 text-9xl font-bold">{data.ctaHeading}</p> -->
     <div class="py-20 font-bold ~lg:~text-xl/9xl">
       {
         storeData.ctaHeading.split("").map((char) => {
           if (char === " ") {
-            return <span class="foo-foo inline-block">&nbsp;</span>;
+            return <span class="cta-char inline-block">&nbsp;</span>;
           }
-          return <span class="foo-foo inline-block">{char}</span>;
+          return <span class="cta-char inline-block">{char}</span>;
         })
       }
     </div>
@@ -117,9 +116,9 @@ const { locale, storeData, pagesData } = Astro.props;
     );
   });
 
-  const charsFoo = document.querySelectorAll(".foo-foo") as NodeListOf<HTMLElement>;
+  const charsAnimation = document.querySelectorAll(".cta-char") as NodeListOf<HTMLElement>;
   gsap.fromTo(
-    charsFoo,
+    charsAnimation,
     {
       opacity: 0,
       skewX: -20,
@@ -133,9 +132,9 @@ const { locale, storeData, pagesData } = Astro.props;
       filter: "blur(0px)",
       stagger: 0.04,
       scrollTrigger: {
-        trigger: ".foo-foo",
+        trigger: ".cta-char",
         start: "top 80%",
-        end: "bottom 35%",
+        end: "top 40%",
         scrub: true,
       },
     }

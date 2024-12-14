@@ -31,7 +31,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     }
   </div> -->
   <div class="flex flex-col items-center justify-center">
-    <div class="words inline-block overflow-hidden font-bold leading-none tracking-tighter ~text-5xl/10xl">
+    <div class="hero-words inline-block overflow-hidden font-bold leading-none tracking-tighter ~text-5xl/10xl">
       {
         data.siteTitleFirst.split("").map((char) => {
           if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
@@ -41,7 +41,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
         })
       }
     </div>
-    <div class="words inline-block overflow-hidden font-bold leading-none tracking-tighter ~text-5xl/10xl">
+    <div class="hero-words inline-block overflow-hidden font-bold leading-none tracking-tighter ~text-5xl/10xl">
       {
         data.siteTitleSecond.split("").map((char) => {
           if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
@@ -117,7 +117,7 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     color: transparent;
   }
 
-  .words {
+  .hero-words {
     transform-style: preserve-3d;
     perspective: 1000px;
   }
@@ -150,8 +150,8 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
   //   );
   // }, 1000);
 
-  const firstLineChars = document.querySelectorAll(".words:first-of-type .hero-char") as NodeListOf<HTMLElement>;
-  const secondLineChars = document.querySelectorAll(".words:last-of-type .hero-char") as NodeListOf<HTMLElement>;
+  const firstLineChars = document.querySelectorAll(".hero-words:first-of-type .hero-char") as NodeListOf<HTMLElement>;
+  const secondLineChars = document.querySelectorAll(".hero-words:last-of-type .hero-char") as NodeListOf<HTMLElement>;
   const expertiseWrapper = document.querySelector(".expertise-wrapper") as HTMLElement;
   const expertiseHook = document.querySelector(".expertise-hook") as HTMLElement;
   const expertises = document.querySelectorAll(".expertise-animation > div") as NodeListOf<HTMLElement>;

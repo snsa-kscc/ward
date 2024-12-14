@@ -15,7 +15,21 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
 ---
 
 <div id="about" class="container px-4 font-bold ~my-40/96">
-  <h2 class="~text-base/3xl ~mb-14/24">{data.aboutKey}</h2>
+  <div class="about-key-wrapper ~text-base/3xl ~mb-14/24">
+    {
+      data.aboutKey
+        .split(/(\s)/)
+        .map((word) => (
+          <div class="about-key-word inline-block">
+            {word === " " ? (
+              <span class="about-key-char inline-block">&nbsp;</span>
+            ) : (
+              word.split("").map((char) => <span class="about-key-char inline-block">{char}</span>)
+            )}
+          </div>
+        ))
+    }
+  </div>
   <div class="highlighted inline-block ~text-lg/4xl">
     {
       parts(data.about).map((part, index) => {
@@ -43,6 +57,15 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
 </div>
 
 <style>
+  .about-key-wrapper {
+    --color-highlight-start: #085ed0;
+    background: none;
+    color: var(--color-highlight-start);
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+  }
+
   .highlighted mark {
     --color-highlight-start: #fff;
     --color-highlight-end: #03c52f;
@@ -56,12 +79,49 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
 </style>
 
 <script>
-  const highlightedElement = document.querySelector(".highlighted mark") as HTMLElement;
-  const chars = document.querySelectorAll(".about-char") as NodeListOf<HTMLElement>;
+  const highlightedKeyElement = document.querySelector(".about-key-wrapper span") as HTMLElement;
+  const keyChars = document.querySelectorAll(".about-key-char") as NodeListOf<HTMLElement>;
   const animationDefaults = {
     duration: 0.3,
     ease: "power3.in",
   };
+
+  function animateKeyChars() {
+    keyChars.forEach((char) => {
+      gsap.timeline({ defaults: animationDefaults }).fromTo(
+        char,
+        {
+          filter: "brightness(100%) drop-shadow(0px 0px 30px #00ff00)",
+          willChange: "filter",
+        },
+        {
+          delay: gsap.utils.random(0, 1),
+          repeat: 10,
+          yoyo: true,
+          filter: "brightness(300%) drop-shadow(0px 0px 40px #0000ff)",
+        }
+      );
+    });
+  }
+
+  function resetKeyChars() {
+    gsap.killTweensOf(keyChars);
+    gsap.set(keyChars, {
+      opacity: 1,
+    });
+  }
+
+  ScrollTrigger.create({
+    trigger: highlightedKeyElement,
+    start: "top bottom",
+    onEnter: () => animateKeyChars(),
+    onEnterBack: () => animateKeyChars(),
+    onLeave: () => resetKeyChars(),
+    onLeaveBack: () => resetKeyChars(),
+  });
+
+  const highlightedElement = document.querySelector(".highlighted mark") as HTMLElement;
+  const chars = document.querySelectorAll(".about-char") as NodeListOf<HTMLElement>;
 
   function animateChars() {
     gsap

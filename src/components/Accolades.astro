@@ -19,29 +19,29 @@ const secondHalf = accoladesData.slice(halfLength);
 ---
 
 <>
-  <div class="container py-20">
-    <div class="mb-20 font-bold leading-tight ~lg:~text-xl/5xl">
-      <!-- <p>{storeDataMap.projects}</p> -->
-    </div>
+  <div class="container px-4 py-20">
+    <div class="mb-20 font-bold leading-tight ~lg:~text-xl/5xl"></div>
     <div class="py-20"></div>
-    <div class="bar-char-wrapper font-bold leading-tight ~lg:~text-xl/5xl">
-      {
-        storeDataMap.projects
-          .split(/(\s)/)
-          .map((word) => (
-            <div class="word-wrapper inline-block">
-              {word === " " ? (
-                <span class="bar-char inline-block">&nbsp;</span>
-              ) : (
-                word.split("").map((char) => <span class="bar-char inline-block">{char}</span>)
-              )}
-            </div>
-          ))
-      }
+    <div class="font-bold leading-tight ~text-xl/5xl">
+      {storeDataMap.projects}
     </div>
-    <div class="my-40 flex justify-between gap-8">
-      <p class="w-1/3 font-bold ~lg:~text-xl/5xl">{storeDataMap.ctaHook}</p>
-      <button class="rounded-full bg-wardGreen px-20 py-2 font-bold text-slate-100 duration-300 hover:bg-wardBlue ~lg:~text-xl/2xl">
+    <div class="my-40 flex items-center justify-between gap-4">
+      <div class="bar-char-wrapper w-1/3 font-bold ~text-xl/5xl">
+        {
+          storeDataMap.ctaHook
+            .split(/(\s)/)
+            .map((word) => (
+              <div class="word-wrapper inline-block">
+                {word === " " ? (
+                  <span class="bar-char inline-block">&nbsp;</span>
+                ) : (
+                  word.split("").map((char) => <span class="bar-char inline-block">{char}</span>)
+                )}
+              </div>
+            ))
+        }
+      </div>
+      <button class="rounded-full bg-wardGreen font-bold text-slate-100 duration-300 ~text-xl/2xl ~px-10/16 ~py-2/6 hover:bg-wardBlue">
         {storeDataMap.ctaButton}
       </button>
     </div>
@@ -64,6 +64,12 @@ const secondHalf = accoladesData.slice(halfLength);
   </div>
 </>
 
+<style>
+  .bar-char {
+    will-change: filter, transform;
+  }
+</style>
+
 <script>
   const barChars = document.querySelectorAll(".bar-char") as NodeListOf<HTMLElement>;
   gsap.fromTo(
@@ -72,19 +78,18 @@ const secondHalf = accoladesData.slice(halfLength);
       scaleY: 0.1,
       scaleX: 1.8,
       filter: "blur(10px) brightness(50%)",
-      willChange: "filter, transform",
     },
     {
-      ease: "none",
+      ease: "power1.out",
       scaleY: 1,
       scaleX: 1,
       filter: "blur(0px) brightness(100%)",
       stagger: 0.05,
       scrollTrigger: {
         trigger: ".bar-char-wrapper",
-        start: "top 85%",
-        end: "bottom 30%",
-        scrub: true,
+        start: "top 80%",
+        end: "top center",
+        scrub: 1,
       },
     }
   );
