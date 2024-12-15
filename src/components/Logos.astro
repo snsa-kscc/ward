@@ -11,13 +11,13 @@ const { data } = Astro.props;
 ---
 
 <>
-  <div class="flex overflow-hidden bg-gradient-to-r from-wardGreen to-wardBlue ~gap-8/32 ~py-8/16">
+  <div class="flex gap-20 overflow-hidden bg-gradient-to-r from-wardGreen to-wardBlue ~py-8/16 lg:gap-36">
     {
-      Array.from({ length: 2 }).map(() => (
-        <div class="marquee-scroll flex flex-shrink-0 justify-around ~gap-8/32">
+      Array.from({ length: 4 }).map(() => (
+        <div class="marquee-scroll flex flex-shrink-0 justify-around gap-20 will-change-transform lg:gap-36">
           {data.map((brand) => (
             <div class="flex items-center">
-              <img src={`/assets/brands/${brand.logo}`} alt={brand.name} />
+              <img class="~w-14/24" src={`/assets/brands/${brand.logo}`} alt={brand.name} />
             </div>
           ))}
         </div>
@@ -33,9 +33,22 @@ const { data } = Astro.props;
     }
 
     to {
-      transform: translateX(calc(-100% - 1rem));
+      transform: translateX(calc(-100% - 5rem));
     }
   }
+
+  @media (min-width: 1024px) {
+    @keyframes scroll {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(calc(-100% - 9rem));
+      }
+    }
+  }
+
   .marquee-scroll {
     animation: scroll 20s linear infinite;
   }
