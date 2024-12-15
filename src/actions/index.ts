@@ -1,9 +1,12 @@
-import { defineAction } from "astro:actions";
+import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
 import { rm } from "fs/promises";
 import { eq, and } from "drizzle-orm";
 import { accolades, brands, portfolio, store } from "@/../db/schema";
 import { db } from "@/../db";
+import { Resend } from "resend";
+
+const resend = new Resend(import.meta.env.PUBLIC_RESEND_API);
 
 export const server = {
   deleteMedia: defineAction({
@@ -112,6 +115,24 @@ export const server = {
         console.error(error);
       }
       return "deleted";
+    },
+  }),
+
+  newsletterSubscribe: defineAction({
+    accept: "form",
+    input: z.object({ email: z.string().email() }),
+    handler: async ({ email }) => {
+      const { data, error } = await resend.contacts.create({
+        email,
+        audienceId: import.meta.env.PUBLIC_RESEND_AUDIENCE_ID,
+      });
+      if (!data || error) {
+        throw new ActionError({
+          code: "BAD_REQUEST",
+          message: "Error while sending the newsletter",
+        });
+      }
+      return { success: true };
     },
   }),
 };
