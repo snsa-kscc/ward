@@ -48,23 +48,21 @@ export function NewsletterSubscribe({
   }, [state]);
 
   return (
-    <div>
-      <form action={action} ref={formRef}>
-        <label htmlFor="email">
-          Email
-          <span className="text-red-500">*</span>
-        </label>
-        <input
-          name="email"
-          type="email"
-          placeholder={lang === "hr" ? "Vaš email" : "Your email"}
-          required
-          className="w-full rounded-md border-2 border-zinc-300 bg-zinc-100 p-2 text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-        <button type="submit" disabled={pending}>
-          {pending ? (lang === "hr" ? "Šaljem..." : "Submitting...") : button}
-        </button>
-      </form>
-    </div>
+    <form action={action} ref={formRef} className="flex items-end gap-4">
+      <input
+        name="email"
+        type="email"
+        placeholder={lang === "hr" ? "Vaš email" : "Your email"}
+        required
+        className="w-full border-0 border-b-2 border-zinc-300 bg-transparent p-2 text-white focus:outline-none"
+      />
+      <button
+        type="submit"
+        disabled={pending}
+        className="rounded-full bg-slate-100 font-bold text-slate-800 duration-300 ~text-xl/2xl ~px-10/16 ~py-2/6 hover:bg-slate-400 disabled:cursor-not-allowed disabled:bg-slate-400"
+      >
+        {pending ? (lang === "hr" ? "Šaljem..." : "Submitting...") : button}
+      </button>
+    </form>
   );
 }

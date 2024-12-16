@@ -35,37 +35,43 @@ const { locale, storeData, pagesData } = Astro.props;
       ))
     }
   </div>
-  <div id="contact" class="container">
-    <div class="py-20 font-bold ~lg:~text-xl/9xl">
-      {
-        storeData.ctaHeading.split("").map((char) => {
-          if (char === " ") {
-            return <span class="cta-char inline-block">&nbsp;</span>;
-          }
-          return <span class="cta-char inline-block">{char}</span>;
-        })
-      }
-    </div>
+  <div id="contact" class="container py-20 font-bold ~lg:~text-xl/9xl">
+    {
+      storeData.ctaHeading.split("").map((char) => {
+        if (char === " ") {
+          return <span class="cta-char inline-block">&nbsp;</span>;
+        }
+        return <span class="cta-char inline-block">{char}</span>;
+      })
+    }
   </div>
-  {
-    pagesData.map((page) => (
-      <div class="font-bold ~lg:~text-xl/9xl">
-        <a href={`/${locale !== "en" ? `${locale}/` : ""}${page.slug}`}>{page.title}</a>
+  <div class="container mt-40">
+    <div class="flex justify-between">
+      <div class="flex gap-16">
+        <div class="basis-1/2">
+          <p class="pb-8 font-bold">{storeData.contactKey}</p>
+          <p class="" set:html={storeData.contactEmail} />
+          <p set:html={storeData.contactPhone} />
+          <p>{storeData.contactAddress}</p>
+        </div>
+        <div class="basis-1/2">
+          <div class="pb-8 font-bold"><p>{storeData.infoKey}</p></div>
+          {
+            pagesData.map((page) => (
+              <div class="">
+                <a href={`/${locale !== "en" ? `${locale}/` : ""}${page.slug}`}>{page.title}</a>
+              </div>
+            ))
+          }
+        </div>
       </div>
-    ))
-  }
-  <div class="container">
-    <div class="flex flex-col items-center gap-4 p-20 ~lg:~text-xl/2xl">
-      <p>{storeData.contactKey}</p>
-      <p>{storeData.contactEmail}</p>
-      <p>{storeData.contactPhone}</p>
-      <p>{storeData.contactAddress}</p>
-      <p>{storeData.infoKey}</p>
-      <p>{storeData.newsletterKey}</p>
-      <NewsletterSubscribe client:load button={storeData.newsletterButton} lang={locale} />
-      <p set:html={storeData.newsletterDisclaimer} />
+      <div class="">
+        <p class="pb-8 font-bold">{storeData.newsletterKey}</p>
+        <NewsletterSubscribe client:load button={storeData.newsletterButton} lang={locale} />
+        <p class="pt-4" set:html={storeData.newsletterDisclaimer} />
+      </div>
     </div>
-    <p class="py-20 ~lg:~text-xl/2xl">{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p>
+    <div class="font-bold ~text-xl/2xl ~py-10/20"><p>{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p></div>
   </div>
 </>
 
