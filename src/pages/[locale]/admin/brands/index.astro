@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { brands, store } from "db/schema";
-import { desc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
 const { locale } = Astro.params;
-const logoItems = await db.select().from(brands).orderBy(desc(brands.id));
+const logoItems = await db.select().from(brands).orderBy(asc(brands.id));
 const res = await db.select().from(store).where(eq(store.section, "brands"));
 
 let updateStatus;

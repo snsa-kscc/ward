@@ -1,6 +1,7 @@
 import { actions } from "astro:actions";
-import { useActionState, useRef } from "react";
+import { useRef, useEffect, useActionState } from "react";
 import { experimental_withState as withState } from "@astrojs/react/actions";
+import { useToast } from "@/hooks/use-toast";
 
 export function NewsletterSubscribe({
   button,
@@ -9,6 +10,7 @@ export function NewsletterSubscribe({
   button: string;
   lang: string;
 }) {
+  const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [state, action, pending] = useActionState(
     // async () => {
@@ -26,6 +28,25 @@ export function NewsletterSubscribe({
     },
   );
 
+  useEffect(() => {
+    if (state?.error?.message) {
+      toast({
+        title: lang === "hr" ? "Greška" : "Error",
+        description:
+          lang === "hr" ? "Nešto je pošlo po krivu" : "Something went wrong",
+        variant: "destructive",
+      });
+    }
+    if (state?.data?.success) {
+      toast({
+        title: lang === "hr" ? "Uspjeh" : "Success",
+        description:
+          lang === "hr" ? "Hvala na pretplati!" : "Thanks for subscribing!",
+        variant: "default",
+      });
+    }
+  }, [state]);
+
   return (
     <div>
       <form action={action} ref={formRef}>
@@ -38,27 +59,12 @@ export function NewsletterSubscribe({
           type="email"
           placeholder="your@email.com"
           required
+          className="w-full rounded-md border-2 border-zinc-300 bg-zinc-100 p-2 text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <button type="submit" disabled={pending}>
-          {button}
+          {pending ? (lang === "hr" ? "Šaljem..." : "Submitting...") : button}
         </button>
       </form>
-      <p className="text-center text-sm text-red-500">
-        {state?.error?.message &&
-          (lang === "hr" ? "Nešto je pošlo po krivu" : "Something went wrong")}
-      </p>
-      <p className="text-center text-sm text-green-500">
-        {state?.data?.success
-          ? lang === "hr"
-            ? "Hvala na pretplati!"
-            : "Thanks for subscribing!"
-          : ""}
-      </p>
-      {pending && (
-        <p className="text-center text-sm text-blue-500">
-          {lang === "hr" ? "Pokušavamo se prijaviti" : "Trying to sign up"}
-        </p>
-      )}
     </div>
   );
 }
