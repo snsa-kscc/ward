@@ -51,13 +51,13 @@ export function NewsletterSubscribe({
     <div>
       <form action={action} ref={formRef}>
         <label htmlFor="email">
-          {lang === "hr" ? "Email" : "Email"}
+          Email
           <span className="text-red-500">*</span>
         </label>
         <input
           name="email"
           type="email"
-          placeholder="your@email.com"
+          placeholder={lang === "hr" ? "Vaš email" : "Your email"}
           required
           className="w-full rounded-md border-2 border-zinc-300 bg-zinc-100 p-2 text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
