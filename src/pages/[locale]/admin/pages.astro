@@ -19,7 +19,6 @@ const resMap = res.reduce(
   {} as Record<string, string>
 );
 
-let updateStatus;
 if (Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
@@ -29,12 +28,11 @@ if (Astro.request.method === "POST") {
         .set({ content: value as string })
         .where(and(eq(pages.name, key as string), eq(pages.lang, locale!)));
     }
-    updateStatus = "success";
   } catch (error) {
     console.error("Error updating data:", error);
-    updateStatus = "error";
+    return Astro.redirect(`/${locale}/admin/pages?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/pages?update=${updateStatus}`);
+  return Astro.redirect(`/${locale}/admin/pages?update=success`);
 }
 ---
 

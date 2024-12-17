@@ -21,7 +21,6 @@ if (!res[0]) {
 
 let filenames: string[] = JSON.parse(res[0].media as string);
 let contentObject: Record<string, string> = JSON.parse(res[0].content as string);
-let updateStatus;
 let slug;
 
 if (Astro.request.method === "POST") {
@@ -53,13 +52,12 @@ if (Astro.request.method === "POST") {
         media: JSON.stringify(filenames),
       })
       .where(eq(portfolio.slug, id!));
-    updateStatus = "success";
   } catch (error) {
     console.error("Error updating data:", error);
-    updateStatus = "error";
+    return Astro.redirect(`/${locale}/admin/portfolio/${slug}?update=error`);
   }
 
-  return Astro.redirect(`/${locale}/admin/portfolio/${slug}?update=${updateStatus}`);
+  return Astro.redirect(`/${locale}/admin/portfolio/${slug}?update=success`);
 }
 
 const currentLocaleContent = contentObject[locale!];

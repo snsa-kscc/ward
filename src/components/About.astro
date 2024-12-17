@@ -152,21 +152,10 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
       );
   }
 
-  function resetChars() {
-    gsap.killTweensOf(chars);
-    gsap.set(chars, {
-      scale: 1,
-      color: "",
-    });
-  }
-
   ScrollTrigger.create({
     trigger: highlightedElement,
     start: "top bottom",
     onEnter: () => animateChars(),
     once: true,
-    //onEnterBack: () => animateChars(),
-    //onLeave: () => resetChars(),
-    //onLeaveBack: () => resetChars(),
   });
 </script>

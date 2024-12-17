@@ -8,6 +8,7 @@ import { db } from "db";
 import { accolades } from "db/schema";
 
 const { locale } = Astro.params;
+
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const item = formData.get("item") as string;

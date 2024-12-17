@@ -15,8 +15,6 @@ const res = await db
   .from(accolades)
   .where(and(eq(accolades.id, +id!), eq(accolades.lang, locale!)));
 
-let updateStatus;
-
 if (!res[0]) {
   return Astro.redirect(`/${locale}/admin/accolades/new`);
 }
@@ -29,12 +27,11 @@ if (Astro.request.method === "POST") {
       .update(accolades)
       .set({ item, lang: locale })
       .where(and(eq(accolades.id, +id!), eq(accolades.lang, locale!)));
-    updateStatus = "success";
   } catch (error) {
     console.error(error);
-    updateStatus = "error";
+    return Astro.redirect(`/${locale}/admin/accolades/${id}?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/accolades/${id}?update=${updateStatus}`);
+  return Astro.redirect(`/${locale}/admin/accolades/${id}?update=success`);
 }
 ---
 

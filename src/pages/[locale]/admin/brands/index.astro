@@ -14,8 +14,6 @@ const { locale } = Astro.params;
 const logoItems = await db.select().from(brands).orderBy(asc(brands.id));
 const res = await db.select().from(store).where(eq(store.section, "brands"));
 
-let updateStatus;
-
 const dict = res.reduce(
   (acc, cur) => {
     acc[cur.key as string] = cur.value as string;
@@ -33,13 +31,11 @@ if (Astro.request.method === "POST") {
         .set({ value: value as string })
         .where(eq(store.key, key as string));
     }
-    updateStatus = "success";
   } catch (error) {
     console.error("Error updating data:", error);
-    updateStatus = "error";
+    return Astro.redirect(`/${locale}/admin/brands?update=error`);
   }
-
-  return Astro.redirect(`/${locale}/admin/brands?update=${updateStatus}`);
+  return Astro.redirect(`/${locale}/admin/brands?update=success`);
 }
 ---
 

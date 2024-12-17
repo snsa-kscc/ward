@@ -48,6 +48,7 @@ const isProd = process.env.NODE_ENV === "production";
 </style>
 
 <Layout lang={locale} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
+  <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
   <script>
     import gsap from "gsap";
     import ScrollTrigger from "gsap/ScrollTrigger";
@@ -82,5 +83,4 @@ const isProd = process.env.NODE_ENV === "production";
   <Accolades accoladesData={accoladesData} storeDataMap={storeDataMap} />
   <Picture locale={locale!} />
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
-  <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
 </Layout>

@@ -14,7 +14,6 @@ import { slugify } from "@/lib/utils";
 const { locale, id } = Astro.params;
 const res = await db.select().from(brands).where(eq(brands.slug, id!));
 
-let updateStatus;
 let slug;
 
 if (!res[0]) {
@@ -34,12 +33,11 @@ if (Astro.request.method === "POST") {
     } else {
       await db.update(brands).set({ name, slug }).where(eq(brands.slug, id!));
     }
-    updateStatus = "success";
   } catch (error) {
     console.error(error);
-    updateStatus = "error";
+    return Astro.redirect(`/${locale}/admin/brands/${slug}?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/brands/${slug}?update=${updateStatus}`);
+  return Astro.redirect(`/${locale}/admin/brands/${slug}?update=success`);
 }
 ---
 

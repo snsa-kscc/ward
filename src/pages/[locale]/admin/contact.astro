@@ -25,10 +25,8 @@ const resMap = res.reduce(
   {} as Record<string, string>
 );
 
-let updateStatus;
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
-
   try {
     for (const [key, value] of formData.entries()) {
       if (key === "ctaPicture") {
@@ -45,12 +43,11 @@ if (Astro.request.method === "POST") {
           .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
       }
     }
-    updateStatus = "success";
   } catch (error) {
     console.error("Error updating data:", error);
-    updateStatus = "error";
+    return Astro.redirect(`/${locale}/admin/contact?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/contact?update=${updateStatus}`);
+  return Astro.redirect(`/${locale}/admin/contact?update=success`);
 }
 ---
 
