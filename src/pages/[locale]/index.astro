@@ -47,31 +47,31 @@ const isProd = process.env.NODE_ENV === "production";
   }
 </style>
 
-<script>
-  import gsap from "gsap";
-  import ScrollTrigger from "gsap/ScrollTrigger";
-
-  const loadingOverlay = document.querySelector(".loading-overlay") as HTMLDivElement;
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  document.addEventListener("DOMContentLoaded", () => {
-    loadingOverlay.classList.add("js-loaded");
-  });
-
-  const isProd = loadingOverlay.dataset.isProd === "true";
-  if (isProd) {
-    onload = () => {
-      if (window.scrollY !== 0) {
-        window.scrollTo(0, 0);
-      }
-    };
-  }
-
-  window.gsap = gsap;
-  window.ScrollTrigger = ScrollTrigger;
-</script>
 <Layout lang={locale} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
+  <script>
+    import gsap from "gsap";
+    import ScrollTrigger from "gsap/ScrollTrigger";
+
+    const loadingOverlay = document.querySelector(".loading-overlay") as HTMLDivElement;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadingOverlay.classList.add("js-loaded");
+    });
+
+    const isProd = loadingOverlay.dataset.isProd === "true";
+    if (isProd) {
+      onload = () => {
+        if (window.scrollY !== 0) {
+          window.scrollTo(0, 0);
+        }
+      };
+    }
+
+    window.gsap = gsap;
+    window.ScrollTrigger = ScrollTrigger;
+  </script>
   <div class="loading-overlay bg-zinc-900" data-is-prod={isProd}></div>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
