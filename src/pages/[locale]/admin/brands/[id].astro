@@ -65,36 +65,35 @@ if (Astro.request.method === "POST") {
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
-</Layout>
+  <script>
+    import { actions } from "astro:actions";
 
-<script>
-  import { actions } from "astro:actions";
+    const urlParams = new URLSearchParams(window.location.search);
+    const updateStatus = urlParams.get("update");
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const updateStatus = urlParams.get("update");
+    if (updateStatus === "success") {
+      alert("Update successful!");
+      location.replace(location.pathname);
+    } else if (updateStatus === "error") {
+      alert("Update failed.");
+      location.replace(location.pathname);
+    }
 
-  if (updateStatus === "success") {
-    alert("Update successful!");
-    location.replace(location.pathname);
-  } else if (updateStatus === "error") {
-    alert("Update failed.");
-    location.replace(location.pathname);
-  }
-
-  const button = document.querySelector(".btn") as HTMLButtonElement;
-  const title = document.querySelector(".title") as HTMLTitleElement;
-  const file = document.querySelector("input[type=file]") as HTMLInputElement;
-  if (button) {
-    button.addEventListener("click", async (e) => {
-      e.preventDefault();
-      const result = await actions.deleteLogo({
-        title: title.textContent as string,
-        item: button.previousElementSibling?.textContent ?? "",
+    const button = document.querySelector(".btn") as HTMLButtonElement;
+    const title = document.querySelector(".title") as HTMLTitleElement;
+    const file = document.querySelector("input[type=file]") as HTMLInputElement;
+    if (button) {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const result = await actions.deleteLogo({
+          title: title.textContent as string,
+          item: button.previousElementSibling?.textContent ?? "",
+        });
+        if (result.data === "deleted") {
+          button.parentElement?.remove();
+          file.disabled = false;
+        }
       });
-      if (result.data === "deleted") {
-        button.parentElement?.remove();
-        file.disabled = false;
-      }
-    });
-  }
-</script>
+    }
+  </script>
+</Layout>

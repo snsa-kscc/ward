@@ -11,13 +11,13 @@ const isHr = Astro.url.pathname.startsWith("/hr/");
       {isHr ? "Stranica nije pronađena" : "Page not found"}
     </div>
   </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const html = document.documentElement;
+    const message = document.querySelector(".404-message");
+    if (urlParams.get("locale") == "hr") {
+      html.lang = "hr";
+      message!.innerHTML = "Stranica nije pronađena";
+    }
+  </script>
 </Layout>
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const html = document.documentElement;
-  const message = document.querySelector(".404-message");
-  if (urlParams.get("locale") == "hr") {
-    html.lang = "hr";
-    message!.innerHTML = "Stranica nije pronađena";
-  }
-</script>

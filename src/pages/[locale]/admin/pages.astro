@@ -52,16 +52,16 @@ if (Astro.request.method === "POST") {
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
-</Layout>
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const updateStatus = urlParams.get("update");
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const updateStatus = urlParams.get("update");
 
-  if (updateStatus === "success") {
-    alert("Update successful!");
-    location.replace(location.pathname);
-  } else if (updateStatus === "error") {
-    alert("Update failed.");
-    location.replace(location.pathname);
-  }
-</script>
+    if (updateStatus === "success") {
+      alert("Update successful!");
+      location.replace(location.pathname);
+    } else if (updateStatus === "error") {
+      alert("Update failed.");
+      location.replace(location.pathname);
+    }
+  </script>
+</Layout>

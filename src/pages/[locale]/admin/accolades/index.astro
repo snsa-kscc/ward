@@ -44,26 +44,25 @@ const accoladeData = await db.select().from(accolades).where(eq(accolades.lang, 
       </TableBody>
     </Table>
   </div>
-</Layout>
+  <script>
+    import { actions } from "astro:actions";
 
-<script>
-  import { actions } from "astro:actions";
+    const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+    const locale = document.documentElement.lang;
 
-  const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
-  const locale = document.documentElement.lang;
-
-  buttons.forEach((button) => {
-    button.addEventListener("click", async (e) => {
-      e.preventDefault();
-      const tableRow = button.closest("tr");
-      const id = tableRow?.querySelector("a")?.dataset.id;
-      const result = await actions.deleteAccolade({
-        id: +id!,
-        lang: locale,
+    buttons.forEach((button) => {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const tableRow = button.closest("tr");
+        const id = tableRow?.querySelector("a")?.dataset.id;
+        const result = await actions.deleteAccolade({
+          id: +id!,
+          lang: locale,
+        });
+        if (result.data === "deleted") {
+          tableRow?.remove();
+        }
       });
-      if (result.data === "deleted") {
-        tableRow?.remove();
-      }
     });
-  });
-</script>
+  </script>
+</Layout>
