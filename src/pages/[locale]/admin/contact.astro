@@ -77,9 +77,9 @@ if (Astro.request.method === "POST") {
       <Input type="text" name="contactKey" required className="bg-transparent text-white" defaultValue={resMap.contactKey} />
       <div class="flex w-full flex-col items-center gap-4 md:flex-row">
         <Label htmlFor="contactEmail">Email</Label>
-        <Input type="text" name="contactEmail" required className="bg-transparent text-white" defaultValue={resMap.contactEmail} />
+        <Input type="email" name="contactEmail" required className="bg-transparent text-white" defaultValue={resMap.contactEmail} />
         <Label htmlFor="contactPhone">Phone</Label>
-        <Input type="text" name="contactPhone" required className="bg-transparent text-white" defaultValue={resMap.contactPhone} />
+        <Input type="tel" name="contactPhone" required className="bg-transparent text-white" defaultValue={resMap.contactPhone} />
         <Label htmlFor="contactAddress">Address</Label>
         <Input type="text" name="contactAddress" required className="bg-transparent text-white" defaultValue={resMap.contactAddress} />
       </div>

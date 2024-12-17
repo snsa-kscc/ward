@@ -5,6 +5,7 @@ type Props = {
   data: {
     aboutKey: string;
     about: string;
+    navbarLinks: string;
   };
 };
 
@@ -14,7 +15,13 @@ const splitTag = "__";
 const parts: (text: string) => string[] = (text) => formatParagraph(text).split(splitTag).filter(Boolean);
 ---
 
-<div id="about" class="container px-4 font-bold ~my-40/96">
+<div
+  id={data.navbarLinks
+    .split(",")
+    .map((link) => link.trim())
+    .at(1)}
+  class="container px-4 font-bold ~my-40/96"
+>
   <div class="about-key-wrapper ~text-base/3xl ~mb-14/24">
     {
       data.aboutKey

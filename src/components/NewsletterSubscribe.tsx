@@ -54,14 +54,14 @@ export function NewsletterSubscribe({
         type="email"
         placeholder={lang === "hr" ? "Vaš email" : "Your email"}
         required
-        className="w-full border-0 border-b-2 border-zinc-300 bg-transparent p-2 text-white focus:outline-none"
+        className="w-full border-0 border-b-2 border-zinc-300 bg-transparent p-2 text-slate-100 focus:outline-none"
       />
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full bg-slate-100 font-bold text-slate-800 duration-300 ~text-xl/2xl ~px-10/16 ~py-2/6 hover:bg-slate-400 disabled:cursor-not-allowed disabled:bg-slate-400"
+        className="rounded-full bg-slate-100 text-base text-slate-800 duration-300 ~px-6/10 ~py-2/3 hover:bg-slate-400 disabled:cursor-not-allowed disabled:bg-slate-400"
       >
-        {pending ? (lang === "hr" ? "Šaljem..." : "Submitting...") : button}
+        {pending ? (lang === "hr" ? "Šaljem" : "Sending") : button}
       </button>
     </form>
   );

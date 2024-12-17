@@ -9,6 +9,7 @@ type Props = {
     projects: string;
     ctaHook: string;
     ctaButton: string;
+    navbarLinks: string;
   };
 };
 
@@ -41,9 +42,15 @@ const secondHalf = accoladesData.slice(halfLength);
             ))
         }
       </div>
-      <button class="rounded-full bg-wardGreen font-bold text-slate-100 duration-300 ~text-xl/2xl ~px-10/16 ~py-2/6 hover:bg-wardBlue">
+      <a
+        href={`#${storeDataMap.navbarLinks
+          .split(",")
+          .map((link) => link.trim())
+          .at(-1)}`}
+        class="rounded-full bg-wardGreen font-bold text-slate-100 duration-300 ~text-xl/2xl ~px-10/16 ~py-2/6 hover:bg-wardBlue"
+      >
         {storeDataMap.ctaButton}
-      </button>
+      </a>
     </div>
   </div>
   <div class="container flex flex-col gap-16 p-8 font-bold ~lg:~text-xl/2xl lg:flex-row">

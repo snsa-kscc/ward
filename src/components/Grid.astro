@@ -6,12 +6,21 @@ type Props = {
     title: string;
     slug: string;
   }[][];
+  storeDataMap: {
+    navbarLinks: string;
+  };
 };
 
-const { locale, data } = Astro.props;
+const { locale, data, storeDataMap } = Astro.props;
 ---
 
-<div id="portfolio" class="container relative grid grid-cols-3 gap-8 overflow-y-clip px-4">
+<div
+  id={storeDataMap.navbarLinks
+    .split(",")
+    .map((link) => link.trim())
+    .at(0)}
+  class="container relative grid grid-cols-3 gap-8 overflow-y-clip px-4"
+>
   {
     data.map((part, index) => {
       const className = index === 1 ? "flex-col" : "flex-col-reverse column-reverse";

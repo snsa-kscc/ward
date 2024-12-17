@@ -74,7 +74,7 @@ const isProd = process.env.NODE_ENV === "production";
   <div class="loading-overlay bg-zinc-900" data-is-prod={isProd}></div>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
-  <Grid locale={locale!} data={gridData} />
+  <Grid locale={locale!} data={gridData} storeDataMap={storeDataMap} />
   <About data={storeDataMap} />
   <Brands data={storeDataMap} />
   <Logos data={brandsData} />
