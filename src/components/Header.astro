@@ -1,5 +1,4 @@
 ---
-import { Button } from "./ui/button";
 import { db } from "db";
 import { eq, and } from "drizzle-orm";
 import { pages } from "db/schema";
@@ -43,8 +42,6 @@ switch (true) {
     href = `/${anotherLocale !== "en" ? `${anotherLocale}` : ""}`;
 }
 
-const buttonText = anotherLocale === "hr" ? "Hrvatski" : "English";
-
 const linksArray = links?.split(",").map((link) => link.trim());
 
 function capitalizeLink(str: string) {
@@ -52,18 +49,20 @@ function capitalizeLink(str: string) {
 }
 ---
 
-<header>
-  <div class="container flex items-center justify-between py-4">
-    <Button>
-      <a href={lang === "hr" ? "/hr" : "/"}>Home</a>
-    </Button>
-    <Button>
-      <a href={href}>{buttonText}</a>
-    </Button>
+<header class="fixed top-0 z-50 hidden w-full bg-slate-700/10 backdrop-blur">
+  <div class="container flex items-center justify-between px-4 py-6 ~text-base/lg">
+    <div class="hidden sm:block">
+      <a href={lang === "hr" ? "/hr" : "/"} class="text-xl font-bold">WARD</a>
+    </div>
+    <div class="font-bold">
+      <span class="flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-100 p-4">
+        <a href={href} class="text-lg">{anotherLocale.toUpperCase()}</a>
+      </span>
+    </div>
     <div>
       {
         linksArray?.map((link) => (
-          <a href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`} class="ml-4">
+          <a href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`} class="ml-4 font-bold">
             {capitalizeLink(link.replaceAll("-", " "))}
           </a>
         ))
@@ -71,3 +70,14 @@ function capitalizeLink(str: string) {
     </div>
   </div>
 </header>
+<script>
+  const header = document.querySelector("header") as HTMLElement;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > window.innerHeight) {
+      header.classList.remove("hidden"); // Show header
+    } else {
+      header.classList.add("hidden"); // Hide header
+    }
+  });
+</script>
