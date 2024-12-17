@@ -7,12 +7,12 @@ import Specialities from "@/components/Specialities.astro";
 import Logos from "@/components/Logos.astro";
 import Accolades from "@/components/Accolades.astro";
 import Picture from "@/components/Picture.astro";
+import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { db } from "db";
 import { asc, desc, eq } from "drizzle-orm";
 import { store, portfolio, brands, accolades, pages } from "db/schema";
 import { splitItems } from "@/lib/utils";
-import Header from "@/components/Header.astro";
 import type { StoreData, GridData } from "@/types/global";
 
 const { locale } = Astro.params;

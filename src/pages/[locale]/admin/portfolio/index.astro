@@ -16,7 +16,6 @@ const portfolioItems = await db.select().from(portfolio).orderBy(desc(portfolio.
   <div class="container px-8">
     <h1 class="title pb-10 pt-20 text-3xl">Portfolio</h1>
     <Button variant="secondary"><a href={`/${locale}/admin/portfolio/new`}>New item</a></Button>
-
     <Table>
       <TableHeader>
         <TableRow>
