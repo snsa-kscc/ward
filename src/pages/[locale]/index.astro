@@ -2,10 +2,11 @@
 import Layout from "@/layouts/Layout.astro";
 import Hero from "@/components/Hero.astro";
 import About from "@/components/About.astro";
-import Grid from "@/components/Grid.astro";
-import Brands from "@/components/Brands.astro";
+import Projects from "@/components/Projects.astro";
+import Specialities from "@/components/Specialities.astro";
 import Logos from "@/components/Logos.astro";
 import Accolades from "@/components/Accolades.astro";
+import Picture from "@/components/Picture.astro";
 import Footer from "@/components/Footer.astro";
 import { db } from "db";
 import { asc, desc, eq } from "drizzle-orm";
@@ -74,11 +75,12 @@ const isProd = process.env.NODE_ENV === "production";
   <div class="loading-overlay bg-zinc-900" data-is-prod={isProd}></div>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
-  <Grid locale={locale!} data={gridData} storeDataMap={storeDataMap} />
+  <Projects locale={locale!} data={gridData} storeDataMap={storeDataMap} />
   <About data={storeDataMap} />
-  <Brands data={storeDataMap} />
+  <Specialities data={storeDataMap} />
   <Logos data={brandsData} />
   <Accolades accoladesData={accoladesData} storeDataMap={storeDataMap} />
+  <Picture locale={locale!} />
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
 <script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>

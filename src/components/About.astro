@@ -15,7 +15,7 @@ const splitTag = "__";
 const parts: (text: string) => string[] = (text) => formatParagraph(text).split(splitTag).filter(Boolean);
 ---
 
-<div
+<section
   id={data.navbarLinks
     .split(",")
     .map((link) => link.trim())
@@ -61,7 +61,7 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
       })
     }
   </div>
-</div>
+</section>
 
 <style>
   .about-key-wrapper {

@@ -45,7 +45,7 @@ if (Astro.request.method === "POST") {
 
 <Layout lang={locale} title="Brand logo list">
   <AdminNavbar lang={locale!} />
-  <div class="container px-8">
+  <div class="container p-8">
     <h1 class="title pb-10 pt-20 text-3xl">Brand logo list</h1>
     <Button variant="secondary"><a href={`/${locale}/admin/brands/new`}>New item</a></Button>
 
@@ -74,7 +74,7 @@ if (Astro.request.method === "POST") {
       </TableBody>
     </Table>
   </div>
-  <div class="container px-8 pt-16">
+  <div class="container p-8 pt-16">
     <form method="POST" class="flex flex-col items-start gap-4">
       <Label htmlFor="projects">Projects</Label>
       <Textarea name="projects" className="bg-transparent text-white" rows={5} defaultValue={dict.projects} />

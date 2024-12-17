@@ -14,7 +14,7 @@ type Props = {
 const { locale, data, storeDataMap } = Astro.props;
 ---
 
-<div
+<section
   id={storeDataMap.navbarLinks
     .split(",")
     .map((link) => link.trim())
@@ -48,7 +48,7 @@ const { locale, data, storeDataMap } = Astro.props;
       );
     })
   }
-</div>
+</section>
 
 <style>
   /* .column-reverse {
