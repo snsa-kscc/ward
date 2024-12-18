@@ -25,13 +25,13 @@ type Props = {
 const { locale, storeData, pagesData } = Astro.props;
 ---
 
-<footer>
+<footer class="~mt-40/72">
   <div
     id={storeData.navbarLinks
       .split(",")
       .map((link) => link.trim())
       .at(-1)}
-    class="container px-4 py-40 font-bold ~text-6xl/9xl"
+    class="container px-4 py-20 font-bold ~text-6xl/9xl"
   >
     {
       storeData.ctaHeading.split("").map((char) => {
