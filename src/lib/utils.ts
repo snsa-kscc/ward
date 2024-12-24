@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { gsap } from "gsap";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -51,4 +52,11 @@ export function splitItems(
 
 export function shortenText(text: string, maxLength: number = 75): string {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+}
+
+export function isInViewport(element: Element) {
+  return gsap.utils.toArray<Element>(element).every((el) => {
+    const bounds = el.getBoundingClientRect();
+    return bounds.bottom >= 0 && bounds.bottom <= window.innerHeight;
+  });
 }

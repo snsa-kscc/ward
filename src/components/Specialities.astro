@@ -41,7 +41,7 @@ const { data } = Astro.props;
       );
     })
   }
-  <p class="ml-auto w-full text-balance px-4 pt-40 ~lg:~text-xl/4xl sm:w-1/2">
+  <p class="ml-auto w-full text-balance px-4 pt-40 opacity-0 ~lg:~text-xl/4xl sm:w-1/2" data-specialities-description>
     {data.specialitiesDescription}
   </p>
 </section>
@@ -57,6 +57,8 @@ const { data } = Astro.props;
 </style>
 
 <script>
+  import { isInViewport } from "@/lib/utils";
+
   const specsElement = document.querySelector(".specs-wrapper span") as HTMLElement;
   const specsChars = document.querySelectorAll(".specs-char") as NodeListOf<HTMLElement>;
   const animationDefaults = {
@@ -132,4 +134,15 @@ const { data } = Astro.props;
     end: 0,
     onUpdate: (self) => (direction = self.direction * -1),
   });
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      const specsDesc = document.querySelector("[data-specialities-description]");
+      if (specsDesc && isInViewport(specsDesc)) {
+        specsDesc.classList.add("animate-in", "fade-in", "opacity-100", "slide-in-from-right", "duration-1000");
+      }
+    },
+    { passive: true }
+  );
 </script>
