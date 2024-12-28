@@ -32,16 +32,3 @@ const cleanDescription = description?.replaceAll("__", "");
     <Toaster client:load />
   </body>
 </html>
-<script>
-  import Lenis from "lenis";
-  if (!location.pathname.includes("admin")) {
-    const lenis = new Lenis();
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-  }
-</script>
