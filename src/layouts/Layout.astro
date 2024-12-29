@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { TailwindIndicator } from "../components/TailwindIndicator";
 import { Toaster } from "@/components/ui/toaster";
-import { ClientRouter } from "astro:transitions";
 
 interface Props {
   lang?: string;
@@ -25,14 +24,6 @@ const cleanDescription = description?.replaceAll("__", "");
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={cleanDescription} />
     <title>{title}</title>
-    {!isAdmin && <ClientRouter fallback="none" />}
-    <script>
-      import gsap from "gsap";
-      import ScrollTrigger from "gsap/ScrollTrigger";
-      gsap.registerPlugin(ScrollTrigger);
-      window.gsap = gsap;
-      window.ScrollTrigger = ScrollTrigger;
-    </script>
   </head>
   <body class={cn("bg-zinc-900 text-slate-100 tracking-tighter", { "font-[system-ui] tracking-normal": isAdmin })}>
     <slot />

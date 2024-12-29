@@ -30,8 +30,6 @@ const gridData: GridData = splitItems(grid) as GridData;
 const brandsData = await db.select().from(brands).orderBy(asc(brands.id));
 const accoladesData = await db.select().from(accolades).where(eq(accolades.lang, locale!)).orderBy(desc(accolades.createdAt));
 const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
-
-const isProd = process.env.NODE_ENV === "production";
 ---
 
 <style>
@@ -53,20 +51,8 @@ const isProd = process.env.NODE_ENV === "production";
       const loadingOverlay = document.querySelector(".loading-overlay");
       loadingOverlay?.classList.add("js-loaded");
     });
-    document.addEventListener("astro:after-swap", () => {
-      const loadingOverlay = document.querySelector(".loading-overlay");
-      loadingOverlay?.classList.add("js-loaded");
-    });
-    // const isProd = loadingOverlay.dataset.isProd === "true";
-    // if (isProd) {
-    //   onload = () => {
-    //     if (window.scrollY !== 0) {
-    //       window.scrollTo(0, 0);
-    //     }
-    //   };
-    // }
   </script>
-  <div class="loading-overlay bg-zinc-900" data-is-prod={isProd}></div>
+  <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
   <Hero data={storeDataMap} />
   <Projects locale={locale!} data={gridData} storeDataMap={storeDataMap} />

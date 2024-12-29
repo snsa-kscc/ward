@@ -31,7 +31,7 @@ const { locale, storeData, pagesData } = Astro.props;
       .split(",")
       .map((link) => link.trim())
       .at(-1)}
-    class="container px-4 py-20 font-bold ~text-6xl/9xl"
+    class="footer-wrapper container px-4 py-20 font-bold ~text-6xl/9xl"
   >
     {
       storeData.ctaHeading.split("").map((char) => {
@@ -73,6 +73,10 @@ const { locale, storeData, pagesData } = Astro.props;
 </footer>
 
 <script>
+  import { gsap } from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
   const charsAnimation = document.querySelectorAll(".cta-char") as NodeListOf<HTMLElement>;
   gsap.fromTo(
     charsAnimation,
@@ -89,7 +93,7 @@ const { locale, storeData, pagesData } = Astro.props;
       filter: "blur(0px)",
       stagger: 0.04,
       scrollTrigger: {
-        trigger: ".cta-char",
+        trigger: ".footer-wrapper",
         start: "top 80%",
         end: "top 40%",
         scrub: 1,

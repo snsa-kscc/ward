@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+
 type Props = {
   data: {
     name: string | null;
@@ -16,7 +18,7 @@ const { data } = Astro.props;
       <div class="marquee-scroll flex flex-shrink-0 justify-around gap-20 will-change-transform lg:gap-36">
         {data.map((brand) => (
           <div class="flex items-center">
-            <img class="~w-14/24" src={`/assets/brands/${brand.logo}`} alt={brand.name} />
+            <Image class="~w-14/24" src={`/assets/brands/${brand.logo}`} alt={brand.name} width={96} height={54} />
           </div>
         ))}
       </div>

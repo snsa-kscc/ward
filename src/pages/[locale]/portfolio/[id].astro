@@ -6,6 +6,7 @@ import { db } from "db";
 import { eq, asc } from "drizzle-orm";
 import { portfolio, store, pages } from "db/schema";
 import type { StoreData } from "@/types/global";
+import { Image } from "astro:assets";
 
 const { id, locale } = Astro.params;
 
@@ -33,7 +34,7 @@ if (!data[0]) {
         JSON.parse(data[0].media!).map((media: string, index: number) => {
           return (
             <div class="my-8">
-              <img src={`/assets/portfolio/${media}`} alt={`${data[0].title}-${index + 1}`} />
+              <Image src={`/assets/portfolio/${media}`} alt={`${data[0].title}-${index + 1}`} width={1500} height={2000} loading="eager" />
             </div>
           );
         })

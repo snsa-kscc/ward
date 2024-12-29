@@ -86,6 +86,10 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
 </style>
 
 <script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
   const highlightedKeyElement = document.querySelector(".about-key-wrapper span") as HTMLElement;
   const keyChars = document.querySelectorAll(".about-key-char") as NodeListOf<HTMLElement>;
   const animationDefaults = {

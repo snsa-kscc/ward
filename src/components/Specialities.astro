@@ -57,7 +57,10 @@ const { data } = Astro.props;
 </style>
 
 <script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
   import { isInViewport } from "@/lib/utils";
+  gsap.registerPlugin(ScrollTrigger);
 
   const specsElement = document.querySelector(".specs-wrapper span") as HTMLElement;
   const specsChars = document.querySelectorAll(".specs-char") as NodeListOf<HTMLElement>;

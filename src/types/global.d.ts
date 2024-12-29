@@ -1,12 +1,3 @@
-import { gsap, ScrollTrigger } from "gsap";
-
-declare global {
-  interface Window {
-    gsap: typeof gsap;
-    ScrollTrigger: typeof ScrollTrigger;
-  }
-}
-
 export type GridData = {
   [key: string]: string | number | Date;
   media: string;

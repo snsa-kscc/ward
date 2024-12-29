@@ -104,6 +104,8 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
 </style>
 
 <script>
+  import gsap from "gsap";
+
   const firstLineChars = document.querySelectorAll(".hero-words:first-of-type .hero-char") as NodeListOf<HTMLElement>;
   const secondLineChars = document.querySelectorAll(".hero-words:last-of-type .hero-char") as NodeListOf<HTMLElement>;
   const expertiseWrapper = document.querySelector(".expertise-wrapper") as HTMLElement;
