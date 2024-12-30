@@ -31,7 +31,7 @@ const { locale, storeData, pagesData } = Astro.props;
       .split(",")
       .map((link) => link.trim())
       .at(-1)}
-    class="footer-wrapper container px-4 py-20 font-bold ~text-6xl/9xl"
+    class="footer-wrapper ~text-6xl/14xl container px-4 font-bold ~pb-10/20"
   >
     {
       storeData.ctaHeading.split("").map((char) => {
@@ -42,7 +42,7 @@ const { locale, storeData, pagesData } = Astro.props;
       })
     }
   </div>
-  <div class="container my-20 px-4">
+  <div class="container px-4 ~my-10/20">
     <div class="flex flex-col justify-between gap-16 sm:flex-row">
       <div class="flex basis-1/3 gap-16">
         <div class="basis-1/2">

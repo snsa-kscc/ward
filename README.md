@@ -4,6 +4,4 @@
 
 - [ ] relevant data upload
 - [ ] responsive design
-- [ ] footer styles
 - [ ] spacings
-- [ ] favicon

@@ -33,7 +33,7 @@ const { data } = Astro.props;
       return (
         <div class={cn("specs-slider relative w-max whitespace-nowrap", idx === 0 ? "" : "reverse")}>
           {Array.from({ length: 2 }).map((_, i) => (
-            <p class={cn("relative w-full will-change-transform ~text-6xl/10xl", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
+            <p class={cn("~text-6xl/12xl relative w-full will-change-transform", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
               {`${item} ${item}`}&nbsp;
             </p>
           ))}
