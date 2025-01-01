@@ -20,9 +20,9 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
     .split(",")
     .map((link) => link.trim())
     .at(1)}
-  class="container px-4 font-bold ~my-40/72"
+  class="container px-4 ~my-40/72"
 >
-  <div class="about-key-wrapper ~text-base/3xl ~mb-14/24">
+  <div class="about-key-wrapper font-bold ~text-base/8xl ~mb-14/24">
     {
       data.aboutKey
         .split(/(\s)/)
@@ -37,7 +37,7 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
         ))
     }
   </div>
-  <div class="highlighted inline-block text-balance ~text-lg/4xl">
+  <div class="highlighted inline-block text-balance ~text-lg/3xl">
     {
       parts(data.about).map((part, index) => {
         if (index % 2 === 1) {

@@ -6,6 +6,7 @@ import { db } from "db";
 import { eq, asc } from "drizzle-orm";
 import { pages, store } from "db/schema";
 import type { StoreData } from "@/types/global";
+import { formatParagraph } from "@/lib/utils";
 
 const { locale, slug } = Astro.params;
 
@@ -23,14 +24,16 @@ if (!data[0]) {
   return Astro.redirect(`/404?locale=${locale}`);
 }
 
-const truncatedDescription = data[0].content!.length > 50 ? data[0].content!.slice(0, 50) + "..." : data[0].content;
+const truncatedDescription = data[0].content!.length > 100 ? data[0].content!.slice(0, 100) + "..." : data[0].content;
 ---
 
 <Layout lang={locale} title={data[0].title!} description={truncatedDescription!}>
   <Header lang={locale!} slug={slug} links={storeDataMap.navbarLinks} />
   <div class="container">
-    <div class="py-20 text-9xl font-bold">{data[0].title}</div>
-    <div class="py-20 text-xl font-bold">{data[0].content}</div>
+    <div class="mt-40 py-40 text-right font-bold ~text-5xl/11xl">{data[0].title}</div>
+    <div class="w-2/3 py-20 text-xl">
+      <p set:html={formatParagraph(data[0].content!)} />
+    </div>
   </div>
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
