@@ -102,3 +102,7 @@
     src: url(/fonts/Mont-Bold.woff2) format("woff2");
   }
 }
+
+:root {
+  scrollbar-width: none;
+}
