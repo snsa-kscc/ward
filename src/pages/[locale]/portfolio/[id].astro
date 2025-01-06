@@ -28,7 +28,17 @@ if (!data[0]) {
 <Layout lang={locale} title={data[0].title!} description={JSON.parse(data[0].content!)[locale!]}>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
   <div class="container px-8 pb-16">
-    <h1 class="title py-20 text-3xl">{data[0].title}</h1>
+    <h1 class="title py-20 text-right text-12xl font-bold">
+      {
+        data[0].title
+          ?.split(/(\s)/)
+          .map((w) => (
+            <span class="relative inline-block overflow-hidden">
+              {w === " " ? <span>&nbsp;</span> : w.split("").map((c) => <span class="inline-block translate-y-full will-change-transform">{c}</span>)}
+            </span>
+          ))
+      }
+    </h1>
     <div class="my-4">
       {
         JSON.parse(data[0].media!).map((media: string, index: number) => {
@@ -44,3 +54,11 @@ if (!data[0]) {
   </div>
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
+<script>
+  import gsap from "gsap";
+  const headerWords = document.querySelectorAll(".title>span>span");
+  gsap.to(headerWords, {
+    y: 0,
+    stagger: 0.05,
+  });
+</script>
