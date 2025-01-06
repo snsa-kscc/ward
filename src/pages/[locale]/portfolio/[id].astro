@@ -7,6 +7,7 @@ import { eq, asc } from "drizzle-orm";
 import { portfolio, store, pages } from "db/schema";
 import type { StoreData } from "@/types/global";
 import { Image } from "astro:assets";
+import { formatParagraph } from "@/lib/utils";
 
 const { id, locale } = Astro.params;
 
@@ -23,42 +24,86 @@ const data = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
 if (!data[0]) {
   return Astro.redirect(`/404?locale=${locale}`);
 }
+const parsedDescription = JSON.parse(data[0].content!)[locale!];
+const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.slice(0, 100) + "..." : parsedDescription;
 ---
 
-<Layout lang={locale} title={data[0].title!} description={JSON.parse(data[0].content!)[locale!]}>
+<Layout lang={locale} title={data[0].title!} description={truncatedDescription}>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
-  <div class="container px-8 pb-16">
-    <h1 class="title py-20 text-right text-12xl font-bold">
-      {
-        data[0].title
-          ?.split(/(\s)/)
-          .map((w) => (
-            <span class="relative inline-block overflow-hidden">
-              {w === " " ? <span>&nbsp;</span> : w.split("").map((c) => <span class="inline-block translate-y-full will-change-transform">{c}</span>)}
-            </span>
-          ))
-      }
-    </h1>
-    <div class="my-4">
-      {
-        JSON.parse(data[0].media!).map((media: string, index: number) => {
-          return (
-            <div class="my-8">
-              <Image src={`/assets/portfolio/${media}`} alt={`${data[0].title}-${index + 1}`} width={1500} height={2000} loading="eager" />
-            </div>
-          );
-        })
-      }
-    </div>
-    <p>{JSON.parse(data[0].content!)[locale!]}</p>
+  <h1 class="title container py-20 text-right text-12xl font-bold">
+    {
+      data[0].title
+        ?.split(/(\s)/)
+        .map((w) => (
+          <span class="relative inline-block overflow-hidden">
+            {w === " " ? <span>&nbsp;</span> : w.split("").map((c) => <span class="inline-block translate-y-full will-change-transform">{c}</span>)}
+          </span>
+        ))
+    }
+  </h1>
+  <div class="portfolio-item-wrapper my-20 flex min-w-max items-center gap-16 overflow-x-auto px-40">
+    {
+      JSON.parse(data[0].media!).map((media: string, index: number) => {
+        return (
+          <div>
+            <Image
+              class="max-h-[80vh] w-full"
+              src={`/assets/portfolio/${media}`}
+              alt={`${data[0].title}-${index + 1}`}
+              width={1500}
+              height={2000}
+              loading="eager"
+            />
+          </div>
+        );
+      })
+    }
   </div>
+  <p class="portfolio-item-description container pt-20" set:html={formatParagraph(JSON.parse(data[0].content!)[locale!])} />
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
 <script>
   import gsap from "gsap";
   const headerWords = document.querySelectorAll(".title>span>span");
-  gsap.to(headerWords, {
+  const portfolioItemDescription = document.querySelector(".portfolio-item-description");
+  const portfolioItemsWrapper = document.querySelector(".portfolio-item-wrapper") as HTMLElement;
+
+  if (window.scrollY === 0) {
+    document.body.classList.add("overflow-hidden");
+    setTimeout(() => {
+      document.body.classList.remove("overflow-hidden");
+    }, 1500);
+  }
+
+  const tl = gsap.timeline();
+  tl.to(headerWords, {
     y: 0,
     stagger: 0.05,
+  });
+  tl.from(portfolioItemsWrapper, {
+    y: 75,
+    opacity: 0,
+    duration: 0.7,
+  });
+  gsap.to(portfolioItemsWrapper, {
+    x: () => -(portfolioItemsWrapper.scrollWidth - window.innerWidth),
+    scrollTrigger: {
+      trigger: portfolioItemsWrapper,
+      pin: true,
+      scrub: 0.7,
+      start: "top 10%",
+      end: () => "+=" + (portfolioItemsWrapper.scrollWidth - window.innerWidth),
+      invalidateOnRefresh: true,
+    },
+  });
+  gsap.from(portfolioItemDescription, {
+    y: 75,
+    opacity: 0,
+    duration: 0.7,
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: portfolioItemDescription,
+      start: "top 80%",
+    },
   });
 </script>
