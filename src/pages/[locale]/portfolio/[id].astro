@@ -28,7 +28,21 @@ const parsedDescription = JSON.parse(data[0].content!)[locale!];
 const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.slice(0, 100) + "..." : parsedDescription;
 ---
 
+<style>
+  .loading-overlay {
+    position: fixed;
+    pointer-events: none;
+    inset: 0;
+    z-index: 100;
+  }
+  .loading-overlay.js-loaded {
+    visibility: hidden;
+    opacity: 0;
+  }
+</style>
+
 <Layout lang={locale} title={data[0].title!} description={truncatedDescription}>
+  <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
   <h1 class="title container py-20 text-right text-12xl font-bold">
     {
@@ -41,7 +55,7 @@ const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.
         ))
     }
   </h1>
-  <div class="portfolio-item-wrapper my-20 flex min-w-max items-center gap-16 overflow-x-auto px-40">
+  <div class="portfolio-item-wrapper my-20 flex min-w-max items-center gap-16 overflow-x-auto px-40 will-change-transform">
     {
       JSON.parse(data[0].media!).map((media: string, index: number) => {
         return (
@@ -59,7 +73,9 @@ const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.
       })
     }
   </div>
-  <p class="portfolio-item-description container pt-20" set:html={formatParagraph(JSON.parse(data[0].content!)[locale!])} />
+  <div class="portfolio-item-description container pt-20">
+    <p class="w-1/2" set:html={formatParagraph(JSON.parse(data[0].content!)[locale!])} />
+  </div>
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
 <script>
@@ -68,6 +84,10 @@ const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.
   const portfolioItemDescription = document.querySelector(".portfolio-item-description");
   const portfolioItemsWrapper = document.querySelector(".portfolio-item-wrapper") as HTMLElement;
 
+  document.addEventListener("DOMContentLoaded", () => {
+    const loadingOverlay = document.querySelector(".loading-overlay");
+    loadingOverlay?.classList.add("js-loaded");
+  });
   if (window.scrollY === 0) {
     document.body.classList.add("overflow-hidden");
     setTimeout(() => {
@@ -84,6 +104,7 @@ const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.
     y: 75,
     opacity: 0,
     duration: 0.7,
+    ease: "none",
   });
   gsap.to(portfolioItemsWrapper, {
     x: () => -(portfolioItemsWrapper.scrollWidth - window.innerWidth),
