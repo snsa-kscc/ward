@@ -23,7 +23,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Mont", ...defaultTheme.fontFamily.sans],
+        sans: ['"Neue Haas Display"', ...defaultTheme.fontFamily.sans],
       },
       letterSpacing: {
         tightest: "-.075em",

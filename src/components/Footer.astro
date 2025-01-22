@@ -65,7 +65,7 @@ const { locale, storeData, pagesData } = Astro.props;
       <div class="basis-1/3">
         <p class="pb-8 font-bold ~text-xl/2xl">{storeData.newsletterKey}</p>
         <NewsletterSubscribe client:load button={storeData.newsletterButton} lang={locale} />
-        <p class="pt-6 text-xs font-bold" set:html={storeData.newsletterDisclaimer} />
+        <p class="pt-6 text-xs" set:html={storeData.newsletterDisclaimer} />
       </div>
     </div>
     <div class="font-bold ~text-xl/2xl ~pt-10/40"><p>{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p></div>

@@ -37,7 +37,7 @@ const parts: (text: string) => string[] = (text) => formatParagraph(text).split(
         ))
     }
   </div>
-  <div class="highlighted inline-block text-balance font-bold !leading-[7vh] ~text-lg/4xl">
+  <div class="highlighted inline-block text-balance !leading-[7vh] ~text-lg/4xl">
     {
       parts(data.about).map((part, index) => {
         if (index % 2 === 1) {

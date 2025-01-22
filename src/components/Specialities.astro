@@ -12,8 +12,8 @@ type Props = {
 const { data } = Astro.props;
 ---
 
-<section class="overflow-hidden font-bold ~my-40/72">
-  <div class="specs-wrapper container px-4 ~text-base/8xl ~my-14/24">
+<section class="overflow-hidden ~my-40/72">
+  <div class="specs-wrapper container px-4 font-bold ~text-base/8xl ~my-14/24">
     {
       data.specialitiesKey
         .split(/(\s)/)
@@ -31,7 +31,7 @@ const { data } = Astro.props;
   {
     data.specialities.split("\r\n").map((item, idx) => {
       return (
-        <div class={cn("specs-slider relative w-max whitespace-nowrap", idx === 0 ? "" : "reverse")}>
+        <div class={cn("specs-slider relative w-max whitespace-nowrap font-bold", idx === 0 ? "" : "reverse")}>
           {Array.from({ length: 2 }).map((_, i) => (
             <p class={cn("relative w-full will-change-transform ~text-6xl/12xl", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
               {`${item} ${item}`}&nbsp;

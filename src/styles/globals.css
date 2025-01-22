@@ -95,7 +95,21 @@
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url(/fonts/Mont-Bold.woff2) format("woff2");
+    src: url(/fonts/Montt-Boldd.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-Roman.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-Bold.woff2) format("woff2");
   }
 }
 
