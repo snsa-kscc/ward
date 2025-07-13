@@ -54,7 +54,7 @@ export function NewsletterSubscribe({
         type="email"
         placeholder={lang === "hr" ? "Vaš email" : "Your email"}
         required
-        className="w-full border-0 border-b-2 border-zinc-300 bg-transparent p-2 text-slate-100 focus:outline-none"
+        className="w-full border-0 border-b-2 border-zinc-300 bg-transparent p-2 text-slate-100 focus:outline-hidden"
       />
       <button
         type="submit"
