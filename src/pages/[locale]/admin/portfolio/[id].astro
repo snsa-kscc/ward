@@ -104,7 +104,11 @@ const currentLocaleContent = contentObject[locale!];
         accept="image/*, video/*"
         className="text-black"
       />
-      <MediaTable client:load filenames={filenames} title={res[0].title!} />
+      <MediaTable
+        client:only="react"
+        filenames={filenames}
+        title={res[0].title!}
+      />
       <Label htmlFor="content">description</Label>
       <Textarea
         name="content"

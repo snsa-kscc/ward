@@ -10,6 +10,7 @@ const resend = new Resend(import.meta.env.PUBLIC_RESEND_API);
 
 export const server = {
   deleteMedia: defineAction({
+    accept: "form",
     input: z.object({ title: z.string(), item: z.string() }),
     handler: async ({ title, item }) => {
       const res = await db

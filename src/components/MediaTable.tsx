@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useActionState } from "react";
+import { actions } from "astro:actions";
+import { experimental_withState as withState } from "@astrojs/react/actions";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -8,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { GripVertical, Trash2 } from "lucide-react";
+import { GripVertical, Trash2, Loader2 } from "lucide-react";
 
 interface MediaTableProps {
   filenames: string[];
@@ -18,7 +20,23 @@ interface MediaTableProps {
 export default function MediaTable({ filenames, title }: MediaTableProps) {
   const [items, setItems] = useState<string[]>(filenames);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [deletingItem, setDeletingItem] = useState<string | null>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
+
+  const [state, deleteAction, pending] = useActionState(
+    withState(actions.deleteMedia),
+    {
+      data: "",
+      error: undefined,
+    },
+  );
+
+  useEffect(() => {
+    if (state?.data === "deleted" && deletingItem) {
+      setItems((prev) => prev.filter((item) => item !== deletingItem));
+      setDeletingItem(null);
+    }
+  }, [state, deletingItem]);
 
   useEffect(() => {
     setItems(filenames);
@@ -29,26 +47,6 @@ export default function MediaTable({ filenames, title }: MediaTableProps) {
     if (hiddenInputRef.current) {
       hiddenInputRef.current.value = JSON.stringify(items);
     }
-  }, [items]);
-
-  // Listen for successful deletion events
-  useEffect(() => {
-    const handleMediaDeleted = (e: CustomEvent) => {
-      const { filename } = e.detail;
-      const newItems = items.filter((item) => item !== filename);
-      setItems(newItems);
-    };
-
-    window.addEventListener(
-      "mediaDeleted",
-      handleMediaDeleted as EventListener,
-    );
-    return () => {
-      window.removeEventListener(
-        "mediaDeleted",
-        handleMediaDeleted as EventListener,
-      );
-    };
   }, [items]);
 
   const handleDragStart = (e: React.DragEvent, filename: string) => {
@@ -80,28 +78,6 @@ export default function MediaTable({ filenames, title }: MediaTableProps) {
     setDraggedItem(null);
   };
 
-  const handleDelete = async (filename: string) => {
-    try {
-      // Call the delete action directly from the component
-      const { actions } = await import("astro:actions");
-      const result = await actions.deleteMedia({
-        title: title,
-        item: filename,
-      });
-      console.log("result", result);
-      if (result.data === "deleted") {
-        // Remove from local state on successful deletion
-        const newItems = items.filter((item) => item !== filename);
-        setItems(newItems);
-      } else {
-        alert("Failed to delete media file");
-      }
-    } catch (error) {
-      console.error("Error deleting media:", error);
-      alert("Error deleting media file");
-    }
-  };
-
   return (
     <>
       <div className="rounded-md border">
@@ -109,8 +85,8 @@ export default function MediaTable({ filenames, title }: MediaTableProps) {
           <TableHeader>
             <TableRow>
               <TableHead className="w-12"></TableHead>
-              <TableHead>Filename</TableHead>
-              <TableHead className="w-24">Actions</TableHead>
+              <TableHead>filename</TableHead>
+              <TableHead className="w-24">actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -131,14 +107,26 @@ export default function MediaTable({ filenames, title }: MediaTableProps) {
                 </TableCell>
                 <TableCell className="font-medium">{filename}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(filename)}
-                    className="h-8 px-2"
+                  <form
+                    action={deleteAction}
+                    onSubmit={() => setDeletingItem(filename)}
                   >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
+                    <input type="hidden" name="title" value={title} />
+                    <input type="hidden" name="item" value={filename} />
+                    <Button
+                      type="submit"
+                      variant="destructive"
+                      size="sm"
+                      className="h-8 px-2"
+                      disabled={pending && deletingItem === filename}
+                    >
+                      {pending && deletingItem === filename ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3 w-3" />
+                      )}
+                    </Button>
+                  </form>
                 </TableCell>
               </TableRow>
             ))}
