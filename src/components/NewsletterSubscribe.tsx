@@ -59,7 +59,7 @@ export function NewsletterSubscribe({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full bg-slate-100 text-base text-slate-800 duration-300 ~px-6/10 ~py-2/3 hover:bg-slate-400 disabled:cursor-not-allowed disabled:bg-slate-400"
+        className="~px-6/10 ~py-2/3 rounded-full bg-slate-100 text-base text-slate-800 duration-300 hover:bg-slate-400 disabled:cursor-not-allowed disabled:bg-slate-400"
       >
         {pending ? (lang === "hr" ? "Šaljem" : "Sending") : button}
       </button>

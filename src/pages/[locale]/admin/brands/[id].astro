@@ -29,7 +29,10 @@ if (Astro.request.method === "POST") {
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
       await writeFile(path.join("./public/assets/brands", file.name), buffer);
-      await db.update(brands).set({ name, logo: file.name, slug }).where(eq(brands.slug, id!));
+      await db
+        .update(brands)
+        .set({ name, logo: file.name, slug })
+        .where(eq(brands.slug, id!));
     } else {
       await db.update(brands).set({ name, slug }).where(eq(brands.slug, id!));
     }
@@ -45,9 +48,19 @@ if (Astro.request.method === "POST") {
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">{res[0].name}</h1>
-    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="flex flex-col items-start gap-4"
+    >
       <Label htmlFor="name">name (alt)</Label>
-      <Input type="text" name="name" required className="bg-transparent text-white" defaultValue={res[0].name as string} />
+      <Input
+        type="text"
+        name="name"
+        required
+        className="bg-transparent text-white"
+        defaultValue={res[0].name as string}
+      />
       {
         res[0].logo && (
           <div class="flex items-center gap-4 px-6 py-2">
@@ -59,22 +72,35 @@ if (Astro.request.method === "POST") {
         )
       }
       <Label htmlFor="file">logo</Label>
-      <Input type="file" name="file" accept="image/*" required className="text-black" disabled={res[0].logo ? true : false} />
+      <Input
+        type="file"
+        name="file"
+        accept="image/*"
+        required
+        className="text-black"
+        disabled={res[0].logo ? true : false}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
+    import { toast } from "@/hooks/use-toast";
     import { actions } from "astro:actions";
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
     }
 
     const button = document.querySelector(".btn") as HTMLButtonElement;

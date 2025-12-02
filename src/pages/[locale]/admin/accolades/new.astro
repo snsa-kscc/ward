@@ -13,8 +13,12 @@ if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const item = formData.get("item") as string;
   try {
-    const res = await db.insert(accolades).values({ item, createdAt: new Date(), lang: locale });
-    return Astro.redirect(`/${locale}/admin/accolades/${res[0].insertId}?update=success`);
+    const res = await db
+      .insert(accolades)
+      .values({ item, createdAt: new Date(), lang: locale });
+    return Astro.redirect(
+      `/${locale}/admin/accolades/${res[0].insertId}?update=success`
+    );
   } catch (error) {
     console.error(error);
     return Astro.redirect(`/${locale}/admin/accolades/new?update=error`);
@@ -28,20 +32,32 @@ if (Astro.request.method === "POST") {
     <h1 class="title py-20 text-3xl">New accolade</h1>
     <form method="POST" class="flex flex-col items-start gap-4">
       <Label htmlFor="item">Accolade</Label>
-      <Textarea name="item" className="bg-transparent text-white" required rows={10} />
+      <Textarea
+        name="item"
+        className="bg-transparent text-white"
+        required
+        rows={10}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
+    import { toast } from "@/hooks/use-toast";
+
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
     }
   </script>
 </Layout>

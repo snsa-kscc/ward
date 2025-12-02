@@ -31,7 +31,10 @@ if (Astro.request.method === "POST") {
     for (const [key, value] of formData.entries()) {
       if (key === "ctaPicture") {
         const buffer = Buffer.from(await (value as File).arrayBuffer());
-        await writeFile(path.join("./public/assets", (value as File).name), buffer);
+        await writeFile(
+          path.join("./public/assets", (value as File).name),
+          buffer
+        );
         await db
           .update(store)
           .set({ value: (value as File).name })
@@ -55,9 +58,19 @@ if (Astro.request.method === "POST") {
   <AdminNavbar lang={locale!} />
   <div class="container p-8">
     <h1 class="title py-20 text-3xl">Contact</h1>
-    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="flex flex-col items-start gap-4"
+    >
       <Label htmlFor="ctaHeading">Cta Heading</Label>
-      <Input type="text" name="ctaHeading" required className="bg-transparent text-white" defaultValue={resMap.ctaHeading} />
+      <Input
+        type="text"
+        name="ctaHeading"
+        required
+        className="bg-transparent text-white"
+        defaultValue={resMap.ctaHeading}
+      />
       {
         resMap.ctaPicture && (
           <div class="flex items-center gap-4 px-6 py-2">
@@ -68,45 +81,115 @@ if (Astro.request.method === "POST") {
           </div>
         )
       }
-      <Label htmlFor="ctaPicture">Cta Picture - make sure the file is called cta-{locale}.jpg - won't render otherwise</Label>
-      <Input type="file" name="ctaPicture" accept="image/*" required className="text-black" disabled={resMap.ctaPicture ? true : false} />
+      <Label htmlFor="ctaPicture"
+        >Cta Picture - make sure the file is called cta-{locale}.jpg - won't
+        render otherwise</Label
+      >
+      <Input
+        type="file"
+        name="ctaPicture"
+        accept="image/*"
+        required
+        className="text-black"
+        disabled={resMap.ctaPicture ? true : false}
+      />
       <Label htmlFor="contactKey">Contact Key</Label>
-      <Input type="text" name="contactKey" required className="bg-transparent text-white" defaultValue={resMap.contactKey} />
+      <Input
+        type="text"
+        name="contactKey"
+        required
+        className="bg-transparent text-white"
+        defaultValue={resMap.contactKey}
+      />
       <div class="flex w-full flex-col items-center gap-4 md:flex-row">
         <Label htmlFor="contactEmail">Email</Label>
-        <Input type="email" name="contactEmail" required className="bg-transparent text-white" defaultValue={resMap.contactEmail} />
+        <Input
+          type="email"
+          name="contactEmail"
+          required
+          className="bg-transparent text-white"
+          defaultValue={resMap.contactEmail}
+        />
         <Label htmlFor="contactPhone">Phone</Label>
-        <Input type="tel" name="contactPhone" required className="bg-transparent text-white" defaultValue={resMap.contactPhone} />
+        <Input
+          type="tel"
+          name="contactPhone"
+          required
+          className="bg-transparent text-white"
+          defaultValue={resMap.contactPhone}
+        />
         <Label htmlFor="contactAddress">Address</Label>
-        <Input type="text" name="contactAddress" required className="bg-transparent text-white" defaultValue={resMap.contactAddress} />
+        <Input
+          type="text"
+          name="contactAddress"
+          required
+          className="bg-transparent text-white"
+          defaultValue={resMap.contactAddress}
+        />
       </div>
       <Label htmlFor="infoKey">Info Key</Label>
-      <Input type="text" name="infoKey" required className="bg-transparent text-white" defaultValue={resMap.infoKey} />
+      <Input
+        type="text"
+        name="infoKey"
+        required
+        className="bg-transparent text-white"
+        defaultValue={resMap.infoKey}
+      />
       <Label htmlFor="newsletterKey">Newsletter Key</Label>
-      <Input type="text" name="newsletterKey" required className="bg-transparent text-white" defaultValue={resMap.newsletterKey} />
+      <Input
+        type="text"
+        name="newsletterKey"
+        required
+        className="bg-transparent text-white"
+        defaultValue={resMap.newsletterKey}
+      />
       <div class="flex w-full flex-col items-center gap-4 md:flex-row">
         <Label htmlFor="newsletterButton">Newsletter Button</Label>
-        <Input type="text" name="newsletterButton" required className="bg-transparent text-white" defaultValue={resMap.newsletterButton} />
+        <Input
+          type="text"
+          name="newsletterButton"
+          required
+          className="bg-transparent text-white"
+          defaultValue={resMap.newsletterButton}
+        />
         <Label htmlFor="newsletterDisclaimer">Newsletter Disclaimer</Label>
-        <Input type="text" name="newsletterDisclaimer" required className="bg-transparent text-white" defaultValue={resMap.newsletterDisclaimer} />
+        <Input
+          type="text"
+          name="newsletterDisclaimer"
+          required
+          className="bg-transparent text-white"
+          defaultValue={resMap.newsletterDisclaimer}
+        />
       </div>
       <Label htmlFor="copyright">Copyright</Label>
-      <Input type="text" name="copyright" required className="bg-transparent text-white" defaultValue={resMap.copyright} />
+      <Input
+        type="text"
+        name="copyright"
+        required
+        className="bg-transparent text-white"
+        defaultValue={resMap.copyright}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
+    import { toast } from "@/hooks/use-toast";
     import { actions } from "astro:actions";
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
     }
 
     const button = document.querySelector(".btn") as HTMLButtonElement;

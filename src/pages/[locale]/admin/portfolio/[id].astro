@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import MediaTable from "@/components/MediaTable";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { db } from "db";
@@ -20,22 +21,37 @@ if (!res[0]) {
 }
 
 let filenames: string[] = JSON.parse(res[0].media as string);
-let contentObject: Record<string, string> = JSON.parse(res[0].content as string);
+let contentObject: Record<string, string> = JSON.parse(
+  res[0].content as string
+);
 let slug;
 
 if (Astro.request.method === "POST") {
   try {
-    const res = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
+    const res = await db
+      .select()
+      .from(portfolio)
+      .where(eq(portfolio.slug, id!));
     filenames = JSON.parse(res[0].media as string);
     const formData = await Astro.request.formData();
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
+    const mediaOrder = formData.get("media_order") as string;
+
+    // Use the reordered filenames if available, otherwise keep original order
+    if (mediaOrder) {
+      filenames = JSON.parse(mediaOrder);
+    }
+
     slug = slugify(title);
     let additionalFilenames: string[] = [];
     for (const file of formData.getAll("file") as File[]) {
       if (file.name) {
         const buffer = Buffer.from(await file.arrayBuffer());
-        await writeFile(path.join("./public/assets/portfolio", file.name), buffer);
+        await writeFile(
+          path.join("./public/assets/portfolio", file.name),
+          buffer
+        );
         additionalFilenames.push(file.name);
       }
     }
@@ -67,55 +83,54 @@ const currentLocaleContent = contentObject[locale!];
   <AdminNavbar lang={locale!} />
   <div class="container p-8">
     <h1 class="title py-20 text-3xl">{res[0].title}</h1>
-    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="flex flex-col items-start gap-4"
+    >
       <Label htmlFor="title">title</Label>
-      <Input type="text" name="title" required className="bg-transparent text-white" defaultValue={res[0].title as string} />
+      <Input
+        type="text"
+        name="title"
+        required
+        className="bg-transparent text-white"
+        defaultValue={res[0].title as string}
+      />
       <Label htmlFor="file">media</Label>
-      <Input type="file" name="file" multiple accept="image/*, video/*" className="text-black" />
-      {
-        filenames.map((filename) => (
-          <div class="flex items-center gap-4 px-6 py-2">
-            <p>{filename}</p>
-            <Button className="btn" variant="destructive">
-              delete
-            </Button>
-          </div>
-        ))
-      }
+      <Input
+        type="file"
+        name="file"
+        multiple
+        accept="image/*, video/*"
+        className="text-black"
+      />
+      <MediaTable client:load filenames={filenames} title={res[0].title!} />
       <Label htmlFor="content">description</Label>
-      <Textarea name="content" className="bg-transparent text-white" defaultValue={currentLocaleContent} rows={15} />
+      <Textarea
+        name="content"
+        className="bg-transparent text-white"
+        defaultValue={currentLocaleContent}
+        rows={15}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
-    import { actions } from "astro:actions";
+    import { toast } from "@/hooks/use-toast";
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
-    }
-
-    const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
-    const title = document.querySelector(".title") as HTMLTitleElement;
-
-    if (buttons) {
-      buttons.forEach((button) => {
-        button.addEventListener("click", async (e) => {
-          e.preventDefault();
-          const result = await actions.deleteMedia({
-            title: title.textContent ?? "",
-            item: button.previousElementSibling?.textContent ?? "",
-          });
-          if (result.data === "deleted") {
-            button.parentElement?.remove();
-          }
-        });
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
       });
     }
   </script>

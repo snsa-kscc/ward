@@ -42,24 +42,46 @@ if (Astro.request.method === "POST") {
     <h1 class="title py-20 text-3xl">Legal pages</h1>
     <form method="POST" class="flex flex-col items-start gap-4">
       <Label htmlFor="cookie policy">Cookie Policy</Label>
-      <Textarea name="cookie policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["cookie policy"]} />
+      <Textarea
+        name="cookie policy"
+        className="bg-transparent text-white"
+        rows={20}
+        defaultValue={resMap["cookie policy"]}
+      />
       <Label htmlFor="privacy policy">Privacy Policy</Label>
-      <Textarea name="privacy policy" className="bg-transparent text-white" rows={20} defaultValue={resMap["privacy policy"]} />
+      <Textarea
+        name="privacy policy"
+        className="bg-transparent text-white"
+        rows={20}
+        defaultValue={resMap["privacy policy"]}
+      />
       <Label htmlFor="terms of use">Terms of Use</Label>
-      <Textarea name="terms of use" className="bg-transparent text-white" rows={20} defaultValue={resMap["terms of use"]} />
+      <Textarea
+        name="terms of use"
+        className="bg-transparent text-white"
+        rows={20}
+        defaultValue={resMap["terms of use"]}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
+    import { toast } from "@/hooks/use-toast";
+
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
     }
   </script>
 </Layout>

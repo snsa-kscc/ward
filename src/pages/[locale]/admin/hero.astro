@@ -47,38 +47,100 @@ if (Astro.request.method === "POST") {
     <h1 class="title py-20 text-3xl">Hero</h1>
     <form method="POST" class="flex flex-col items-start gap-4">
       <Label htmlFor="navbarLinks">Navbar links</Label>
-      <Input type="text" name="navbarLinks" required className="bg-transparent text-white" defaultValue={dict.navbarLinks} />
+      <Input
+        type="text"
+        name="navbarLinks"
+        required
+        className="bg-transparent text-white"
+        defaultValue={dict.navbarLinks}
+      />
       <Label htmlFor="siteTitleFirst">Site title first</Label>
-      <Input type="text" name="siteTitleFirst" required className="bg-transparent text-white" defaultValue={dict.siteTitleFirst} />
+      <Input
+        type="text"
+        name="siteTitleFirst"
+        required
+        className="bg-transparent text-white"
+        defaultValue={dict.siteTitleFirst}
+      />
       <Label htmlFor="siteTitleSecond">Site title second</Label>
-      <Input type="text" name="siteTitleSecond" required className="bg-transparent text-white" defaultValue={dict.siteTitleSecond} />
-      <Label htmlFor="siteDescriptionFirst">Site description first (__ for super-powers, only once)</Label>
-      <Input type="text" name="siteDescriptionFirst" className="bg-transparent text-white" defaultValue={dict.siteDescriptionFirst} />
+      <Input
+        type="text"
+        name="siteTitleSecond"
+        required
+        className="bg-transparent text-white"
+        defaultValue={dict.siteTitleSecond}
+      />
+      <Label htmlFor="siteDescriptionFirst"
+        >Site description first (__ for super-powers, only once)</Label
+      >
+      <Input
+        type="text"
+        name="siteDescriptionFirst"
+        className="bg-transparent text-white"
+        defaultValue={dict.siteDescriptionFirst}
+      />
       <Label htmlFor="siteDescriptionSecond">Site description second</Label>
-      <Input type="text" name="siteDescriptionSecond" className="bg-transparent text-white" defaultValue={dict.siteDescriptionSecond} />
+      <Input
+        type="text"
+        name="siteDescriptionSecond"
+        className="bg-transparent text-white"
+        defaultValue={dict.siteDescriptionSecond}
+      />
       <Label htmlFor="aboutKey">About key</Label>
-      <Input type="text" name="aboutKey" className="bg-transparent text-white" defaultValue={dict.aboutKey} />
+      <Input
+        type="text"
+        name="aboutKey"
+        className="bg-transparent text-white"
+        defaultValue={dict.aboutKey}
+      />
       <Label htmlFor="about">About (__ for super-powers, multiple times)</Label>
-      <Textarea name="about" className="bg-transparent text-white" rows={5} defaultValue={dict.about} />
+      <Textarea
+        name="about"
+        className="bg-transparent text-white"
+        rows={5}
+        defaultValue={dict.about}
+      />
       <Label htmlFor="specialitiesKey">Specialities key</Label>
-      <Input type="text" name="specialitiesKey" className="bg-transparent text-white" defaultValue={dict.specialitiesKey} />
+      <Input
+        type="text"
+        name="specialitiesKey"
+        className="bg-transparent text-white"
+        defaultValue={dict.specialitiesKey}
+      />
       <Label htmlFor="specialities">Specialities</Label>
-      <Textarea name="specialities" className="bg-transparent text-white" rows={5} defaultValue={dict.specialities} />
+      <Textarea
+        name="specialities"
+        className="bg-transparent text-white"
+        rows={5}
+        defaultValue={dict.specialities}
+      />
       <Label htmlFor="specialitiesDescription">Specialities description</Label>
-      <Textarea name="specialitiesDescription" className="bg-transparent text-white" rows={5} defaultValue={dict.specialitiesDescription} />
+      <Textarea
+        name="specialitiesDescription"
+        className="bg-transparent text-white"
+        rows={5}
+        defaultValue={dict.specialitiesDescription}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
+    import { toast } from "@/hooks/use-toast";
+
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
     }
   </script>
 </Layout>

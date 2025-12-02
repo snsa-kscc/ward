@@ -39,24 +39,46 @@ if (Astro.request.method === "POST") {
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">New brand logo</h1>
-    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-start gap-4">
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="flex flex-col items-start gap-4"
+    >
       <Label htmlFor="name">name (alt)</Label>
-      <Input type="text" name="name" required className="bg-transparent text-white" />
+      <Input
+        type="text"
+        name="name"
+        required
+        className="bg-transparent text-white"
+      />
       <Label htmlFor="file">logo</Label>
-      <Input type="file" name="file" accept="image/*" required className="text-black" />
+      <Input
+        type="file"
+        name="file"
+        accept="image/*"
+        required
+        className="text-black"
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
+    import { toast } from "@/hooks/use-toast";
+
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
     }
   </script>
 </Layout>

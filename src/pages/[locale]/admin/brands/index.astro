@@ -4,7 +4,14 @@ import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { brands, store } from "db/schema";
 import { asc, eq } from "drizzle-orm";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -42,8 +49,10 @@ if (Astro.request.method === "POST") {
 <Layout lang={locale} title="Brand logo list">
   <AdminNavbar lang={locale!} />
   <div class="container p-8">
-    <h1 class="title pb-10 pt-20 text-3xl">Brand logo list</h1>
-    <Button variant="secondary"><a href={`/${locale}/admin/brands/new`}>New item</a></Button>
+    <h1 class="title pt-20 pb-10 text-3xl">Brand logo list</h1>
+    <Button variant="secondary"
+      ><a href={`/${locale}/admin/brands/new`}>New item</a></Button
+    >
 
     <Table>
       <TableHeader>
@@ -73,29 +82,50 @@ if (Astro.request.method === "POST") {
   <div class="container p-8 pt-16">
     <form method="POST" class="flex flex-col items-start gap-4">
       <Label htmlFor="projects">Projects</Label>
-      <Textarea name="projects" className="bg-transparent text-white" rows={5} defaultValue={dict.projects} />
+      <Textarea
+        name="projects"
+        className="bg-transparent text-white"
+        rows={5}
+        defaultValue={dict.projects}
+      />
       <Label htmlFor="ctaHook">Cta Hook</Label>
-      <Input name="ctaHook" className="bg-transparent text-white" defaultValue={dict.ctaHook} />
+      <Input
+        name="ctaHook"
+        className="bg-transparent text-white"
+        defaultValue={dict.ctaHook}
+      />
       <Label htmlFor="ctaButton">Cta Button</Label>
-      <Input name="ctaButton" className="bg-transparent text-white" defaultValue={dict.ctaButton} />
+      <Input
+        name="ctaButton"
+        className="bg-transparent text-white"
+        defaultValue={dict.ctaButton}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
   <script>
+    import { toast } from "@/hooks/use-toast";
     import { actions } from "astro:actions";
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
 
     if (updateStatus === "success") {
-      alert("Update successful!");
-      location.replace(location.pathname);
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
     } else if (updateStatus === "error") {
-      alert("Update failed.");
-      location.replace(location.pathname);
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
     }
 
-    const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+    const buttons = document.querySelectorAll(
+      ".btn"
+    ) as NodeListOf<HTMLButtonElement>;
 
     buttons.forEach((button) => {
       button.addEventListener("click", async (e) => {
