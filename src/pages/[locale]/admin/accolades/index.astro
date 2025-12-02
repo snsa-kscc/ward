@@ -4,65 +4,28 @@ import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { accolades } from "db/schema";
 import { desc, eq } from "drizzle-orm";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { shortenText } from "@/lib/utils";
+import AccoladesTable from "@/components/AccoladesTable";
 
 const { locale } = Astro.params;
-const accoladeData = await db.select().from(accolades).where(eq(accolades.lang, locale!)).orderBy(desc(accolades.createdAt));
+const accoladeData = await db
+  .select()
+  .from(accolades)
+  .where(eq(accolades.lang, locale!))
+  .orderBy(desc(accolades.createdAt));
+const items = accoladeData.map((item) => ({
+  id: item.id,
+  item: item.item!,
+}));
 ---
 
 <Layout lang={locale} title="Accolades list">
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Accolades list</h1>
-    <Button variant="secondary"><a href={`/${locale}/admin/accolades/new`}>New accolade</a></Button>
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Accolade</TableHead>
-          <TableHead>Delete</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          accoladeData.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">
-                <a href={`/${locale}/admin/accolades/${item.id}`} data-id={item.id}>
-                  {shortenText(item.item!)}
-                </a>
-              </TableCell>
-              <TableCell>
-                <Button variant="destructive" className="btn">
-                  delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
+    <Button variant="secondary"
+      ><a href={`/${locale}/admin/accolades/new`}>New accolade</a></Button
+    >
+    <AccoladesTable client:only="react" items={items} locale={locale!} />
   </div>
-  <script>
-    import { actions } from "astro:actions";
-
-    const buttons = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
-    const locale = document.documentElement.lang;
-
-    buttons.forEach((button) => {
-      button.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const tableRow = button.closest("tr");
-        const id = tableRow?.querySelector("a")?.dataset.id;
-        const result = await actions.deleteAccolade({
-          id: +id!,
-          lang: locale,
-        });
-        if (result.data === "deleted") {
-          tableRow?.remove();
-        }
-      });
-    });
-  </script>
 </Layout>

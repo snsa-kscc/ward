@@ -4,21 +4,19 @@ import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { brands, store } from "db/schema";
 import { asc, eq } from "drizzle-orm";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import BrandsTable from "@/components/BrandsTable";
 
 const { locale } = Astro.params;
 const logoItems = await db.select().from(brands).orderBy(asc(brands.id));
+const items = logoItems.map((item) => ({
+  id: item.id,
+  name: item.name!,
+  slug: item.slug!,
+}));
 const res = await db.select().from(store).where(eq(store.section, "brands"));
 
 const dict = res.reduce(
@@ -53,31 +51,7 @@ if (Astro.request.method === "POST") {
     <Button variant="secondary"
       ><a href={`/${locale}/admin/brands/new`}>New item</a></Button
     >
-
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Item</TableHead>
-          <TableHead>Delete</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          logoItems.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">
-                <a href={`/${locale}/admin/brands/${item.slug}`}>{item.name}</a>
-              </TableCell>
-              <TableCell>
-                <Button variant="destructive" className="btn">
-                  delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
+    <BrandsTable client:only="react" items={items} locale={locale!} />
   </div>
   <div class="container p-8 pt-16">
     <form method="POST" class="flex flex-col items-start gap-4">
@@ -105,7 +79,6 @@ if (Astro.request.method === "POST") {
   </div>
   <script>
     import { toast } from "@/hooks/use-toast";
-    import { actions } from "astro:actions";
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
@@ -122,23 +95,5 @@ if (Astro.request.method === "POST") {
         variant: "destructive",
       });
     }
-
-    const buttons = document.querySelectorAll(
-      ".btn"
-    ) as NodeListOf<HTMLButtonElement>;
-
-    buttons.forEach((button) => {
-      button.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const tableRow = button.closest("tr");
-        const title = tableRow?.querySelector("a")?.textContent;
-        const result = await actions.deleteBrand({
-          title: title ?? "",
-        });
-        if (result.data === "deleted") {
-          tableRow?.remove();
-        }
-      });
-    });
   </script>
 </Layout>
