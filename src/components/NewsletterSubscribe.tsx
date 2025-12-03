@@ -1,6 +1,6 @@
 import { actions } from "astro:actions";
 import { useRef, useEffect, useActionState } from "react";
-import { experimental_withState as withState } from "@astrojs/react/actions";
+import { withState } from "@astrojs/react/actions";
 import { useToast } from "@/hooks/use-toast";
 
 export function NewsletterSubscribe({

@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/postcss";
-import clampwind from "clampwind";
+import clampwind from "postcss-clampwind";
 
 // export default {
 //   plugins: [tailwindcss(), clampwind()],

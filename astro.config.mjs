@@ -3,7 +3,7 @@ import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import postcss from "postcss";
-import clampwind from "clampwind";
+import clampwind from "postcss-clampwind";
 
 export default defineConfig({
   vite: {
