@@ -18,6 +18,18 @@ export default function BrandsTable({ items, locale }: BrandsTableProps) {
     return result.data === "deleted";
   };
 
+  const handleSaveOrder = async (
+    orderedItems: TableItem[],
+  ): Promise<boolean> => {
+    const result = await actions.reorderBrands({
+      items: orderedItems.map((item, index) => ({
+        id: item.id as number,
+        order: index + 1,
+      })),
+    });
+    return result.data === "updated";
+  };
+
   return (
     <DraggableTable
       items={tableItems}
@@ -25,6 +37,7 @@ export default function BrandsTable({ items, locale }: BrandsTableProps) {
       emptyMessage="No brand items"
       draggable={true}
       onDelete={handleDelete}
+      onSaveOrder={handleSaveOrder}
     />
   );
 }

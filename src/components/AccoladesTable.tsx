@@ -26,6 +26,18 @@ export default function AccoladesTable({ items, locale }: AccoladesTableProps) {
     return result.data === "deleted";
   };
 
+  const handleSaveOrder = async (
+    orderedItems: TableItem[],
+  ): Promise<boolean> => {
+    const result = await actions.reorderAccolades({
+      items: orderedItems.map((item, index) => ({
+        id: item.id as number,
+        order: index + 1,
+      })),
+    });
+    return result.data === "updated";
+  };
+
   return (
     <DraggableTable
       items={tableItems}
@@ -33,6 +45,7 @@ export default function AccoladesTable({ items, locale }: AccoladesTableProps) {
       emptyMessage="No accolades"
       draggable={true}
       onDelete={handleDelete}
+      onSaveOrder={handleSaveOrder}
     />
   );
 }

@@ -10,6 +10,7 @@ import { rm } from "fs/promises";
 import { db } from "db";
 import { brands } from "db/schema";
 import { slugify } from "@/lib/utils";
+import { max } from "drizzle-orm";
 
 const { locale } = Astro.params;
 
@@ -20,8 +21,16 @@ if (Astro.request.method === "POST") {
   const slug = slugify(name);
   const buffer = Buffer.from(await file.arrayBuffer());
   await writeFile(path.join("./public/assets/brands", file.name), buffer);
+
+  const maxOrderResult = await db
+    .select({ maxOrder: max(brands.order) })
+    .from(brands);
+  const newOrder = (maxOrderResult[0]?.maxOrder ?? 0) + 1;
+
   try {
-    await db.insert(brands).values({ name, logo: file.name, slug });
+    await db
+      .insert(brands)
+      .values({ name, logo: file.name, slug, order: newOrder });
   } catch (error) {
     console.error(error);
     try {

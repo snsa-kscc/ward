@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { accolades } from "db/schema";
-import { desc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import AccoladesTable from "@/components/AccoladesTable";
 
@@ -12,7 +12,7 @@ const accoladeData = await db
   .select()
   .from(accolades)
   .where(eq(accolades.lang, locale!))
-  .orderBy(desc(accolades.createdAt));
+  .orderBy(asc(accolades.order));
 const items = accoladeData.map((item) => ({
   id: item.id,
   item: item.item!,

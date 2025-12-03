@@ -18,6 +18,18 @@ export default function PortfolioTable({ items, locale }: PortfolioTableProps) {
     return result.data === "deleted";
   };
 
+  const handleSaveOrder = async (
+    orderedItems: TableItem[],
+  ): Promise<boolean> => {
+    const result = await actions.reorderPortfolio({
+      items: orderedItems.map((item, index) => ({
+        id: item.id as number,
+        order: index + 1,
+      })),
+    });
+    return result.data === "updated";
+  };
+
   return (
     <DraggableTable
       items={tableItems}
@@ -25,6 +37,7 @@ export default function PortfolioTable({ items, locale }: PortfolioTableProps) {
       emptyMessage="No portfolio items"
       draggable={true}
       onDelete={handleDelete}
+      onSaveOrder={handleSaveOrder}
     />
   );
 }

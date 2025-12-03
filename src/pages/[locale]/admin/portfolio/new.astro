@@ -11,6 +11,7 @@ import { rm } from "fs/promises";
 import { db } from "db";
 import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
+import { max } from "drizzle-orm";
 
 const { locale } = Astro.params;
 let filenames = [];
@@ -27,6 +28,11 @@ if (Astro.request.method === "POST") {
 
   const contentObject = { [locale!]: content };
 
+  const maxOrderResult = await db
+    .select({ maxOrder: max(portfolio.order) })
+    .from(portfolio);
+  const newOrder = (maxOrderResult[0]?.maxOrder ?? 0) + 1;
+
   try {
     await db.insert(portfolio).values({
       title,
@@ -34,6 +40,7 @@ if (Astro.request.method === "POST") {
       content: JSON.stringify(contentObject),
       createdAt: new Date(),
       media: JSON.stringify(filenames),
+      order: newOrder,
     });
   } catch (error) {
     console.error(error);

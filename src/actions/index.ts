@@ -136,4 +136,49 @@ export const server = {
       return { success: true };
     },
   }),
+
+  reorderPortfolio: defineAction({
+    input: z.object({
+      items: z.array(z.object({ id: z.number(), order: z.number() })),
+    }),
+    handler: async ({ items }) => {
+      for (const item of items) {
+        await db
+          .update(portfolio)
+          .set({ order: item.order })
+          .where(eq(portfolio.id, item.id));
+      }
+      return "updated";
+    },
+  }),
+
+  reorderBrands: defineAction({
+    input: z.object({
+      items: z.array(z.object({ id: z.number(), order: z.number() })),
+    }),
+    handler: async ({ items }) => {
+      for (const item of items) {
+        await db
+          .update(brands)
+          .set({ order: item.order })
+          .where(eq(brands.id, item.id));
+      }
+      return "updated";
+    },
+  }),
+
+  reorderAccolades: defineAction({
+    input: z.object({
+      items: z.array(z.object({ id: z.number(), order: z.number() })),
+    }),
+    handler: async ({ items }) => {
+      for (const item of items) {
+        await db
+          .update(accolades)
+          .set({ order: item.order })
+          .where(eq(accolades.id, item.id));
+      }
+      return "updated";
+    },
+  }),
 };

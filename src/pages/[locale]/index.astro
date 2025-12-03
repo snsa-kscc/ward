@@ -10,7 +10,7 @@ import Picture from "@/components/Picture.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { db } from "db";
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { store, portfolio, brands, accolades, pages } from "db/schema";
 import { splitItems } from "@/lib/utils";
 import type { StoreData, GridData } from "@/types/global";
@@ -24,12 +24,20 @@ const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   return acc;
 }, {} as StoreData);
 
-const grid = await db.select().from(portfolio).orderBy(desc(portfolio.createdAt));
+const grid = await db.select().from(portfolio).orderBy(asc(portfolio.order));
 const gridData: GridData = splitItems(grid) as GridData;
 
-const brandsData = await db.select().from(brands).orderBy(asc(brands.id));
-const accoladesData = await db.select().from(accolades).where(eq(accolades.lang, locale!)).orderBy(desc(accolades.createdAt));
-const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
+const brandsData = await db.select().from(brands).orderBy(asc(brands.order));
+const accoladesData = await db
+  .select()
+  .from(accolades)
+  .where(eq(accolades.lang, locale!))
+  .orderBy(asc(accolades.order));
+const pagesData = await db
+  .select()
+  .from(pages)
+  .where(eq(pages.lang, locale!))
+  .orderBy(asc(pages.name));
 ---
 
 <style>
@@ -45,7 +53,11 @@ const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).o
   }
 </style>
 
-<Layout lang={locale} title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond} description={storeDataMap.about!}>
+<Layout
+  lang={locale}
+  title={storeDataMap.siteTitleFirst + " " + storeDataMap.siteTitleSecond}
+  description={storeDataMap.about!}
+>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const loadingOverlay = document.querySelector(".loading-overlay");

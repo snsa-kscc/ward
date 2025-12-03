@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/AdminNavbar.astro";
 import { db } from "db";
 import { portfolio } from "db/schema";
-import { desc } from "drizzle-orm";
+import { asc } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import PortfolioTable from "@/components/PortfolioTable";
 
@@ -11,7 +11,7 @@ const { locale } = Astro.params;
 const portfolioItems = await db
   .select()
   .from(portfolio)
-  .orderBy(desc(portfolio.createdAt));
+  .orderBy(asc(portfolio.order));
 const items = portfolioItems.map((item) => ({
   id: item.id,
   title: item.title!,

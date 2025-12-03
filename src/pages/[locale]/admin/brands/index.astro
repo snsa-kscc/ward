@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import BrandsTable from "@/components/BrandsTable";
 
 const { locale } = Astro.params;
-const logoItems = await db.select().from(brands).orderBy(asc(brands.id));
+const logoItems = await db.select().from(brands).orderBy(asc(brands.order));
 const items = logoItems.map((item) => ({
   id: item.id,
   name: item.name!,

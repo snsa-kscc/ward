@@ -22,6 +22,7 @@ export const portfolio = mysqlTable("portfolio", {
   title: varchar("title", { length: 512 }).unique(),
   content: text("content"),
   media: varchar("media", { length: 1024 }),
+  order: int("order").default(0),
 });
 
 export const accolades = mysqlTable("accolade", {
@@ -29,6 +30,7 @@ export const accolades = mysqlTable("accolade", {
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
   item: text("item"),
   lang: text("lang"),
+  order: int("order").default(0),
 });
 
 export const brands = mysqlTable("brand", {
@@ -36,6 +38,7 @@ export const brands = mysqlTable("brand", {
   name: text("name"),
   slug: text("slug"),
   logo: text("logo"),
+  order: int("order").default(0),
 });
 
 export const store = mysqlTable("store", {
