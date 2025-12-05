@@ -7,7 +7,6 @@
 - [ ] spacings
 - [ ] devops
 - [ ] dev and test db
-- [ ] potfolio items upload
 
 ## References
 
