@@ -7,7 +7,12 @@
     "check": "astro check",
     "preview": "astro preview",
     "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate",
+    "push:dev": "drizzle-kit push --config=drizzle.config.dev.ts",
+    "push:prod": "drizzle-kit push",
+    "migrate:dev": "drizzle-kit migrate --config=drizzle.config.dev.ts",
+    "migrate:prod": "drizzle-kit migrate",
+    "studio:dev": "drizzle-kit studio --config=drizzle.config.dev.ts",
+    "studio:prod": "drizzle-kit studio",
     "astro": "astro"
   },
   "dependencies": {
