@@ -6,3 +6,4 @@
 - [ ] responsive design
 - [ ] spacings
 - [ ] devops
+- [ ] dev and test db
