@@ -1,7 +1,7 @@
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
 import { rm } from "fs/promises";
-import { eq, and } from "drizzle-orm";
+import { eq, and, max } from "drizzle-orm";
 import { accolades, brands, portfolio, store } from "@/../db/schema";
 import { db } from "@/../db";
 import { Resend } from "resend";
@@ -175,6 +175,43 @@ export const server = {
           .set({ order: item.order })
           .where(eq(accolades.id, item.id));
       }
+      return "updated";
+    },
+  }),
+
+  createAccolade: defineAction({
+    input: z.object({
+      item: z.string(),
+      lang: z.string(),
+      order: z.number().optional(),
+    }),
+    handler: async ({ item, lang, order }) => {
+      let newOrder;
+
+      if (order !== undefined) {
+        newOrder = order;
+      } else {
+        const maxOrderResult = await db
+          .select({ maxOrder: max(accolades.order) })
+          .from(accolades)
+          .where(eq(accolades.lang, lang));
+        newOrder = (maxOrderResult[0]?.maxOrder ?? 0) + 1;
+      }
+
+      const result = await db
+        .insert(accolades)
+        .values({ item, createdAt: new Date(), lang, order: newOrder });
+      return result[0].insertId;
+    },
+  }),
+
+  updateAccolade: defineAction({
+    input: z.object({ id: z.number(), item: z.string(), lang: z.string() }),
+    handler: async ({ id, item, lang }) => {
+      await db
+        .update(accolades)
+        .set({ item })
+        .where(and(eq(accolades.id, id), eq(accolades.lang, lang)));
       return "updated";
     },
   }),

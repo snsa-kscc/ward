@@ -4,8 +4,7 @@ import AdminNavbar from "@/components/admin/AdminNavbar.astro";
 import { db } from "db";
 import { accolades } from "db/schema";
 import { asc, eq } from "drizzle-orm";
-import { Button } from "@/components/ui/button";
-import AccoladesTable from "@/components/admin/AccoladesTable";
+import AccoladesManager from "@/components/admin/AccoladesManager";
 
 const { locale } = Astro.params;
 const accoladeData = await db
@@ -19,13 +18,10 @@ const items = accoladeData.map((item) => ({
 }));
 ---
 
-<Layout lang={locale} title="Accolades list">
+<Layout lang={locale} title="Accolades Management">
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
-    <h1 class="title py-20 text-3xl">Accolades list</h1>
-    <Button variant="secondary"
-      ><a href={`/${locale}/admin/accolades/new`}>New accolade</a></Button
-    >
-    <AccoladesTable client:only="react" items={items} locale={locale!} />
+    <h1 class="title py-20 text-3xl">Accolades Management</h1>
+    <AccoladesManager client:only="react" items={items} locale={locale!} />
   </div>
 </Layout>
