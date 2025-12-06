@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { actions } from "astro:actions";
-import DraggableTable, { type TableItem } from "./DraggableTable";
+import DraggableTable, {
+  type TableItem,
+} from "@/components/admin/DraggableTable";
 
 interface MediaTableProps {
   filenames: string[];

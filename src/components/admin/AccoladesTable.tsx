@@ -1,5 +1,7 @@
 import { actions } from "astro:actions";
-import DraggableTable, { type TableItem } from "./admin/DraggableTable";
+import DraggableTable, {
+  type TableItem,
+} from "@/components/admin/DraggableTable";
 
 interface AccoladesTableProps {
   items: { id: number; item: string }[];
