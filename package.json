@@ -13,7 +13,8 @@
     "migrate:prod": "drizzle-kit migrate",
     "studio:dev": "drizzle-kit studio --config=drizzle.config.dev.ts",
     "studio:prod": "drizzle-kit studio",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/node": "^9.5.1",
