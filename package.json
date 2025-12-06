@@ -36,14 +36,14 @@
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "resend": "^6.5.2",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "postcss-clampwind": "^0.0.10"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "drizzle-kit": "^0.31.8",
-    "postcss-clampwind": "^0.0.10",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.1.17",
