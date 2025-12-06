@@ -11,43 +11,66 @@ type Props = {
 const { data } = Astro.props;
 
 const splitTag = "__";
-const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(Boolean);
+const parts: (text: string) => string[] = (text) =>
+  text.split(splitTag).filter(Boolean);
 ---
 
-<section class="container ~mt-32/36 ~md:~mb-28/56">
-  <div class="flex flex-col items-center justify-center">
-    <div class="hero-words inline-block overflow-hidden font-bold leading-none tracking-tighter ~text-5xl/13xl">
+<section class="container mt-[clamp(36,38)]">
+  <div class="mt-38 flex flex-col items-center justify-center">
+    <div
+      class="hero-words inline-block overflow-hidden text-[clamp(var(--text-5xl),var(--text-13xl))] leading-none font-bold tracking-tighter"
+    >
       {
         data.siteTitleFirst.split("").map((char) => {
           if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
-            return <span class="hero-char stroke inline-block origin-[center_top_0px] will-change-transform">{char}</span>;
+            return (
+              <span class="hero-char stroke inline-block origin-[center_top_0px] will-change-transform">
+                {char}
+              </span>
+            );
           }
-          return <span class="hero-char inline-block origin-[center_top_0px] will-change-transform">{char}</span>;
+          return (
+            <span class="hero-char inline-block origin-[center_top_0px] will-change-transform">
+              {char}
+            </span>
+          );
         })
       }
     </div>
-    <div class="hero-words inline-block overflow-hidden font-bold leading-none tracking-tighter ~text-5xl/13xl">
+    <div
+      class="hero-words inline-block overflow-hidden text-[clamp(var(--text-5xl),var(--text-13xl))] leading-none font-bold tracking-tighter"
+    >
       {
         data.siteTitleSecond.split("").map((char) => {
           if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
-            return <span class="hero-char stroke inline-block origin-[center_top_0px] will-change-transform">{char}</span>;
+            return (
+              <span class="hero-char stroke inline-block origin-[center_top_0px] will-change-transform">
+                {char}
+              </span>
+            );
           }
-          return <span class="hero-char inline-block origin-[center_top_0px] will-change-transform">{char}</span>;
+          return (
+            <span class="hero-char inline-block origin-[center_top_0px] will-change-transform">
+              {char}
+            </span>
+          );
         })
       }
     </div>
   </div>
-  <div class="expertise expertise-wrapper mt-24 flex overflow-hidden text-balance px-4 font-bold will-change-transform ~text-2xl/5xl">
+  <div
+    class="expertise expertise-wrapper mt-24 flex overflow-hidden px-4 text-5xl font-bold text-balance will-change-transform"
+  >
     {
       parts(data.siteDescriptionFirst).map((item, index) => {
         if (index % 2 === 0) {
-          return <div class="inline-block ~pr-2/3">{item}</div>;
+          return <div class="inline-block pr-2">{item}</div>;
         }
         return (
           <div class="expertise-animation relative inline-block">
             {item.split(";").map((word) => {
               return (
-                <div class="absolute left-0 top-0 w-max" data-text={word}>
+                <div class="absolute top-0 left-0 w-max" data-text={word}>
                   <div class="overflow-hidden">
                     {word.split("").map((char) => {
                       return <span class="hero-char inline-block">{char}</span>;
@@ -61,7 +84,9 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
       })
     }
   </div>
-  <h1 class="expertise expertise-hook mt-24 text-balance px-4 text-end font-bold will-change-transform ~text-2xl/5xl">
+  <h1
+    class="expertise expertise-hook mt-24 px-4 text-end text-5xl font-bold text-balance will-change-transform"
+  >
     {data.siteDescriptionSecond}
   </h1>
 </section>
@@ -106,11 +131,21 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
 <script>
   import gsap from "gsap";
 
-  const firstLineChars = document.querySelectorAll(".hero-words:first-of-type .hero-char") as NodeListOf<HTMLElement>;
-  const secondLineChars = document.querySelectorAll(".hero-words:last-of-type .hero-char") as NodeListOf<HTMLElement>;
-  const expertiseWrapper = document.querySelector(".expertise-wrapper") as HTMLElement;
-  const expertiseHook = document.querySelector(".expertise-hook") as HTMLElement;
-  const expertises = document.querySelectorAll(".expertise-animation > div") as NodeListOf<HTMLElement>;
+  const firstLineChars = document.querySelectorAll(
+    ".hero-words:first-of-type .hero-char"
+  ) as NodeListOf<HTMLElement>;
+  const secondLineChars = document.querySelectorAll(
+    ".hero-words:last-of-type .hero-char"
+  ) as NodeListOf<HTMLElement>;
+  const expertiseWrapper = document.querySelector(
+    ".expertise-wrapper"
+  ) as HTMLElement;
+  const expertiseHook = document.querySelector(
+    ".expertise-hook"
+  ) as HTMLElement;
+  const expertises = document.querySelectorAll(
+    ".expertise-animation > div"
+  ) as NodeListOf<HTMLElement>;
 
   const tl = gsap.timeline({ delay: 0.8 });
   tl.from(firstLineChars, {
@@ -142,7 +177,9 @@ const parts: (text: string) => string[] = (text) => text.split(splitTag).filter(
     repeat: -1,
   });
   expertises.forEach((item) => {
-    const chars = item.querySelectorAll(".hero-char") as NodeListOf<HTMLElement>;
+    const chars = item.querySelectorAll(
+      ".hero-char"
+    ) as NodeListOf<HTMLElement>;
     expertiseTl
       .fromTo(
         chars,
