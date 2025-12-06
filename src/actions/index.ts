@@ -2,7 +2,7 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
 import { rm } from "fs/promises";
 import { eq, and, max } from "drizzle-orm";
-import { accolades, brands, portfolio, store } from "@/../db/schema";
+import { clients, brands, portfolio, store } from "@/../db/schema";
 import { db } from "@/../db";
 import { Resend } from "resend";
 
@@ -86,13 +86,13 @@ export const server = {
     },
   }),
 
-  deleteAccolade: defineAction({
+  deleteClient: defineAction({
     input: z.object({ id: z.number(), lang: z.string() }),
     handler: async ({ id, lang }) => {
       try {
         await db
-          .delete(accolades)
-          .where(and(eq(accolades.id, id), eq(accolades.lang, lang)));
+          .delete(clients)
+          .where(and(eq(clients.id, id), eq(clients.lang, lang)));
       } catch (error) {
         console.error(error);
       }
@@ -164,22 +164,22 @@ export const server = {
     },
   }),
 
-  reorderAccolades: defineAction({
+  reorderClients: defineAction({
     input: z.object({
       items: z.array(z.object({ id: z.number(), order: z.number() })),
     }),
     handler: async ({ items }) => {
       for (const item of items) {
         await db
-          .update(accolades)
+          .update(clients)
           .set({ order: item.order })
-          .where(eq(accolades.id, item.id));
+          .where(eq(clients.id, item.id));
       }
       return "updated";
     },
   }),
 
-  createAccolade: defineAction({
+  createClient: defineAction({
     input: z.object({
       item: z.string(),
       lang: z.string(),
@@ -192,26 +192,26 @@ export const server = {
         newOrder = order;
       } else {
         const maxOrderResult = await db
-          .select({ maxOrder: max(accolades.order) })
-          .from(accolades)
-          .where(eq(accolades.lang, lang));
+          .select({ maxOrder: max(clients.order) })
+          .from(clients)
+          .where(eq(clients.lang, lang));
         newOrder = (maxOrderResult[0]?.maxOrder ?? 0) + 1;
       }
 
       const result = await db
-        .insert(accolades)
+        .insert(clients)
         .values({ item, createdAt: new Date(), lang, order: newOrder });
       return result[0].insertId;
     },
   }),
 
-  updateAccolade: defineAction({
+  updateClient: defineAction({
     input: z.object({ id: z.number(), item: z.string(), lang: z.string() }),
     handler: async ({ id, item, lang }) => {
       await db
-        .update(accolades)
+        .update(clients)
         .set({ item })
-        .where(and(eq(accolades.id, id), eq(accolades.lang, lang)));
+        .where(and(eq(clients.id, id), eq(clients.lang, lang)));
       return "updated";
     },
   }),

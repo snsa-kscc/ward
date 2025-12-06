@@ -1,6 +1,6 @@
 ---
 type Props = {
-  accoladesData: {
+  clientsData: {
     id: number;
     createdAt: Date;
     item: string | null;
@@ -13,10 +13,10 @@ type Props = {
   };
 };
 
-const { accoladesData, storeDataMap } = Astro.props;
-const halfLength = Math.ceil(accoladesData.length / 2);
-const firstHalf = accoladesData.slice(0, halfLength);
-const secondHalf = accoladesData.slice(halfLength);
+const { clientsData, storeDataMap } = Astro.props;
+const halfLength = Math.ceil(clientsData.length / 2);
+const firstHalf = clientsData.slice(0, halfLength);
+const secondHalf = clientsData.slice(halfLength);
 ---
 
 <section class="my-[clamp(40,72)]">

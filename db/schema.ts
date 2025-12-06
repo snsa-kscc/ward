@@ -25,7 +25,7 @@ export const portfolio = mysqlTable("portfolio", {
   order: int("order").default(0),
 });
 
-export const accolades = mysqlTable("accolade", {
+export const clients = mysqlTable("client", {
   id: int("id").notNull().primaryKey().autoincrement(),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
   item: text("item"),

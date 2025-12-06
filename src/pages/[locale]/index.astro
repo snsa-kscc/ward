@@ -5,13 +5,13 @@ import About from "@/components/About.astro";
 import Projects from "@/components/Projects.astro";
 import Specialities from "@/components/Specialities.astro";
 import Logos from "@/components/Logos.astro";
-import Accolades from "@/components/Accolades.astro";
+import Clients from "@/components/Clients.astro";
 import Picture from "@/components/Picture.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { db } from "db";
 import { asc, eq } from "drizzle-orm";
-import { store, portfolio, brands, accolades, pages } from "db/schema";
+import { store, portfolio, brands, clients, pages } from "db/schema";
 import { splitItems } from "@/lib/utils";
 import type { StoreData, GridData } from "@/types/global";
 
@@ -28,11 +28,11 @@ const grid = await db.select().from(portfolio).orderBy(asc(portfolio.order));
 const gridData: GridData = splitItems(grid) as GridData;
 
 const brandsData = await db.select().from(brands).orderBy(asc(brands.order));
-const accoladesData = await db
+const clientsData = await db
   .select()
-  .from(accolades)
-  .where(eq(accolades.lang, locale!))
-  .orderBy(asc(accolades.order));
+  .from(clients)
+  .where(eq(clients.lang, locale!))
+  .orderBy(asc(clients.order));
 const pagesData = await db
   .select()
   .from(pages)
@@ -77,7 +77,7 @@ const pagesData = await db
   <About data={storeDataMap} />
   <Specialities data={storeDataMap} />
   <Logos data={brandsData} />
-  <Accolades accoladesData={accoladesData} storeDataMap={storeDataMap} />
+  <Clients clientsData={clientsData} storeDataMap={storeDataMap} />
   <Picture locale={locale!} />
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>

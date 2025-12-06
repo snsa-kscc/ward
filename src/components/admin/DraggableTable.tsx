@@ -82,7 +82,7 @@ export default function DraggableTable({
     e.dataTransfer.dropEffect = "move";
   };
 
-  const handleDragEnter = (e: React.DragEvent, item: TableItem) => {
+  const handleDragEnter = (item: TableItem) => {
     if (draggedItem && draggedItem.id !== item.id) {
       const draggedIndex = items.findIndex((i) => i.id === draggedItem.id);
       const targetIndex = items.findIndex((i) => i.id === item.id);
@@ -157,7 +157,7 @@ export default function DraggableTable({
                 }
                 onDragOver={draggable ? handleDragOver : undefined}
                 onDragEnter={
-                  draggable ? (e) => handleDragEnter(e, item) : undefined
+                  draggable ? () => handleDragEnter(item) : undefined
                 }
                 onDragEnd={draggable ? handleDragEnd : undefined}
               >

@@ -1,0 +1,27 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AdminNavbar from "@/components/admin/AdminNavbar.astro";
+import { db } from "db";
+import { clients } from "db/schema";
+import { asc, eq } from "drizzle-orm";
+import ClientsManager from "@/components/admin/ClientsManager";
+
+const { locale } = Astro.params;
+const clientData = await db
+  .select()
+  .from(clients)
+  .where(eq(clients.lang, locale!))
+  .orderBy(asc(clients.order));
+const items = clientData.map((item) => ({
+  id: item.id,
+  item: item.item!,
+}));
+---
+
+<Layout lang={locale} title="Clients Management">
+  <AdminNavbar lang={locale!} />
+  <div class="container px-8">
+    <h1 class="title py-20 text-3xl">Clients Management</h1>
+    <ClientsManager client:only="react" items={items} locale={locale!} />
+  </div>
+</Layout>
