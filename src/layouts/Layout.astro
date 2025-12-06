@@ -26,12 +26,11 @@ const cleanDescription = description?.replaceAll("__", "");
     <title>{title}</title>
   </head>
   <body
-    class={cn("bg-black text-white", {
-      "font-[system-ui] tracking-normal": isAdmin,
+    class={cn("bg-stone-50 text-stone-950", {
+      "font-[system-ui] tracking-normal bg-black text-white": isAdmin,
     })}
   >
     <slot />
-    <!-- {!isAdmin && <div class="pointer-events-none fixed inset-0 z-10 h-full w-full bg-[url('/noise.png')] bg-repeat opacity-[0.03]" />} -->
     <TailwindIndicator />
     <Toaster client:load />
   </body>
