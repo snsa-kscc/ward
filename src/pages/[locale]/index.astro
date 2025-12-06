@@ -63,12 +63,12 @@ const pagesData = await db
       const loadingOverlay = document.querySelector(".loading-overlay");
       loadingOverlay?.classList.add("js-loaded");
     });
-    if (window.scrollY === 0) {
-      document.body.classList.add("overflow-hidden");
-      setTimeout(() => {
-        document.body.classList.remove("overflow-hidden");
-      }, 4000);
-    }
+    // if (window.scrollY === 0) {
+    //   document.body.classList.add("overflow-hidden");
+    //   setTimeout(() => {
+    //     document.body.classList.remove("overflow-hidden");
+    //   }, 4000);
+    // }
   </script>
   <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} links={storeDataMap.navbarLinks} />
