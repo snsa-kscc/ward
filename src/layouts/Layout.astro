@@ -1,7 +1,7 @@
 ---
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
-import { TailwindIndicator } from "../components/TailwindIndicator";
+import { TailwindIndicator } from "@/components/admin/TailwindIndicator";
 import { Toaster } from "@/components/ui/toaster";
 
 interface Props {
@@ -25,7 +25,11 @@ const cleanDescription = description?.replaceAll("__", "");
     <meta name="description" content={cleanDescription} />
     <title>{title}</title>
   </head>
-  <body class={cn("bg-black text-white", { "font-[system-ui] tracking-normal": isAdmin })}>
+  <body
+    class={cn("bg-black text-white", {
+      "font-[system-ui] tracking-normal": isAdmin,
+    })}
+  >
     <slot />
     <!-- {!isAdmin && <div class="pointer-events-none fixed inset-0 z-10 h-full w-full bg-[url('/noise.png')] bg-repeat opacity-[0.03]" />} -->
     <TailwindIndicator />

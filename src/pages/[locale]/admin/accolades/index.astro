@@ -1,11 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import AdminNavbar from "@/components/AdminNavbar.astro";
+import AdminNavbar from "@/components/admin/AdminNavbar.astro";
 import { db } from "db";
 import { accolades } from "db/schema";
 import { asc, eq } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
-import AccoladesTable from "@/components/AccoladesTable";
+import AccoladesTable from "@/components/admin/AccoladesTable";
 
 const { locale } = Astro.params;
 const accoladeData = await db

@@ -1,5 +1,5 @@
 import { actions } from "astro:actions";
-import DraggableTable, { type TableItem } from "./DraggableTable";
+import DraggableTable, { type TableItem } from "./admin/DraggableTable";
 
 interface PortfolioTableProps {
   items: { id: number; title: string; slug: string }[];

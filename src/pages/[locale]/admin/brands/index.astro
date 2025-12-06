@@ -1,6 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import AdminNavbar from "@/components/AdminNavbar.astro";
+import AdminNavbar from "@/components/admin/AdminNavbar.astro";
 import { db } from "db";
 import { brands, store } from "db/schema";
 import { asc, eq } from "drizzle-orm";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import BrandsTable from "@/components/BrandsTable";
+import BrandsTable from "@/components/admin/BrandsTable";
 
 const { locale } = Astro.params;
 const logoItems = await db.select().from(brands).orderBy(asc(brands.order));
