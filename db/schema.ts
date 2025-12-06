@@ -20,6 +20,7 @@ export const portfolio = mysqlTable("portfolio", {
   slug: varchar("slug", { length: 512 }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
   title: varchar("title", { length: 512 }).unique(),
+  subtitle: text("subtitle"),
   content: text("content"),
   media: varchar("media", { length: 1024 }),
   order: int("order").default(0),

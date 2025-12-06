@@ -24,6 +24,10 @@ let filenames: string[] = JSON.parse(res[0].media as string);
 let contentObject: Record<string, string> = JSON.parse(
   res[0].content as string
 );
+let subtitleObject: Record<string, string> = {};
+if (res[0].subtitle) {
+  subtitleObject = JSON.parse(res[0].subtitle as string);
+}
 let slug;
 
 if (Astro.request.method === "POST") {
@@ -35,6 +39,7 @@ if (Astro.request.method === "POST") {
     filenames = JSON.parse(res[0].media as string);
     const formData = await Astro.request.formData();
     const title = formData.get("title") as string;
+    const subtitle = formData.get("subtitle") as string;
     const content = formData.get("content") as string;
     const mediaOrder = formData.get("media_order") as string;
 
@@ -58,11 +63,13 @@ if (Astro.request.method === "POST") {
     filenames.unshift(...additionalFilenames);
 
     contentObject[locale!] = content;
+    subtitleObject[locale!] = subtitle;
 
     await db
       .update(portfolio)
       .set({
         title,
+        subtitle: JSON.stringify(subtitleObject),
         slug,
         content: JSON.stringify(contentObject),
         media: JSON.stringify(filenames),
@@ -77,6 +84,7 @@ if (Astro.request.method === "POST") {
 }
 
 const currentLocaleContent = contentObject[locale!];
+const currentLocaleSubtitle = subtitleObject[locale!] || "";
 ---
 
 <Layout lang={locale} title={res[0].title!}>
@@ -95,6 +103,13 @@ const currentLocaleContent = contentObject[locale!];
         required
         className="bg-transparent text-white"
         defaultValue={res[0].title as string}
+      />
+      <Label htmlFor="subtitle">subtitle</Label>
+      <Input
+        type="text"
+        name="subtitle"
+        className="bg-transparent text-white"
+        defaultValue={currentLocaleSubtitle}
       />
       <Label htmlFor="file">media</Label>
       <Input

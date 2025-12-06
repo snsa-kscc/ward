@@ -11,7 +11,11 @@ import { formatParagraph } from "@/lib/utils";
 
 const { id, locale } = Astro.params;
 
-const pagesData = await db.select().from(pages).where(eq(pages.lang, locale!)).orderBy(asc(pages.name));
+const pagesData = await db
+  .select()
+  .from(pages)
+  .where(eq(pages.lang, locale!))
+  .orderBy(asc(pages.name));
 const storeData = await db.select().from(store).where(eq(store.lang, locale!));
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
@@ -25,7 +29,15 @@ if (!data[0]) {
   return Astro.redirect(`/404?locale=${locale}`);
 }
 const parsedDescription = JSON.parse(data[0].content!)[locale!];
-const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.slice(0, 100) + "..." : parsedDescription;
+const truncatedDescription =
+  parsedDescription.length > 100
+    ? parsedDescription.slice(0, 100) + "..."
+    : parsedDescription;
+let parsedSubtitle = "";
+if (data[0].subtitle) {
+  const subtitleObject = JSON.parse(data[0].subtitle!);
+  parsedSubtitle = subtitleObject[locale!] || "";
+}
 ---
 
 <style>
@@ -44,18 +56,37 @@ const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.
 <Layout lang={locale} title={data[0].title!} description={truncatedDescription}>
   <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
-  <h1 class="title container py-20 text-right text-12xl font-bold">
+  <h1 class="title text-12xl container py-20 text-right font-bold">
     {
       data[0].title
         ?.split(/(\s)/)
         .map((w) => (
           <span class="relative inline-block overflow-hidden">
-            {w === " " ? <span>&nbsp;</span> : w.split("").map((c) => <span class="inline-block translate-y-full will-change-transform">{c}</span>)}
+            {w === " " ? (
+              <span>&nbsp;</span>
+            ) : (
+              w
+                .split("")
+                .map((c) => (
+                  <span class="inline-block translate-y-full will-change-transform">
+                    {c}
+                  </span>
+                ))
+            )}
           </span>
         ))
     }
   </h1>
-  <div class="portfolio-item-wrapper my-20 flex min-w-max items-center gap-16 overflow-x-auto px-40 will-change-transform">
+  {
+    parsedSubtitle && (
+      <h2 class="subtitle container text-right text-4xl font-light opacity-80">
+        {parsedSubtitle}
+      </h2>
+    )
+  }
+  <div
+    class="portfolio-item-wrapper my-20 flex min-w-max items-center gap-16 overflow-x-auto px-40 will-change-transform"
+  >
     {
       JSON.parse(data[0].media!).map((media: string, index: number) => {
         return (
@@ -74,15 +105,22 @@ const truncatedDescription = parsedDescription.length > 100 ? parsedDescription.
     }
   </div>
   <div class="portfolio-item-description container pt-20">
-    <p class="w-1/2" set:html={formatParagraph(JSON.parse(data[0].content!)[locale!])} />
+    <p
+      class="w-1/2"
+      set:html={formatParagraph(JSON.parse(data[0].content!)[locale!])}
+    />
   </div>
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
 <script>
   import gsap from "gsap";
   const headerWords = document.querySelectorAll(".title>span>span");
-  const portfolioItemDescription = document.querySelector(".portfolio-item-description");
-  const portfolioItemsWrapper = document.querySelector(".portfolio-item-wrapper") as HTMLElement;
+  const portfolioItemDescription = document.querySelector(
+    ".portfolio-item-description"
+  );
+  const portfolioItemsWrapper = document.querySelector(
+    ".portfolio-item-wrapper"
+  ) as HTMLElement;
 
   document.addEventListener("DOMContentLoaded", () => {
     const loadingOverlay = document.querySelector(".loading-overlay");

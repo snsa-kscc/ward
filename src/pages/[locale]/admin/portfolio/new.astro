@@ -18,6 +18,7 @@ let filenames = [];
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const title = formData.get("title") as string;
+  const subtitle = formData.get("subtitle") as string;
   const content = formData.get("content") as string;
   const slug = slugify(title);
   for (const file of formData.getAll("file") as File[]) {
@@ -27,6 +28,7 @@ if (Astro.request.method === "POST") {
   }
 
   const contentObject = { [locale!]: content };
+  const subtitleObject = { [locale!]: subtitle };
 
   const maxOrderResult = await db
     .select({ maxOrder: max(portfolio.order) })
@@ -36,6 +38,7 @@ if (Astro.request.method === "POST") {
   try {
     await db.insert(portfolio).values({
       title,
+      subtitle: JSON.stringify(subtitleObject),
       slug,
       content: JSON.stringify(contentObject),
       createdAt: new Date(),
@@ -71,6 +74,12 @@ if (Astro.request.method === "POST") {
         type="text"
         name="title"
         required
+        className="bg-transparent text-white"
+      />
+      <Label htmlFor="subtitle">subtitle</Label>
+      <Input
+        type="text"
+        name="subtitle"
         className="bg-transparent text-white"
       />
       <Label htmlFor="file">media</Label>
