@@ -2,12 +2,13 @@ import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
-import postcss from "postcss";
-import clampwind from "postcss-clampwind";
 
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      allowedHosts: [".ngrok-free.app"],
+    },
   },
   integrations: [react()],
   output: "server",
