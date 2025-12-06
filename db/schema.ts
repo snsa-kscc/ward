@@ -35,8 +35,6 @@ export const accolades = mysqlTable("accolade", {
 
 export const brands = mysqlTable("brand", {
   id: int("id").notNull().primaryKey().autoincrement(),
-  name: text("name"),
-  slug: text("slug"),
   logo: text("logo"),
   order: int("order").default(0),
 });

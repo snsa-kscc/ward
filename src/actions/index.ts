@@ -59,13 +59,13 @@ export const server = {
   }),
 
   deleteBrand: defineAction({
-    input: z.object({ title: z.string() }),
-    handler: async ({ title }) => {
-      const res = await db.select().from(brands).where(eq(brands.name, title));
+    input: z.object({ id: z.number() }),
+    handler: async ({ id }) => {
+      const res = await db.select().from(brands).where(eq(brands.id, id));
       const logo = res[0].logo as string;
       try {
         await rm(`./public/assets/brands/${logo}`);
-        await db.delete(brands).where(eq(brands.name, title));
+        await db.delete(brands).where(eq(brands.id, id));
       } catch (error) {
         console.error(error);
       }
@@ -74,14 +74,11 @@ export const server = {
   }),
 
   deleteLogo: defineAction({
-    input: z.object({ title: z.string(), item: z.string() }),
-    handler: async ({ title, item }) => {
+    input: z.object({ id: z.number(), item: z.string() }),
+    handler: async ({ id, item }) => {
       try {
         await rm(`./public/assets/brands/${item}`);
-        await db
-          .update(brands)
-          .set({ logo: null })
-          .where(eq(brands.name, title));
+        await db.update(brands).set({ logo: null }).where(eq(brands.id, id));
       } catch (error) {
         console.error(error);
       }

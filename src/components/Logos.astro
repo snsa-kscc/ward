@@ -3,8 +3,6 @@ import { Image } from "astro:assets";
 
 type Props = {
   data: {
-    name: string | null;
-    slug: string | null;
     logo: string | null;
   }[];
 };
@@ -23,7 +21,7 @@ const { data } = Astro.props;
             <Image
               class="w-[clamp(14,24)]"
               src={`/assets/brands/${brand.logo}`}
-              alt={brand.name}
+              alt={brand.logo?.split(".")[0] || ""}
               width={96}
               height={54}
             />

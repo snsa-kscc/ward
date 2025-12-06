@@ -8,15 +8,14 @@ interface BrandsTableProps {
   locale: string;
 }
 
-export default function BrandsTable({ items, locale }: BrandsTableProps) {
+export default function BrandsTable({ items }: BrandsTableProps) {
   const tableItems: TableItem[] = items.map((item) => ({
     id: item.id,
     label: item.name,
-    href: `/${locale}/admin/brands/${item.slug}`,
   }));
 
   const handleDelete = async (item: TableItem): Promise<boolean> => {
-    const result = await actions.deleteBrand({ title: item.label });
+    const result = await actions.deleteBrand({ id: item.id as number });
     return result.data === "deleted";
   };
 

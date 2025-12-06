@@ -8,14 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { writeFile } from "fs/promises";
+import path from "path";
+import { max } from "drizzle-orm";
 import BrandsTable from "@/components/admin/BrandsTable";
 
 const { locale } = Astro.params;
 const logoItems = await db.select().from(brands).orderBy(asc(brands.order));
 const items = logoItems.map((item) => ({
   id: item.id,
-  name: item.name!,
-  slug: item.slug!,
+  name: item.logo?.split(".")[0] || "",
+  slug: item.id.toString(),
 }));
 const res = await db.select().from(store).where(eq(store.section, "brands"));
 
@@ -30,11 +33,37 @@ const dict = res.reduce(
 if (Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
+
+    // Handle file upload
+    const files = formData.getAll("file") as File[];
+    if (files && files.length > 0) {
+      const maxOrderResult = await db
+        .select({ maxOrder: max(brands.order) })
+        .from(brands);
+      let newOrder = (maxOrderResult[0]?.maxOrder ?? 0) + 1;
+
+      for (const file of files) {
+        if (file.name) {
+          const buffer = Buffer.from(await file.arrayBuffer());
+          await writeFile(
+            path.join("./public/assets/brands", file.name),
+            buffer
+          );
+
+          await db.insert(brands).values({ logo: file.name, order: newOrder });
+          newOrder++;
+        }
+      }
+    }
+
+    // Handle store updates
     for (const [key, value] of formData.entries()) {
-      await db
-        .update(store)
-        .set({ value: value as string })
-        .where(eq(store.key, key as string));
+      if (key !== "file") {
+        await db
+          .update(store)
+          .set({ value: value as string })
+          .where(eq(store.key, key as string));
+      }
     }
   } catch (error) {
     console.error("Error updating data:", error);
@@ -48,13 +77,26 @@ if (Astro.request.method === "POST") {
   <AdminNavbar lang={locale!} />
   <div class="container p-8">
     <h1 class="title pt-20 pb-10 text-3xl">Brand logo list</h1>
-    <Button variant="secondary"
-      ><a href={`/${locale}/admin/brands/new`}>New item</a></Button
-    >
+
     <BrandsTable client:only="react" items={items} locale={locale!} />
   </div>
   <div class="container p-8 pt-16">
-    <form method="POST" class="flex flex-col items-start gap-4">
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="flex flex-col items-start gap-4"
+    >
+      <label for="file" class="mb-2 block text-sm font-medium"
+        >Upload new logo (filename will be used as alt text)</label
+      >
+      <input
+        type="file"
+        name="file"
+        multiple
+        accept="image/*"
+        class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring mb-4 flex h-10 w-full rounded-md border px-3 py-2 text-sm text-black file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+      />
+
       <Label htmlFor="projects">Projects</Label>
       <Textarea
         name="projects"
