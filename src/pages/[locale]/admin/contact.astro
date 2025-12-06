@@ -35,15 +35,46 @@ if (Astro.request.method === "POST") {
           path.join("./public/assets", (value as File).name),
           buffer
         );
-        await db
-          .update(store)
-          .set({ value: (value as File).name })
-          .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+
+        const existing = await db
+          .select()
+          .from(store)
+          .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
+          .limit(1);
+
+        if (existing.length > 0) {
+          await db
+            .update(store)
+            .set({ value: (value as File).name })
+            .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+        } else {
+          await db.insert(store).values({
+            section: "footer",
+            key: key as string,
+            value: (value as File).name,
+            lang: locale!,
+          });
+        }
       } else {
-        await db
-          .update(store)
-          .set({ value: value as string })
-          .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+        const existing = await db
+          .select()
+          .from(store)
+          .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
+          .limit(1);
+
+        if (existing.length > 0) {
+          await db
+            .update(store)
+            .set({ value: value as string })
+            .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+        } else {
+          await db.insert(store).values({
+            section: "footer",
+            key: key as string,
+            value: value as string,
+            lang: locale!,
+          });
+        }
       }
     }
   } catch (error) {

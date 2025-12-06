@@ -28,10 +28,25 @@ if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   try {
     for (const [key, value] of formData.entries()) {
-      await db
-        .update(store)
-        .set({ value: value as string })
-        .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+      const existing = await db
+        .select()
+        .from(store)
+        .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
+        .limit(1);
+
+      if (existing.length > 0) {
+        await db
+          .update(store)
+          .set({ value: value as string })
+          .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
+      } else {
+        await db.insert(store).values({
+          section: "hero",
+          key: key as string,
+          value: value as string,
+          lang: locale!,
+        });
+      }
     }
   } catch (error) {
     console.error("Error updating data:", error);

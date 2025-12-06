@@ -59,10 +59,25 @@ if (Astro.request.method === "POST") {
     // Handle store updates
     for (const [key, value] of formData.entries()) {
       if (key !== "file") {
-        await db
-          .update(store)
-          .set({ value: value as string })
-          .where(eq(store.key, key as string));
+        const existing = await db
+          .select()
+          .from(store)
+          .where(eq(store.key, key as string))
+          .limit(1);
+
+        if (existing.length > 0) {
+          await db
+            .update(store)
+            .set({ value: value as string })
+            .where(eq(store.key, key as string));
+        } else {
+          await db.insert(store).values({
+            section: "brands",
+            key: key as string,
+            value: value as string,
+            lang: locale!,
+          });
+        }
       }
     }
   } catch (error) {
