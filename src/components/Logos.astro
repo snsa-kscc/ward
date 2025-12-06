@@ -12,13 +12,21 @@ type Props = {
 const { data } = Astro.props;
 ---
 
-<section class="flex gap-20 overflow-hidden bg-linear-to-r from-ward-green to-ward-blue ~my-40/72 ~py-8/16 lg:gap-36">
+<section
+  class="from-ward-green to-ward-blue my-[clamp(40,72)] flex gap-20 overflow-hidden bg-linear-to-r py-[clamp(8,16)] lg:gap-36"
+>
   {
     Array.from({ length: 4 }).map(() => (
       <div class="marquee-scroll flex shrink-0 justify-around gap-20 will-change-transform lg:gap-36">
         {data.map((brand) => (
           <div class="flex items-center">
-            <Image class="~w-14/24" src={`/assets/brands/${brand.logo}`} alt={brand.name} width={96} height={54} />
+            <Image
+              class="w-[clamp(14,24)]"
+              src={`/assets/brands/${brand.logo}`}
+              alt={brand.name}
+              width={96}
+              height={54}
+            />
           </div>
         ))}
       </div>

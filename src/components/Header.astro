@@ -52,19 +52,26 @@ function capitalizeLink(str: string) {
 <header
   class="pointer-events-none fixed top-0 z-50 w-full -translate-y-full bg-linear-to-b from-zinc-900 opacity-0 backdrop-blur-sm transition-all duration-500"
 >
-  <div class="container flex items-center justify-between px-4 py-6 ~text-base/lg">
+  <div
+    class="container flex items-center justify-between px-4 py-6 text-[clamp(var(--text-base),var(--text-lg))]"
+  >
     <div class="hidden sm:block">
       <a href={lang === "hr" ? "/hr" : "/"} class="text-xl font-bold">WARD</a>
     </div>
     <div class="font-bold">
-      <span class="flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-100 p-4">
+      <span
+        class="flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-100 p-4"
+      >
         <a href={href} class="text-lg">{anotherLocale.toUpperCase()}</a>
       </span>
     </div>
     <div>
       {
         linksArray?.map((link) => (
-          <a href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`} class="ml-4 font-bold">
+          <a
+            href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`}
+            class="ml-4 font-bold"
+          >
             {capitalizeLink(link.replaceAll("-", " "))}
           </a>
         ))
@@ -78,11 +85,27 @@ function capitalizeLink(str: string) {
 
   window.addEventListener("scroll", () => {
     if (window.scrollY > window.innerHeight) {
-      header.classList.remove("opacity-0", "-translate-y-full", "pointer-events-none");
-      header.classList.add("opacity-100", "translate-y-0", "pointer-events-auto");
+      header.classList.remove(
+        "opacity-0",
+        "-translate-y-full",
+        "pointer-events-none"
+      );
+      header.classList.add(
+        "opacity-100",
+        "translate-y-0",
+        "pointer-events-auto"
+      );
     } else {
-      header.classList.add("opacity-0", "-translate-y-full", "pointer-events-none");
-      header.classList.remove("opacity-100", "translate-y-0", "pointer-events-auto");
+      header.classList.add(
+        "opacity-0",
+        "-translate-y-full",
+        "pointer-events-none"
+      );
+      header.classList.remove(
+        "opacity-100",
+        "translate-y-0",
+        "pointer-events-auto"
+      );
     }
   });
 </script>

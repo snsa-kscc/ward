@@ -19,13 +19,18 @@ const firstHalf = accoladesData.slice(0, halfLength);
 const secondHalf = accoladesData.slice(halfLength);
 ---
 
-<section class="~my-40/72">
+<section class="my-[clamp(40,72)]">
   <div class="container px-4 py-20">
-    <div class="font-bold leading-tight opacity-0 ~text-xl/5xl" data-projects>
+    <div
+      class="text-[clamp(var(--text-xl),var(--text-5xl))] leading-tight font-bold opacity-0"
+      data-projects
+    >
       {storeDataMap.projects}
     </div>
     <div class="my-40 flex items-center justify-between gap-4">
-      <div class="bar-char-wrapper w-1/2 font-bold ~text-xl/8xl">
+      <div
+        class="bar-char-wrapper w-1/2 text-[clamp(var(--text-xl),var(--text-5xl))] font-bold"
+      >
         {
           storeDataMap.ctaHook
             .split(/(\s)/)
@@ -34,7 +39,11 @@ const secondHalf = accoladesData.slice(halfLength);
                 {word === " " ? (
                   <span class="bar-char inline-block">&nbsp;</span>
                 ) : (
-                  word.split("").map((char) => <span class="bar-char inline-block">{char}</span>)
+                  word
+                    .split("")
+                    .map((char) => (
+                      <span class="bar-char inline-block">{char}</span>
+                    ))
                 )}
               </div>
             ))
@@ -45,13 +54,15 @@ const secondHalf = accoladesData.slice(halfLength);
           .split(",")
           .map((link) => link.trim())
           .at(-1)}`}
-        class="rounded-full bg-ward-green font-bold text-slate-100 duration-300 ~text-xl/2xl ~px-10/16 ~py-2/6 hover:bg-ward-blue"
+        class="bg-ward-green hover:bg-ward-blue rounded-full px-[clamp(10,16)] py-[clamp(2,6)] text-[clamp(var(--text-xl),var(--text-2xl))] font-bold text-slate-100 duration-300"
       >
         {storeDataMap.ctaButton}
       </a>
     </div>
   </div>
-  <div class="container flex flex-col gap-16 p-8 font-bold ~lg:~text-xl/2xl lg:flex-row">
+  <div
+    class="container flex flex-col gap-16 p-8 font-bold lg:flex-row lg:text-[clamp(var(--text-xl),var(--text-2xl))]"
+  >
     <div>
       {
         firstHalf.map((item) => {
@@ -79,7 +90,9 @@ const secondHalf = accoladesData.slice(halfLength);
   import gsap from "gsap";
   import { isInViewport } from "@/lib/utils";
 
-  const barChars = document.querySelectorAll(".bar-char") as NodeListOf<HTMLElement>;
+  const barChars = document.querySelectorAll(
+    ".bar-char"
+  ) as NodeListOf<HTMLElement>;
   gsap.fromTo(
     barChars,
     {
@@ -107,7 +120,13 @@ const secondHalf = accoladesData.slice(halfLength);
     () => {
       const projects = document.querySelector("[data-projects]");
       if (projects && isInViewport(projects)) {
-        projects.classList.add("animate-in", "fade-in", "opacity-100", "slide-in-from-bottom", "duration-300");
+        projects.classList.add(
+          "animate-in",
+          "fade-in",
+          "opacity-100",
+          "slide-in-from-bottom",
+          "duration-300"
+        );
       }
     },
     { passive: true }

@@ -12,8 +12,10 @@ type Props = {
 const { data } = Astro.props;
 ---
 
-<section class="overflow-hidden ~my-40/72">
-  <div class="specs-wrapper container px-4 font-bold ~text-base/8xl ~my-14/24">
+<section class="my-[clamp(40,72)] overflow-hidden">
+  <div
+    class="specs-wrapper container my-[clamp(14,24)] px-4 text-[clamp(var(--text-base),var(--text-8xl))] font-bold"
+  >
     {
       data.specialitiesKey
         .split(/(\s)/)
@@ -22,7 +24,11 @@ const { data } = Astro.props;
             {word === " " ? (
               <span class="specs-char inline-block">&nbsp;</span>
             ) : (
-              word.split("").map((char) => <span class="specs-char inline-block">{char}</span>)
+              word
+                .split("")
+                .map((char) => (
+                  <span class="specs-char inline-block">{char}</span>
+                ))
             )}
           </div>
         ))
@@ -31,9 +37,20 @@ const { data } = Astro.props;
   {
     data.specialities.split("\r\n").map((item, idx) => {
       return (
-        <div class={cn("specs-slider relative w-max whitespace-nowrap font-bold", idx === 0 ? "" : "reverse")}>
+        <div
+          class={cn(
+            "specs-slider relative w-max font-bold whitespace-nowrap",
+            idx === 0 ? "" : "reverse"
+          )}
+        >
           {Array.from({ length: 2 }).map((_, i) => (
-            <p class={cn("relative w-full will-change-transform ~text-6xl/12xl", i !== 0 ? "absolute left-full top-0" : "")} data-idx={`${idx}-${i}`}>
+            <p
+              class={cn(
+                "relative w-full text-[clamp(var(--text-6xl),var(--text-12xl))] will-change-transform",
+                i !== 0 ? "absolute top-0 left-full" : ""
+              )}
+              data-idx={`${idx}-${i}`}
+            >
               {`${item} ${item}`}&nbsp;
             </p>
           ))}
@@ -41,7 +58,10 @@ const { data } = Astro.props;
       );
     })
   }
-  <p class="ml-auto w-full text-balance px-4 pt-40 leading-[5vh]! opacity-0 ~lg:~text-xl/4xl sm:w-1/2" data-specialities-description>
+  <p
+    class="ml-auto w-full px-4 pt-40 leading-[5vh]! text-balance opacity-0 sm:w-1/2 lg:text-[clamp(var(--text-xl),var(--text-4xl))]"
+    data-specialities-description
+  >
     {data.specialitiesDescription}
   </p>
 </section>
@@ -62,8 +82,12 @@ const { data } = Astro.props;
   import { isInViewport } from "@/lib/utils";
   gsap.registerPlugin(ScrollTrigger);
 
-  const specsElement = document.querySelector(".specs-wrapper span") as HTMLElement;
-  const specsChars = document.querySelectorAll(".specs-char") as NodeListOf<HTMLElement>;
+  const specsElement = document.querySelector(
+    ".specs-wrapper span"
+  ) as HTMLElement;
+  const specsChars = document.querySelectorAll(
+    ".specs-char"
+  ) as NodeListOf<HTMLElement>;
   const animationDefaults = {
     duration: 0.3,
     ease: "power3.in",
@@ -103,7 +127,9 @@ const { data } = Astro.props;
     onLeaveBack: () => resetKeyChars(),
   });
 
-  const sliders = document.querySelectorAll(".specs-slider") as NodeListOf<HTMLDivElement>;
+  const sliders = document.querySelectorAll(
+    ".specs-slider"
+  ) as NodeListOf<HTMLDivElement>;
   let direction = -1;
 
   function animateSlider(slider: HTMLDivElement, directionMultiplier: number) {
@@ -141,9 +167,17 @@ const { data } = Astro.props;
   window.addEventListener(
     "scroll",
     () => {
-      const specsDesc = document.querySelector("[data-specialities-description]");
+      const specsDesc = document.querySelector(
+        "[data-specialities-description]"
+      );
       if (specsDesc && isInViewport(specsDesc)) {
-        specsDesc.classList.add("animate-in", "fade-in", "opacity-100", "slide-in-from-right", "duration-1000");
+        specsDesc.classList.add(
+          "animate-in",
+          "fade-in",
+          "opacity-100",
+          "slide-in-from-right",
+          "duration-1000"
+        );
       }
     },
     { passive: true }

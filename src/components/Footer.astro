@@ -25,13 +25,13 @@ type Props = {
 const { locale, storeData, pagesData } = Astro.props;
 ---
 
-<footer class="~mt-40/72">
+<footer class="mt-[clamp(40,72)]">
   <div
     id={storeData.navbarLinks
       .split(",")
       .map((link) => link.trim())
       .at(-1)}
-    class="footer-wrapper container px-4 font-bold ~text-6xl/14xl ~pb-10/20"
+    class="footer-wrapper container px-4 pb-[clamp(10,20)] text-[clamp(var(--text-6xl),var(--text-14xl))] font-bold"
   >
     {
       storeData.ctaHeading.split("").map((char) => {
@@ -42,33 +42,61 @@ const { locale, storeData, pagesData } = Astro.props;
       })
     }
   </div>
-  <div class="container px-4 ~my-10/20">
+  <div class="container my-[clamp(10,20)] px-4">
     <div class="flex flex-col justify-between gap-16 sm:flex-row">
       <div class="flex basis-1/3 gap-16">
         <div class="basis-1/2">
-          <p class="pb-8 font-bold ~text-xl/2xl">{storeData.contactKey}</p>
-          <p><a class="underline" href={`mailto:${storeData.contactEmail}`}>{storeData.contactEmail}</a></p>
-          <p>tel: <a href={`tel:${storeData.contactPhone.replaceAll(" ", "")}`}>{storeData.contactPhone}</a></p>
+          <p
+            class="pb-8 text-[clamp(var(--text-xl),var(--text-2xl))] font-bold"
+          >
+            {storeData.contactKey}
+          </p>
+          <p>
+            <a class="underline" href={`mailto:${storeData.contactEmail}`}
+              >{storeData.contactEmail}</a
+            >
+          </p>
+          <p>
+            tel: <a href={`tel:${storeData.contactPhone.replaceAll(" ", "")}`}
+              >{storeData.contactPhone}</a
+            >
+          </p>
           <p>{storeData.contactAddress}</p>
         </div>
         <div class="basis-1/2">
-          <div class="pb-8 font-bold ~text-xl/2xl"><p>{storeData.infoKey}</p></div>
+          <p
+            class="pb-8 text-[clamp(var(--text-xl),var(--text-2xl))] font-bold"
+          >
+            {storeData.infoKey}
+          </p>
           {
             pagesData.map((page) => (
               <div class="">
-                <a href={`/${locale !== "en" ? `${locale}/` : ""}${page.slug}`}>{page.title}</a>
+                <a href={`/${locale !== "en" ? `${locale}/` : ""}${page.slug}`}>
+                  {page.title}
+                </a>
               </div>
             ))
           }
         </div>
       </div>
       <div class="basis-1/3">
-        <p class="pb-8 font-bold ~text-xl/2xl">{storeData.newsletterKey}</p>
-        <NewsletterSubscribe client:load button={storeData.newsletterButton} lang={locale} />
+        <p class="pb-8 text-[clamp(var(--text-xl),var(--text-2xl))] font-bold">
+          {storeData.newsletterKey}
+        </p>
+        <NewsletterSubscribe
+          client:load
+          button={storeData.newsletterButton}
+          lang={locale}
+        />
         <p class="pt-6 text-xs" set:html={storeData.newsletterDisclaimer} />
       </div>
     </div>
-    <div class="font-bold ~text-xl/2xl ~pt-10/40"><p>{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p></div>
+    <div
+      class="pt-[clamp(10,40)] text-[clamp(var(--text-xl),var(--text-2xl))] font-bold"
+    >
+      <p>{` ${new Date().getFullYear()} ${storeData.copyright}`}</p>
+    </div>
   </div>
 </footer>
 
@@ -78,7 +106,9 @@ const { locale, storeData, pagesData } = Astro.props;
   gsap.registerPlugin(ScrollTrigger);
 
   function initFooterAnimation() {
-    const footerChars = document.querySelectorAll(".cta-char") as NodeListOf<HTMLElement>;
+    const footerChars = document.querySelectorAll(
+      ".cta-char"
+    ) as NodeListOf<HTMLElement>;
     if (!footerChars.length) return;
 
     gsap.fromTo(
