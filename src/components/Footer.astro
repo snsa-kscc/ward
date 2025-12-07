@@ -4,7 +4,6 @@ import { NewsletterSubscribe } from "./NewsletterSubscribe";
 type Props = {
   locale: string;
   storeData: {
-    ctaHeading: string;
     contactKey: string;
     contactEmail: string;
     contactPhone: string;
@@ -14,6 +13,9 @@ type Props = {
     newsletterButton: string;
     newsletterDisclaimer: string;
     copyright: string;
+    contactHook1: string;
+    contactHook2: string;
+    contactName: string;
     navbarLinks: string;
   };
   pagesData: {
@@ -34,7 +36,7 @@ const { locale, storeData, pagesData } = Astro.props;
     class="footer-wrapper container px-4 pb-[clamp(10,20)] text-[clamp(var(--text-6xl),var(--text-14xl))] font-bold"
   >
     {
-      storeData.ctaHeading.split("").map((char) => {
+      storeData.contactHook2.split("").map((char: string) => {
         if (char === " ") {
           return <span class="cta-char inline-block">&nbsp;</span>;
         }

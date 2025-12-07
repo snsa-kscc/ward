@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   data: {
-    specialitiesKey: string;
-    specialitiesDescription: string;
-    specialities: string;
+    capabilitiesKey: string;
+    capabilitiesDescription: string;
+    capabilities: string;
   };
 };
 
@@ -17,7 +17,7 @@ const { data } = Astro.props;
     class="specs-wrapper container my-[clamp(14,24)] px-4 text-[clamp(var(--text-base),var(--text-8xl))] font-bold"
   >
     {
-      data.specialitiesKey
+      data.capabilitiesKey
         .split(/(\s)/)
         .map((word) => (
           <div class="specs-word inline-block">
@@ -35,7 +35,7 @@ const { data } = Astro.props;
     }
   </div>
   {
-    data.specialities.split("\r\n").map((item, idx) => {
+    data.capabilities.split("\r\n").map((item, idx) => {
       return (
         <div
           class={cn(
@@ -62,7 +62,7 @@ const { data } = Astro.props;
     class="ml-auto w-full px-4 pt-40 leading-[5vh]! text-balance opacity-0 sm:w-1/2 lg:text-[clamp(var(--text-xl),var(--text-4xl))]"
     data-specialities-description
   >
-    {data.specialitiesDescription}
+    {data.capabilitiesDescription}
   </p>
 </section>
 

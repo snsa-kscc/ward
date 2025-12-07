@@ -86,7 +86,7 @@ if (Astro.request.method === "POST") {
       />
       <Label htmlFor="aboutKey">About key</Label>
       <Textarea
-        name="about"
+        name="aboutKey"
         className="bg-transparent text-white"
         rows={5}
         defaultValue={dict.aboutKey}
@@ -98,27 +98,43 @@ if (Astro.request.method === "POST") {
         rows={5}
         defaultValue={dict.about}
       />
-      <Label htmlFor="specialitiesKey">Specialities key</Label>
-      <Input
-        type="text"
-        name="specialitiesKey"
-        className="bg-transparent text-white"
-        defaultValue={dict.specialitiesKey}
-      />
-      <Label htmlFor="specialities">Specialities</Label>
+      <Label htmlFor="capabilitiesKey">Capabilities key</Label>
       <Textarea
-        name="specialities"
+        name="capabilitiesKey"
         className="bg-transparent text-white"
         rows={5}
-        defaultValue={dict.specialities}
+        defaultValue={dict.capabilitiesKey}
       />
-      <Label htmlFor="specialitiesDescription">Specialities description</Label>
+      <Label htmlFor="capabilities">Capabilities</Label>
       <Textarea
-        name="specialitiesDescription"
+        name="capabilities"
         className="bg-transparent text-white"
         rows={5}
-        defaultValue={dict.specialitiesDescription}
+        defaultValue={dict.capabilities}
       />
+      <Label htmlFor="capabilitiesDescription">Capabilities description</Label>
+      <Textarea
+        name="capabilitiesDescription"
+        className="bg-transparent text-white"
+        rows={5}
+        defaultValue={dict.capabilitiesDescription}
+      />
+      <div class="flex w-full flex-col items-center gap-4 md:flex-row">
+        <Label htmlFor="workKey">Work Key</Label>
+        <Input
+          type="text"
+          name="workKey"
+          className="bg-transparent text-white"
+          defaultValue={dict.workKey}
+        />
+        <Label htmlFor="workButton">Work Button</Label>
+        <Input
+          type="text"
+          name="workButton"
+          className="bg-transparent text-white"
+          defaultValue={dict.workButton}
+        />
+      </div>
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

@@ -30,7 +30,7 @@ if (Astro.request.method === "POST") {
     formData,
     section: "footer",
     locale: locale!,
-    fileKeys: ["ctaPicture"],
+    fileKeys: [],
   });
 
   if (result.success) {
@@ -50,33 +50,21 @@ if (Astro.request.method === "POST") {
       enctype="multipart/form-data"
       class="flex flex-col items-start gap-4"
     >
-      <Label htmlFor="ctaHeading">Cta Heading</Label>
+      <Label htmlFor="contactHook1">Contact Hook 1</Label>
       <Input
         type="text"
-        name="ctaHeading"
+        name="contactHook1"
         required
         className="bg-transparent text-white"
-        defaultValue={dict.ctaHeading}
+        defaultValue={dict.contactHook1}
       />
-      {
-        dict.ctaPicture && (
-          <div class="flex items-center gap-4 px-6 py-2">
-            <p>{dict.ctaPicture}</p>
-            <Button className="btn" variant="destructive">
-              delete
-            </Button>
-          </div>
-        )
-      }
-      <Label htmlFor="ctaPicture"
-        >Cta Picture - make sure the file is called cta-{locale}.jpg - won't
-        render otherwise</Label
-      >
+      <Label htmlFor="contactHook2">Contact Hook 2</Label>
       <Input
-        type="file"
-        name="ctaPicture"
-        className="text-black"
-        disabled={dict.ctaPicture ? true : false}
+        type="text"
+        name="contactHook2"
+        required
+        className="bg-transparent text-white"
+        defaultValue={dict.contactHook2}
       />
       <Label htmlFor="contactKey">Contact Key</Label>
       <Input
@@ -87,6 +75,14 @@ if (Astro.request.method === "POST") {
         defaultValue={dict.contactKey}
       />
       <div class="flex w-full flex-col items-center gap-4 md:flex-row">
+        <Label htmlFor="contactName">Name</Label>
+        <Input
+          type="text"
+          name="contactName"
+          required
+          className="bg-transparent text-white"
+          defaultValue={dict.contactName}
+        />
         <Label htmlFor="contactEmail">Email</Label>
         <Input
           type="email"
@@ -159,7 +155,6 @@ if (Astro.request.method === "POST") {
   </div>
   <script>
     import { toast } from "@/hooks/use-toast";
-    import { actions } from "astro:actions";
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
@@ -174,24 +169,6 @@ if (Astro.request.method === "POST") {
         title: "Error",
         description: "Update failed.",
         variant: "destructive",
-      });
-    }
-
-    const button = document.querySelector(".btn") as HTMLButtonElement;
-    const file = document.querySelector("input[type=file]") as HTMLInputElement;
-    const locale = document.documentElement.lang;
-
-    if (button) {
-      button.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const result = await actions.deleteMedia({
-          title: button.previousElementSibling?.textContent ?? "",
-          lang: locale,
-        });
-        if (result.data === "deleted") {
-          button.parentElement?.remove();
-          file.disabled = false;
-        }
       });
     }
   </script>

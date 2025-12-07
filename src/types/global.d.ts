@@ -12,13 +12,12 @@ export type StoreData = {
   featureMedia: string;
   aboutKey: string;
   about: string;
-  specialitiesKey: string;
-  specialities: string;
-  specialitiesDescription: string;
-  projects: string;
-  ctaHook: string;
-  ctaButton: string;
-  ctaHeading: string;
+  clientsKey: string;
+  capabilitiesKey: string;
+  capabilities: string;
+  capabilitiesDescription: string;
+  workKey: string;
+  workButton: string;
   contactKey: string;
   contactEmail: string;
   contactPhone: string;
@@ -28,4 +27,7 @@ export type StoreData = {
   newsletterButton: string;
   newsletterDisclaimer: string;
   copyright: string;
+  contactHook1: string;
+  contactHook2: string;
+  contactName: string;
 };

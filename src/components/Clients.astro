@@ -6,9 +6,7 @@ type Props = {
     item: string | null;
   }[];
   storeDataMap: {
-    projects: string;
-    ctaHook: string;
-    ctaButton: string;
+    clientsKey: string;
     navbarLinks: string;
   };
 };
@@ -25,14 +23,14 @@ const secondHalf = clientsData.slice(halfLength);
       class="text-[clamp(var(--text-xl),var(--text-5xl))] leading-tight font-bold opacity-0"
       data-projects
     >
-      {storeDataMap.projects}
+      {storeDataMap.clientsKey}
     </div>
     <div class="my-40 flex items-center justify-between gap-4">
       <div
         class="bar-char-wrapper w-1/2 text-[clamp(var(--text-xl),var(--text-5xl))] font-bold"
       >
         {
-          storeDataMap.ctaHook
+          storeDataMap.clientsKey
             .split(/(\s)/)
             .map((word) => (
               <div class="word-wrapper inline-block">
@@ -56,7 +54,7 @@ const secondHalf = clientsData.slice(halfLength);
           .at(-1)}`}
         class="bg-ward-green hover:bg-ward-blue rounded-full px-[clamp(10,16)] py-[clamp(2,6)] text-[clamp(var(--text-xl),var(--text-2xl))] font-bold text-slate-100 duration-300"
       >
-        {storeDataMap.ctaButton}
+        {storeDataMap.clientsKey}
       </a>
     </div>
   </div>
