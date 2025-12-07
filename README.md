@@ -282,3 +282,32 @@ Set production environment variables and deploy to Vercel, Netlify, DigitalOcean
 - [Infinum](https://infinum.com/)
 - [Studio Site Templates](https://preview.studio.site/templates/14BqN41WrP/)
 - [Dribbble Portfolio](https://dribbble.com/shots/25819330-Personal-Portfolio-Template-01)
+
+## 🖼️ Image Conversion Script
+
+Convert PNG/JPG images to AVIF format with resizing for optimization:
+
+```fish
+for file in (find . -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -path "*/src/*")
+    set parent_dir (dirname (dirname "$file"))
+    set basename (basename "$file")
+    set output "$parent_dir/"(string replace -r '\.(png|jpe?g)$' '.avif' -i "$basename")
+    echo "Converting $file -> $output"
+    ffmpeg -y -i "$file" -vf "scale='min(1500,iw)':'min(1500,ih)':force_original_aspect_ratio=decrease" "$parent_dir/resized_temp.png"
+    avifenc --min 25 --max 35 --minalpha 30 --maxalpha 40 "$parent_dir/resized_temp.png" "$output"
+    rm "$parent_dir/resized_temp.png"
+end
+```
+
+### Logo Conversion Script
+
+Convert PNG logos to AVIF format without resizing:
+
+```fish
+for file in src/*.png
+    set basename (basename "$file")
+    set output (string replace '.png' '.avif' "$basename")
+    echo "Converting $file -> $output"
+    avifenc --min 35 --max 45 --minalpha 35 --maxalpha 45 "$file" "$output"
+end
+```
