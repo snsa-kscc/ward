@@ -33,10 +33,6 @@ if (!data[0]) {
 const parsedDescription = data[0].content
   ? JSON.parse(data[0].content)[locale!]
   : "";
-const truncatedDescription =
-  parsedDescription && parsedDescription.length > 100
-    ? parsedDescription.slice(0, 100) + "..."
-    : parsedDescription;
 let parsedSubtitle = "";
 if (data[0].subtitle) {
   const subtitleObject = JSON.parse(data[0].subtitle!);
@@ -57,7 +53,7 @@ if (data[0].subtitle) {
   }
 </style>
 
-<Layout lang={locale} title={data[0].title!} description={truncatedDescription}>
+<Layout lang={locale} title={data[0].title!} description={parsedDescription}>
   <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
   <h1 class="title text-12xl container py-20 text-right font-bold">

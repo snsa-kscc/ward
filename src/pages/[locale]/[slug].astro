@@ -29,14 +29,13 @@ const data = pagesData.filter((page) => page.slug === slug);
 if (!data[0]) {
   return Astro.redirect(`/404?locale=${locale}`);
 }
-
-const truncatedDescription =
-  data[0].content && data[0].content.length > 100
-    ? data[0].content.slice(0, 100) + "..."
-    : data[0].content || "";
 ---
 
-<Layout lang={locale} title={data[0].title!} description={truncatedDescription}>
+<Layout
+  lang={locale}
+  title={data[0].title!}
+  description={data[0].content || ""}
+>
   <Header lang={locale!} slug={slug} links={storeDataMap.navbarLinks} />
   <div class="container">
     <div
