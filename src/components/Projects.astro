@@ -21,11 +21,12 @@ const { locale, data, storeDataMap } = Astro.props;
     .split(",")
     .map((link) => link.trim())
     .at(0)}
-  class="container relative grid grid-cols-3 gap-8 overflow-y-clip px-4"
+  class="relative container grid grid-cols-3 gap-8 overflow-y-clip px-4"
 >
   {
     data.map((part, index) => {
-      const className = index === 1 ? "flex-col" : "flex-col-reverse column-reverse";
+      const className =
+        index === 1 ? "flex-col" : "flex-col-reverse column-reverse";
       return (
         <div class={`flex ${className} py-[10vh]`}>
           {part.map((item) => {
@@ -33,7 +34,10 @@ const { locale, data, storeDataMap } = Astro.props;
             const firstImage = mediaArray.length > 0 ? mediaArray[0] : "";
             return (
               <div class="relative py-4">
-                <a href={`/${locale !== "en" ? `${locale}/` : ""}portfolio/${item.slug}`} class="group block">
+                <a
+                  href={`/${locale !== "en" ? `${locale}/` : ""}portfolio/${item.slug}`}
+                  class="group block"
+                >
                   <Image
                     class="aspect-[0.75] w-full rounded-sm object-cover transition-opacity duration-500 group-hover:opacity-40"
                     src={`/assets/portfolio/${firstImage}`}
@@ -42,7 +46,7 @@ const { locale, data, storeDataMap } = Astro.props;
                     height={1067}
                     loading="eager"
                   />
-                  <p class="absolute left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 text-center text-3xl font-bold opacity-0 transition-all duration-700 group-hover:scale-[2.5] group-hover:opacity-100">
+                  <p class="absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 text-center text-3xl font-bold opacity-0 transition-all duration-700 group-hover:scale-[2.5] group-hover:opacity-100">
                     {item.title}
                   </p>
                 </a>
@@ -74,4 +78,8 @@ const { locale, data, storeDataMap } = Astro.props;
     animation-timeline: view();
   }
 </style>
-<script defer is:inline src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
+<script
+  defer
+  is:inline
+  src="https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js"
+></script>

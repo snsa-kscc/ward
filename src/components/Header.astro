@@ -1,32 +1,35 @@
 ---
-import { db } from "db";
-import { eq, and } from "drizzle-orm";
-import { pages } from "db/schema";
+type PageData = {
+  id: number;
+  name: string | null;
+  slug: string | null;
+  title: string | null;
+  content: string | null;
+  lang: string | null;
+};
 
 type Props = {
   lang: string;
   id?: string;
   slug?: string;
   links?: string;
+  pagesData?: PageData[];
 };
 
-const { lang, id, slug, links } = Astro.props;
+const { lang, id, slug, links, pagesData } = Astro.props;
 const anotherLocale = lang === "hr" ? "en" : "hr";
 let anotherSlug;
 
-if (slug) {
-  const res = await db
-    .select({
-      name: pages.name,
-    })
-    .from(pages)
-    .where(and(eq(pages.slug, slug), eq(pages.lang, lang)));
-  anotherSlug = await db
-    .select({
-      slug: pages.slug,
-    })
-    .from(pages)
-    .where(and(eq(pages.name, res[0].name!), eq(pages.lang, anotherLocale)));
+if (slug && pagesData) {
+  const currentPage = pagesData.find(
+    (page) => page.slug === slug && page.lang === lang
+  );
+  if (currentPage) {
+    const translatedPage = pagesData.find(
+      (page) => page.name === currentPage.name && page.lang === anotherLocale
+    );
+    anotherSlug = translatedPage?.slug;
+  }
 }
 
 let href: string;
@@ -36,7 +39,7 @@ switch (true) {
     href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}portfolio/${id}`;
     break;
   case !!slug:
-    href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}${anotherSlug?.[0].slug}`;
+    href = `/${anotherLocale !== "en" ? `${anotherLocale}/` : ""}${anotherSlug}`;
     break;
   default:
     href = `/${anotherLocale !== "en" ? `${anotherLocale}` : ""}`;

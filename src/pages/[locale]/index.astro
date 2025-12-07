@@ -17,27 +17,31 @@ import type { StoreData, GridData } from "@/types/global";
 
 const { locale } = Astro.params;
 
-const storeData = await db.select().from(store).where(eq(store.lang, locale!));
+const [storeData, grid, brandsData, clientsData, pagesData] = await Promise.all(
+  [
+    db.select().from(store).where(eq(store.lang, locale!)),
+    db.select().from(portfolio).orderBy(asc(portfolio.order)),
+    db.select().from(brands).orderBy(asc(brands.order)),
+    db
+      .select()
+      .from(clients)
+      .where(eq(clients.lang, locale!))
+      .orderBy(asc(clients.order)),
+    db
+      .select()
+      .from(pages)
+      .where(eq(pages.lang, locale!))
+      .orderBy(asc(pages.name)),
+  ]
+);
+
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
 
   return acc;
 }, {} as StoreData);
 
-const grid = await db.select().from(portfolio).orderBy(asc(portfolio.order));
 const gridData: GridData = splitItems(grid) as GridData;
-
-const brandsData = await db.select().from(brands).orderBy(asc(brands.order));
-const clientsData = await db
-  .select()
-  .from(clients)
-  .where(eq(clients.lang, locale!))
-  .orderBy(asc(clients.order));
-const pagesData = await db
-  .select()
-  .from(pages)
-  .where(eq(pages.lang, locale!))
-  .orderBy(asc(pages.name));
 ---
 
 <style>
@@ -71,7 +75,11 @@ const pagesData = await db
     // }
   </script>
   <div class="loading-overlay bg-zinc-900"></div>
-  <Header lang={locale!} links={storeDataMap.navbarLinks} />
+  <Header
+    lang={locale!}
+    links={storeDataMap.navbarLinks}
+    pagesData={pagesData}
+  />
   <Hero data={storeDataMap} />
   <Projects locale={locale!} data={gridData} storeDataMap={storeDataMap} />
   <About data={storeDataMap} />

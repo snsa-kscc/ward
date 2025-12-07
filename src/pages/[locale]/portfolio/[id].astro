@@ -11,26 +11,30 @@ import { formatParagraph } from "@/lib/utils";
 
 const { id, locale } = Astro.params;
 
-const pagesData = await db
-  .select()
-  .from(pages)
-  .where(eq(pages.lang, locale!))
-  .orderBy(asc(pages.name));
-const storeData = await db.select().from(store).where(eq(store.lang, locale!));
+const [pagesData, storeData, data] = await Promise.all([
+  db
+    .select()
+    .from(pages)
+    .where(eq(pages.lang, locale!))
+    .orderBy(asc(pages.name)),
+  db.select().from(store).where(eq(store.lang, locale!)),
+  db.select().from(portfolio).where(eq(portfolio.slug, id!)),
+]);
+
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
 
   return acc;
 }, {} as StoreData);
 
-const data = await db.select().from(portfolio).where(eq(portfolio.slug, id!));
-
 if (!data[0]) {
   return Astro.redirect(`/404?locale=${locale}`);
 }
-const parsedDescription = JSON.parse(data[0].content!)[locale!];
+const parsedDescription = data[0].content
+  ? JSON.parse(data[0].content)[locale!]
+  : "";
 const truncatedDescription =
-  parsedDescription.length > 100
+  parsedDescription && parsedDescription.length > 100
     ? parsedDescription.slice(0, 100) + "..."
     : parsedDescription;
 let parsedSubtitle = "";
@@ -107,7 +111,9 @@ if (data[0].subtitle) {
   <div class="portfolio-item-description container pt-20">
     <p
       class="w-1/2"
-      set:html={formatParagraph(JSON.parse(data[0].content!)[locale!])}
+      set:html={formatParagraph(
+        data[0].content ? JSON.parse(data[0].content)[locale!] || "" : ""
+      )}
     />
   </div>
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
