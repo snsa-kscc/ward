@@ -4,12 +4,15 @@ import DraggableTable, {
   type TableItem,
 } from "@/components/admin/DraggableTable";
 
-interface MediaTableProps {
+interface PortfolioMediaTableProps {
   filenames: string[];
   title: string;
 }
 
-export default function MediaTable({ filenames, title }: MediaTableProps) {
+export default function PortfolioMediaTable({
+  filenames,
+  title,
+}: PortfolioMediaTableProps) {
   const [items, setItems] = useState<string[]>(filenames);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,7 +39,7 @@ export default function MediaTable({ filenames, title }: MediaTableProps) {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("item", item.id as string);
-    const result = await actions.deleteMedia(formData);
+    const result = await actions.deletePortfolioMedia(formData);
     if (result.data === "deleted") {
       setItems((prev) => prev.filter((i) => i !== item.id));
       return true;

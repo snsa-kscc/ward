@@ -1,14 +1,13 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/admin/AdminNavbar.astro";
-import { writeFile } from "fs/promises";
-import path from "path";
 import { db } from "db";
 import { store } from "db/schema";
 import { and, eq } from "drizzle-orm";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { upsertStoreData } from "@/lib/store";
 
 const { locale } = Astro.params;
 
@@ -17,7 +16,7 @@ const res = await db
   .from(store)
   .where(and(eq(store.section, "footer"), eq(store.lang, locale!)));
 
-const resMap = res.reduce(
+const dict = res.reduce(
   (acc, cur) => {
     acc[cur.key as string] = cur.value as string;
     return acc;
@@ -27,61 +26,18 @@ const resMap = res.reduce(
 
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
-  try {
-    for (const [key, value] of formData.entries()) {
-      if (key === "ctaPicture") {
-        const buffer = Buffer.from(await (value as File).arrayBuffer());
-        await writeFile(
-          path.join("./public/assets", (value as File).name),
-          buffer
-        );
+  const result = await upsertStoreData({
+    formData,
+    section: "footer",
+    locale: locale!,
+    fileKeys: ["ctaPicture"],
+  });
 
-        const existing = await db
-          .select()
-          .from(store)
-          .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
-          .limit(1);
-
-        if (existing.length > 0) {
-          await db
-            .update(store)
-            .set({ value: (value as File).name })
-            .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
-        } else {
-          await db.insert(store).values({
-            section: "footer",
-            key: key as string,
-            value: (value as File).name,
-            lang: locale!,
-          });
-        }
-      } else {
-        const existing = await db
-          .select()
-          .from(store)
-          .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
-          .limit(1);
-
-        if (existing.length > 0) {
-          await db
-            .update(store)
-            .set({ value: value as string })
-            .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
-        } else {
-          await db.insert(store).values({
-            section: "footer",
-            key: key as string,
-            value: value as string,
-            lang: locale!,
-          });
-        }
-      }
-    }
-  } catch (error) {
-    console.error("Error updating data:", error);
+  if (result.success) {
+    return Astro.redirect(`/${locale}/admin/contact?update=success`);
+  } else {
     return Astro.redirect(`/${locale}/admin/contact?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/contact?update=success`);
 }
 ---
 
@@ -100,12 +56,12 @@ if (Astro.request.method === "POST") {
         name="ctaHeading"
         required
         className="bg-transparent text-white"
-        defaultValue={resMap.ctaHeading}
+        defaultValue={dict.ctaHeading}
       />
       {
-        resMap.ctaPicture && (
+        dict.ctaPicture && (
           <div class="flex items-center gap-4 px-6 py-2">
-            <p>{resMap.ctaPicture}</p>
+            <p>{dict.ctaPicture}</p>
             <Button className="btn" variant="destructive">
               delete
             </Button>
@@ -119,9 +75,8 @@ if (Astro.request.method === "POST") {
       <Input
         type="file"
         name="ctaPicture"
-        required
         className="text-black"
-        disabled={resMap.ctaPicture ? true : false}
+        disabled={dict.ctaPicture ? true : false}
       />
       <Label htmlFor="contactKey">Contact Key</Label>
       <Input
@@ -129,7 +84,7 @@ if (Astro.request.method === "POST") {
         name="contactKey"
         required
         className="bg-transparent text-white"
-        defaultValue={resMap.contactKey}
+        defaultValue={dict.contactKey}
       />
       <div class="flex w-full flex-col items-center gap-4 md:flex-row">
         <Label htmlFor="contactEmail">Email</Label>
@@ -138,7 +93,7 @@ if (Astro.request.method === "POST") {
           name="contactEmail"
           required
           className="bg-transparent text-white"
-          defaultValue={resMap.contactEmail}
+          defaultValue={dict.contactEmail}
         />
         <Label htmlFor="contactPhone">Phone</Label>
         <Input
@@ -146,7 +101,7 @@ if (Astro.request.method === "POST") {
           name="contactPhone"
           required
           className="bg-transparent text-white"
-          defaultValue={resMap.contactPhone}
+          defaultValue={dict.contactPhone}
         />
         <Label htmlFor="contactAddress">Address</Label>
         <Input
@@ -154,7 +109,7 @@ if (Astro.request.method === "POST") {
           name="contactAddress"
           required
           className="bg-transparent text-white"
-          defaultValue={resMap.contactAddress}
+          defaultValue={dict.contactAddress}
         />
       </div>
       <Label htmlFor="infoKey">Info Key</Label>
@@ -163,7 +118,7 @@ if (Astro.request.method === "POST") {
         name="infoKey"
         required
         className="bg-transparent text-white"
-        defaultValue={resMap.infoKey}
+        defaultValue={dict.infoKey}
       />
       <Label htmlFor="newsletterKey">Newsletter Key</Label>
       <Input
@@ -171,7 +126,7 @@ if (Astro.request.method === "POST") {
         name="newsletterKey"
         required
         className="bg-transparent text-white"
-        defaultValue={resMap.newsletterKey}
+        defaultValue={dict.newsletterKey}
       />
       <div class="flex w-full flex-col items-center gap-4 md:flex-row">
         <Label htmlFor="newsletterButton">Newsletter Button</Label>
@@ -180,7 +135,7 @@ if (Astro.request.method === "POST") {
           name="newsletterButton"
           required
           className="bg-transparent text-white"
-          defaultValue={resMap.newsletterButton}
+          defaultValue={dict.newsletterButton}
         />
         <Label htmlFor="newsletterDisclaimer">Newsletter Disclaimer</Label>
         <Input
@@ -188,7 +143,7 @@ if (Astro.request.method === "POST") {
           name="newsletterDisclaimer"
           required
           className="bg-transparent text-white"
-          defaultValue={resMap.newsletterDisclaimer}
+          defaultValue={dict.newsletterDisclaimer}
         />
       </div>
       <Label htmlFor="copyright">Copyright</Label>
@@ -197,7 +152,7 @@ if (Astro.request.method === "POST") {
         name="copyright"
         required
         className="bg-transparent text-white"
-        defaultValue={resMap.copyright}
+        defaultValue={dict.copyright}
       />
       <Button type="submit" variant="secondary">send</Button>
     </form>
@@ -229,7 +184,7 @@ if (Astro.request.method === "POST") {
     if (button) {
       button.addEventListener("click", async (e) => {
         e.preventDefault();
-        const result = await actions.deletePicture({
+        const result = await actions.deleteMedia({
           title: button.previousElementSibling?.textContent ?? "",
           lang: locale,
         });

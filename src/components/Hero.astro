@@ -1,10 +1,7 @@
 ---
 type Props = {
   data: {
-    siteTitleFirst: string;
-    siteTitleSecond: string;
-    siteDescriptionFirst: string;
-    siteDescriptionSecond: string;
+    title: string;
   };
 };
 
@@ -21,27 +18,7 @@ const parts: (text: string) => string[] = (text) =>
       class="hero-words inline-block overflow-hidden text-[clamp(var(--text-5xl),var(--text-13xl))] leading-none font-bold tracking-tighter"
     >
       {
-        data.siteTitleFirst.split("").map((char) => {
-          if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
-            return (
-              <span class="hero-char stroke inline-block origin-[center_top_0px] will-change-transform">
-                {char}
-              </span>
-            );
-          }
-          return (
-            <span class="hero-char inline-block origin-[center_top_0px] will-change-transform">
-              {char}
-            </span>
-          );
-        })
-      }
-    </div>
-    <div
-      class="hero-words inline-block overflow-hidden text-[clamp(var(--text-5xl),var(--text-13xl))] leading-none font-bold tracking-tighter"
-    >
-      {
-        data.siteTitleSecond.split("").map((char) => {
+        data.title.split("").map((char) => {
           if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
             return (
               <span class="hero-char stroke inline-block origin-[center_top_0px] will-change-transform">
@@ -62,7 +39,7 @@ const parts: (text: string) => string[] = (text) =>
     class="expertise expertise-wrapper mt-24 flex overflow-hidden px-4 text-5xl font-bold text-balance will-change-transform"
   >
     {
-      parts(data.siteDescriptionFirst).map((item, index) => {
+      parts(data.title).map((item, index) => {
         if (index % 2 === 0) {
           return <div class="inline-block pr-2">{item}</div>;
         }
@@ -87,7 +64,7 @@ const parts: (text: string) => string[] = (text) =>
   <h1
     class="expertise expertise-hook mt-24 px-4 text-end text-5xl font-bold text-balance will-change-transform"
   >
-    {data.siteDescriptionSecond}
+    {data.title}
   </h1>
 </section>
 
@@ -132,10 +109,7 @@ const parts: (text: string) => string[] = (text) =>
   import gsap from "gsap";
 
   const firstLineChars = document.querySelectorAll(
-    ".hero-words:first-of-type .hero-char"
-  ) as NodeListOf<HTMLElement>;
-  const secondLineChars = document.querySelectorAll(
-    ".hero-words:last-of-type .hero-char"
+    ".hero-words .hero-char"
   ) as NodeListOf<HTMLElement>;
   const expertiseWrapper = document.querySelector(
     ".expertise-wrapper"
@@ -154,12 +128,6 @@ const parts: (text: string) => string[] = (text) =>
     opacity: 0,
     rotateX: -90,
     stagger: 0.04,
-    ease: "power2.out",
-  });
-  tl.from(secondLineChars, {
-    duration: 0.6,
-    yPercent: 100,
-    stagger: 0.06,
     ease: "power2.out",
   });
   tl.from(expertiseWrapper, {

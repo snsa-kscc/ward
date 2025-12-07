@@ -9,7 +9,7 @@ import { Resend } from "resend";
 const resend = new Resend(import.meta.env.PUBLIC_RESEND_API);
 
 export const server = {
-  deleteMedia: defineAction({
+  deletePortfolioMedia: defineAction({
     accept: "form",
     input: z.object({ title: z.string(), item: z.string() }),
     handler: async ({ title, item }) => {
@@ -73,19 +73,6 @@ export const server = {
     },
   }),
 
-  deleteLogo: defineAction({
-    input: z.object({ id: z.number(), item: z.string() }),
-    handler: async ({ id, item }) => {
-      try {
-        await rm(`./public/assets/brands/${item}`);
-        await db.update(brands).set({ logo: null }).where(eq(brands.id, id));
-      } catch (error) {
-        console.error(error);
-      }
-      return "deleted";
-    },
-  }),
-
   deleteClient: defineAction({
     input: z.object({ id: z.number(), lang: z.string() }),
     handler: async ({ id, lang }) => {
@@ -100,7 +87,7 @@ export const server = {
     },
   }),
 
-  deletePicture: defineAction({
+  deleteMedia: defineAction({
     input: z.object({ title: z.string(), lang: z.string() }),
     handler: async ({ title, lang }) => {
       try {

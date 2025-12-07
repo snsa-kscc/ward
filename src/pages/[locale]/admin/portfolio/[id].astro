@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import MediaTable from "@/components/admin/MediaTable";
+import PortfolioMediaTable from "@/components/admin/PortfolioMediaTable";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { db } from "db";
@@ -113,7 +113,7 @@ const currentLocaleSubtitle = subtitleObject[locale!] || "";
       />
       <Label htmlFor="file">media</Label>
       <Input type="file" name="file" multiple className="text-black" />
-      <MediaTable
+      <PortfolioMediaTable
         client:only="react"
         filenames={filenames}
         title={res[0].title!}

@@ -8,10 +8,8 @@ export type GridData = {
 export type StoreData = {
   [key: string]: string;
   navbarLinks: string;
-  siteTitleFirst: string;
-  siteTitleSecond: string;
-  siteDescriptionFirst: string;
-  siteDescriptionSecond: string;
+  title: string;
+  featureMedia: string;
   aboutKey: string;
   about: string;
   specialitiesKey: string;

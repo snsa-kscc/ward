@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { upsertStoreData } from "@/lib/store";
 import { db } from "db";
 import { store } from "db/schema";
 import { eq, and } from "drizzle-orm";
@@ -26,33 +27,18 @@ const dict = res.reduce(
 
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
-  try {
-    for (const [key, value] of formData.entries()) {
-      const existing = await db
-        .select()
-        .from(store)
-        .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
-        .limit(1);
+  const result = await upsertStoreData({
+    formData,
+    section: "hero",
+    locale: locale!,
+    fileKeys: ["featureMedia"],
+  });
 
-      if (existing.length > 0) {
-        await db
-          .update(store)
-          .set({ value: value as string })
-          .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
-      } else {
-        await db.insert(store).values({
-          section: "hero",
-          key: key as string,
-          value: value as string,
-          lang: locale!,
-        });
-      }
-    }
-  } catch (error) {
-    console.error("Error updating data:", error);
+  if (result.success) {
+    return Astro.redirect(`/${locale}/admin/hero?update=success`);
+  } else {
     return Astro.redirect(`/${locale}/admin/hero?update=error`);
   }
-  return Astro.redirect(`/${locale}/admin/hero?update=success`);
 }
 ---
 
@@ -60,7 +46,11 @@ if (Astro.request.method === "POST") {
   <AdminNavbar lang={locale!} />
   <div class="container p-8">
     <h1 class="title py-20 text-3xl">Hero</h1>
-    <form method="POST" class="flex flex-col items-start gap-4">
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="flex flex-col items-start gap-4"
+    >
       <Label htmlFor="navbarLinks">Navbar links</Label>
       <Input
         type="text"
@@ -69,46 +59,39 @@ if (Astro.request.method === "POST") {
         className="bg-transparent text-white"
         defaultValue={dict.navbarLinks}
       />
-      <Label htmlFor="siteTitleFirst">Site title first</Label>
+      <Label htmlFor="title">Title</Label>
       <Input
         type="text"
-        name="siteTitleFirst"
+        name="title"
         required
         className="bg-transparent text-white"
-        defaultValue={dict.siteTitleFirst}
+        defaultValue={dict.title}
       />
-      <Label htmlFor="siteTitleSecond">Site title second</Label>
+      {
+        dict.featureMedia && (
+          <div class="flex items-center gap-4 px-6 py-2">
+            <p>{dict.featureMedia}</p>
+            <Button className="btn" variant="destructive">
+              delete
+            </Button>
+          </div>
+        )
+      }
+      <Label htmlFor="featureMedia">Feature Media</Label>
       <Input
-        type="text"
-        name="siteTitleSecond"
-        required
-        className="bg-transparent text-white"
-        defaultValue={dict.siteTitleSecond}
-      />
-      <Label htmlFor="siteDescriptionFirst"
-        >Site description first (__ for super-powers, only once)</Label
-      >
-      <Input
-        type="text"
-        name="siteDescriptionFirst"
-        className="bg-transparent text-white"
-        defaultValue={dict.siteDescriptionFirst}
-      />
-      <Label htmlFor="siteDescriptionSecond">Site description second</Label>
-      <Input
-        type="text"
-        name="siteDescriptionSecond"
-        className="bg-transparent text-white"
-        defaultValue={dict.siteDescriptionSecond}
+        type="file"
+        name="featureMedia"
+        className="text-black"
+        disabled={dict.featureMedia ? true : false}
       />
       <Label htmlFor="aboutKey">About key</Label>
-      <Input
-        type="text"
-        name="aboutKey"
+      <Textarea
+        name="about"
         className="bg-transparent text-white"
+        rows={5}
         defaultValue={dict.aboutKey}
       />
-      <Label htmlFor="about">About (__ for super-powers, multiple times)</Label>
+      <Label htmlFor="about">About</Label>
       <Textarea
         name="about"
         className="bg-transparent text-white"
@@ -141,6 +124,7 @@ if (Astro.request.method === "POST") {
   </div>
   <script>
     import { toast } from "@/hooks/use-toast";
+    import { actions } from "astro:actions";
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
@@ -155,6 +139,24 @@ if (Astro.request.method === "POST") {
         title: "Error",
         description: "Update failed.",
         variant: "destructive",
+      });
+    }
+
+    const button = document.querySelector(".btn") as HTMLButtonElement;
+    const file = document.querySelector("input[type=file]") as HTMLInputElement;
+    const locale = document.documentElement.lang;
+
+    if (button) {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const result = await actions.deleteMedia({
+          title: button.previousElementSibling?.textContent ?? "",
+          lang: locale,
+        });
+        if (result.data === "deleted") {
+          button.parentElement?.remove();
+          file.disabled = false;
+        }
       });
     }
   </script>
