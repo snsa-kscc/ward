@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import AdminNavbar from "@/components/admin/AdminNavbar.astro";
 import { db } from "db";
 import { brands, store } from "db/schema";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, and } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,7 +19,10 @@ const items = logoItems.map((item) => ({
   name: item.logo?.split(".")[0] || "",
   slug: item.id.toString(),
 }));
-const res = await db.select().from(store).where(eq(store.section, "brands"));
+const res = await db
+  .select()
+  .from(store)
+  .where(and(eq(store.section, "brands"), eq(store.lang, locale!)));
 
 const dict = res.reduce(
   (acc, cur) => {
@@ -61,14 +64,14 @@ if (Astro.request.method === "POST") {
         const existing = await db
           .select()
           .from(store)
-          .where(eq(store.key, key as string))
+          .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
           .limit(1);
 
         if (existing.length > 0) {
           await db
             .update(store)
             .set({ value: value as string })
-            .where(eq(store.key, key as string));
+            .where(and(eq(store.key, key as string), eq(store.lang, locale!)));
         } else {
           await db.insert(store).values({
             section: "brands",
