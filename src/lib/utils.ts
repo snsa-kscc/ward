@@ -50,10 +50,6 @@ export function splitItems(
   return parts;
 }
 
-export function shortenText(text: string, maxLength: number = 75): string {
-  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
-}
-
 export function isInViewport(element: Element) {
   return gsap.utils.toArray<Element>(element).every((el) => {
     const bounds = el.getBoundingClientRect();

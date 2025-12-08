@@ -119,22 +119,14 @@ if (Astro.request.method === "POST") {
         rows={5}
         defaultValue={dict.capabilitiesDescription}
       />
-      <div class="flex w-full flex-col items-center gap-4 md:flex-row">
-        <Label htmlFor="workKey">Work Key</Label>
-        <Input
-          type="text"
-          name="workKey"
-          className="bg-transparent text-white"
-          defaultValue={dict.workKey}
-        />
-        <Label htmlFor="workButton">Work Button</Label>
-        <Input
-          type="text"
-          name="workButton"
-          className="bg-transparent text-white"
-          defaultValue={dict.workButton}
-        />
-      </div>
+      <Label htmlFor="workKey">Work Key</Label>
+      <Input
+        type="text"
+        name="workKey"
+        className="bg-transparent text-white"
+        defaultValue={dict.workKey}
+      />
+
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Hero from "@/components/Hero.astro";
 import About from "@/components/About.astro";
-import Projects from "@/components/Projects.astro";
+import Portfolio from "@/components/Portfolio.astro";
 import Capabilities from "@/components/Capabilities.astro";
 import Logos from "@/components/Logos.astro";
 import Clients from "@/components/Clients.astro";
@@ -12,13 +12,12 @@ import Footer from "@/components/Footer.astro";
 import { db } from "db";
 import { asc, eq } from "drizzle-orm";
 import { store, portfolio, brands, clients, pages } from "db/schema";
-import { splitItems } from "@/lib/utils";
-import type { StoreData, GridData } from "@/types/global";
+import type { StoreData } from "@/types/global";
 
 const { locale } = Astro.params;
 
-const [storeData, grid, brandsData, clientsData, pagesData] = await Promise.all(
-  [
+const [storeData, portfolioData, brandsData, clientsData, pagesData] =
+  await Promise.all([
     db.select().from(store).where(eq(store.lang, locale!)),
     db.select().from(portfolio).orderBy(asc(portfolio.order)),
     db.select().from(brands).orderBy(asc(brands.order)),
@@ -32,16 +31,13 @@ const [storeData, grid, brandsData, clientsData, pagesData] = await Promise.all(
       .from(pages)
       .where(eq(pages.lang, locale!))
       .orderBy(asc(pages.name)),
-  ]
-);
+  ]);
 
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   acc[cur.key as string] = cur.value as string;
 
   return acc;
 }, {} as StoreData);
-
-const gridData: GridData = splitItems(grid) as GridData;
 ---
 
 <style>
@@ -67,12 +63,6 @@ const gridData: GridData = splitItems(grid) as GridData;
       const loadingOverlay = document.querySelector(".loading-overlay");
       loadingOverlay?.classList.add("js-loaded");
     });
-    // if (window.scrollY === 0) {
-    //   document.body.classList.add("overflow-hidden");
-    //   setTimeout(() => {
-    //     document.body.classList.remove("overflow-hidden");
-    //   }, 4000);
-    // }
   </script>
   <div class="loading-overlay bg-zinc-900"></div>
   <Header
@@ -82,7 +72,11 @@ const gridData: GridData = splitItems(grid) as GridData;
   />
   <Hero data={storeDataMap} />
   <About data={storeDataMap} />
-  <Projects locale={locale!} data={gridData} storeDataMap={storeDataMap} />
+  <Portfolio
+    locale={locale!}
+    data={portfolioData}
+    storeDataMap={storeDataMap}
+  />
   <Capabilities data={storeDataMap} />
   <Logos data={brandsData} />
   <Clients clientsData={clientsData} storeDataMap={storeDataMap} />

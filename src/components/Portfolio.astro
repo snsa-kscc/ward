@@ -1,0 +1,354 @@
+---
+import { Image } from "astro:assets";
+import type { StoreData } from "@/types/global";
+
+type PortfolioItem = {
+  id: number;
+  slug: string | null;
+  createdAt: Date;
+  title: string | null;
+  subtitle: string | null;
+  content: string | null;
+  media: string | null;
+  order: number | null;
+};
+
+type Props = {
+  locale: string;
+  data: PortfolioItem[];
+  storeDataMap: StoreData;
+};
+
+const { locale, data, storeDataMap } = Astro.props;
+
+// Simple multiplication of data array by 5
+const multipliedData = [...data, ...data, ...data, ...data, ...data];
+
+const getLocalizedValue = (jsonString: string, locale: string): string => {
+  try {
+    const parsed = JSON.parse(jsonString);
+    return parsed[locale] || parsed["en"] || "";
+  } catch {
+    return "";
+  }
+};
+---
+
+<section
+  id={storeDataMap.navbarLinks
+    .split(",")
+    .map((link) => link.trim())
+    .at(1)}
+  class="relative bg-stone-950 py-20 text-stone-50 md:py-28 lg:py-32"
+>
+  <div
+    class="container mb-8 flex items-center justify-between px-4 md:mb-12 md:px-6"
+  >
+    <h2 class="text-3xl font-medium md:text-4xl lg:text-5xl">
+      {storeDataMap.workKey}
+    </h2>
+    <div class="flex items-center gap-2 md:gap-4">
+      <button
+        type="button"
+        class="nav-btn group relative flex h-10 w-10 items-center justify-center rounded-full border border-stone-50/20 md:h-12 md:w-12"
+        aria-label="Previous"
+      >
+        <span class="nav-btn-bg"></span>
+        <svg
+          class="relative z-10 transition-colors duration-300 group-hover:text-stone-950"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="nav-btn group relative flex h-10 w-10 items-center justify-center rounded-full border border-stone-50/20 md:h-12 md:w-12"
+        aria-label="Next"
+      >
+        <span class="nav-btn-bg"></span>
+        <svg
+          class="relative z-10 transition-colors duration-300 group-hover:text-stone-950"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m9 18 6-6-6-6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="portfolio-slider cursor-none overflow-hidden">
+    <div
+      class="drag-cursor pointer-events-none fixed z-50 flex h-10 w-24 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-stone-50 text-stone-950 opacity-0 transition-opacity duration-300"
+    >
+      <span class="text-xs font-medium">Drag</span>
+    </div>
+    <div
+      class="portfolio-track flex transition-transform duration-500 ease-out"
+    >
+      {
+        multipliedData.map((item, index) => {
+          const mediaArray: string[] = item.media ? JSON.parse(item.media) : [];
+          const firstImage = mediaArray.length > 0 ? mediaArray[0] : "";
+          const subtitle = item.subtitle
+            ? getLocalizedValue(item.subtitle, locale)
+            : "";
+
+          return (
+            <div
+              class="portfolio-slide shrink-0 px-2 md:px-4"
+              data-index={index}
+            >
+              <a
+                href={`/${locale !== "en" ? `${locale}/` : ""}portfolio/${item.slug}`}
+                class="group block"
+              >
+                <div class="portfolio-image-wrapper relative aspect-4/5 overflow-hidden rounded-sm bg-stone-800">
+                  <Image
+                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    src={`/assets/portfolio/${firstImage}`}
+                    alt={item.title}
+                    width={600}
+                    height={750}
+                    loading="lazy"
+                  />
+                </div>
+                <div class="mt-3 md:mt-5">
+                  <h3 class="text-lg font-medium md:text-xl">{item.title}</h3>
+                  {subtitle && (
+                    <p class="mt-1 text-sm text-stone-50/60 md:text-base">
+                      {subtitle}
+                    </p>
+                  )}
+                </div>
+              </a>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .portfolio-slide {
+    width: calc(100% / 3);
+  }
+
+  @media (max-width: 1024px) {
+    .portfolio-slide {
+      width: calc(100% / 2);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .portfolio-slide {
+      width: 85%;
+    }
+  }
+
+  .nav-btn {
+    overflow: hidden;
+  }
+
+  .nav-btn-bg {
+    position: absolute;
+    inset: 0;
+    background-color: #fafaf9; /* stone-50 */
+    border-radius: 9999px;
+    transform: scale(0);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-btn:hover .nav-btn-bg {
+    transform: scale(1);
+  }
+
+  .portfolio-slider.is-dragging .portfolio-track {
+    transition: none;
+  }
+
+  .portfolio-slider.is-dragging a {
+    pointer-events: none;
+  }
+
+  .portfolio-slider a {
+    cursor: none;
+  }
+
+  .portfolio-slider {
+    -webkit-user-select: none;
+  }
+
+  .portfolio-slider img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+</style>
+
+<script>
+  const slider = document.querySelector(".portfolio-slider") as HTMLElement;
+  const track = document.querySelector(".portfolio-track") as HTMLElement;
+  const slides = document.querySelectorAll(".portfolio-slide");
+  const prevBtn = document.querySelector(".nav-btn[aria-label='Previous']");
+  const nextBtn = document.querySelector(".nav-btn[aria-label='Next']");
+  const dragCursor = document.querySelector(".drag-cursor") as HTMLElement;
+
+  if (track && slides.length > 0 && slider) {
+    let currentIndex = 0;
+    let isDragging = false;
+    let startX = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+
+    const slidesPerView = () => {
+      if (window.innerWidth < 640) return 1;
+      if (window.innerWidth < 1024) return 2;
+      return 3;
+    };
+
+    const maxIndex = () => Math.max(0, slides.length - slidesPerView());
+
+    const getSlideWidth = () => (slides[0] as HTMLElement).offsetWidth;
+
+    const setTrackPosition = (translate: number, animate = true) => {
+      if (!animate) {
+        track.style.transition = "none";
+      } else {
+        track.style.transition = "transform 0.5s ease-out";
+      }
+      track.style.transform = `translateX(${translate}px)`;
+    };
+
+    const updateSlider = () => {
+      const slideWidth = getSlideWidth();
+      currentTranslate = -currentIndex * slideWidth;
+      prevTranslate = currentTranslate;
+      setTrackPosition(currentTranslate);
+    };
+
+    // Custom cursor
+    slider.addEventListener("mouseenter", () => {
+      dragCursor.style.opacity = "1";
+    });
+
+    slider.addEventListener("mouseleave", () => {
+      dragCursor.style.opacity = "0";
+      if (isDragging) {
+        handleDragEnd();
+      }
+    });
+
+    slider.addEventListener("mousemove", (e) => {
+      dragCursor.style.left = `${e.clientX}px`;
+      dragCursor.style.top = `${e.clientY}px`;
+
+      if (isDragging) {
+        const currentPosition = e.clientX;
+        currentTranslate = prevTranslate + currentPosition - startX;
+        setTrackPosition(currentTranslate, false);
+      }
+    });
+
+    // Drag functionality
+    let hasDragged = false;
+
+    slider.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      hasDragged = false;
+      startX = e.clientX;
+    });
+
+    slider.addEventListener("mousemove", () => {
+      if (isDragging && Math.abs(currentTranslate - prevTranslate) > 5) {
+        hasDragged = true;
+        slider.classList.add("is-dragging");
+      }
+    });
+
+    const handleDragEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      slider.classList.remove("is-dragging");
+
+      const movedBy = currentTranslate - prevTranslate;
+
+      if (movedBy < -50 && currentIndex < maxIndex()) {
+        currentIndex++;
+      } else if (movedBy > 50 && currentIndex > 0) {
+        currentIndex--;
+      }
+
+      updateSlider();
+    };
+
+    slider.addEventListener("mouseup", handleDragEnd);
+
+    // Block link clicks only if user dragged
+    slider.addEventListener(
+      "click",
+      (e) => {
+        if (hasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+          hasDragged = false;
+        }
+      },
+      true
+    );
+
+    // Prevent native image drag
+    slider.addEventListener("dragstart", (e) => {
+      e.preventDefault();
+    });
+
+    // Touch support
+    slider.addEventListener("touchstart", (e) => {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      slider.classList.add("is-dragging");
+    });
+
+    slider.addEventListener("touchmove", (e) => {
+      if (!isDragging) return;
+      const currentPosition = e.touches[0].clientX;
+      currentTranslate = prevTranslate + currentPosition - startX;
+      setTrackPosition(currentTranslate, false);
+    });
+
+    slider.addEventListener("touchend", handleDragEnd);
+
+    // Button navigation
+    prevBtn?.addEventListener("click", () => {
+      currentIndex = Math.max(0, currentIndex - 1);
+      updateSlider();
+    });
+
+    nextBtn?.addEventListener("click", () => {
+      currentIndex = Math.min(maxIndex(), currentIndex + 1);
+      updateSlider();
+    });
+
+    window.addEventListener("resize", () => {
+      currentIndex = Math.min(currentIndex, maxIndex());
+      updateSlider();
+    });
+  }
+</script>

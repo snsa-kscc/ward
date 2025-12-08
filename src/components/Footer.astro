@@ -1,23 +1,10 @@
 ---
 import { NewsletterSubscribe } from "./NewsletterSubscribe";
+import type { StoreData } from "@/types/global";
 
 type Props = {
   locale: string;
-  storeData: {
-    contactKey: string;
-    contactEmail: string;
-    contactPhone: string;
-    contactAddress: string;
-    infoKey: string;
-    newsletterKey: string;
-    newsletterButton: string;
-    newsletterDisclaimer: string;
-    copyright: string;
-    contactHook1: string;
-    contactHook2: string;
-    contactName: string;
-    navbarLinks: string;
-  };
+  storeData: StoreData;
   pagesData: {
     title: string | null;
     slug: string | null;

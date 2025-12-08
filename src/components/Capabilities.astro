@@ -1,10 +1,8 @@
 ---
+import type { StoreData } from "@/types/global";
+
 type Props = {
-  data: {
-    capabilitiesKey: string;
-    capabilitiesDescription: string;
-    capabilities: string;
-  };
+  data: StoreData;
 };
 
 const { data } = Astro.props;

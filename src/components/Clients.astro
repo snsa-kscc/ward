@@ -1,14 +1,13 @@
 ---
+import type { StoreData } from "@/types/global";
+
 type Props = {
   clientsData: {
     id: number;
     createdAt: Date;
     item: string | null;
   }[];
-  storeDataMap: {
-    clientsKey: string;
-    navbarLinks: string;
-  };
+  storeDataMap: StoreData;
 };
 
 const { clientsData, storeDataMap } = Astro.props;
