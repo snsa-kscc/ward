@@ -9,65 +9,23 @@ type Props = {
 
 const { data } = Astro.props;
 
-const splitTag = "__";
-const parts: (text: string) => string[] = (text) =>
-  text.split(splitTag).filter(Boolean);
+const titleLines = data.title.split("__").map((line) => line.trim());
 ---
 
 <section class="container mt-[clamp(36,38)]">
-  <div class="mt-38 flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-center py-[clamp(24,38)]">
     <div
-      class="hero-words inline-block overflow-hidden text-[clamp(var(--text-5xl),var(--text-13xl))] leading-none font-bold tracking-tighter"
+      class="hero-title-container text-[clamp(var(--text-5xl),var(--text-9xl))] leading-none font-medium"
     >
       {
-        data.title.split("").map((char) => {
-          if (char === char.toUpperCase() && char.match(/[A-Z]/)) {
-            return (
-              <span class="hero-char stroke inline-block origin-[center_top_0px] will-change-transform">
-                {char}
-              </span>
-            );
-          }
-          return (
-            <span class="hero-char inline-block origin-[center_top_0px] will-change-transform">
-              {char}
-            </span>
-          );
-        })
+        titleLines.map((line, index) => (
+          <div class="hero-line-wrapper overflow-hidden" data-line={index}>
+            <div class="hero-line">{line}</div>
+          </div>
+        ))
       }
     </div>
   </div>
-  <div
-    class="expertise expertise-wrapper mt-24 flex overflow-hidden px-4 text-5xl font-bold text-balance will-change-transform"
-  >
-    {
-      parts(data.title).map((item, index) => {
-        if (index % 2 === 0) {
-          return <div class="inline-block pr-2">{item}</div>;
-        }
-        return (
-          <div class="expertise-animation relative inline-block">
-            {item.split(";").map((word) => {
-              return (
-                <div class="absolute top-0 left-0 w-max" data-text={word}>
-                  <div class="overflow-hidden">
-                    {word.split("").map((char) => {
-                      return <span class="hero-char inline-block">{char}</span>;
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
-      })
-    }
-  </div>
-  <h1
-    class="expertise expertise-hook mt-24 px-4 text-end text-5xl font-bold text-balance will-change-transform"
-  >
-    {data.title}
-  </h1>
   {
     data.featureMedia && (
       <Image
@@ -83,111 +41,29 @@ const parts: (text: string) => string[] = (text) =>
 </section>
 
 <style>
-  #letter {
-    --color: #fff;
-    position: relative;
-    color: transparent;
+  .hero-line-wrapper {
+    overflow: hidden;
+    will-change: transform;
   }
 
-  #letter::after {
-    content: attr(data-text);
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    -webkit-text-stroke: 1px var(--color);
-    line-height: 0.9;
-  }
-
-  .stroke {
-    -webkit-text-stroke: 1px #fff;
-    color: transparent;
-  }
-
-  .hero-words {
-    transform-style: preserve-3d;
-    perspective: 1000px;
-  }
-
-  .expertise {
-    transform-style: preserve-3d;
-    transform: perspective(800px);
-    transform-origin: bottom center;
-  }
-
-  .hero-char {
-    will-change: transform, opacity;
+  .hero-line {
+    will-change: transform;
   }
 </style>
 
 <script>
   import gsap from "gsap";
 
-  const firstLineChars = document.querySelectorAll(
-    ".hero-words .hero-char"
-  ) as NodeListOf<HTMLElement>;
-  const expertiseWrapper = document.querySelector(
-    ".expertise-wrapper"
-  ) as HTMLElement;
-  const expertiseHook = document.querySelector(
-    ".expertise-hook"
-  ) as HTMLElement;
-  const expertises = document.querySelectorAll(
-    ".expertise-animation > div"
+  const heroLines = document.querySelectorAll(
+    ".hero-line"
   ) as NodeListOf<HTMLElement>;
 
-  const tl = gsap.timeline({ delay: 0.8 });
-  tl.from(firstLineChars, {
-    duration: 0.7,
-    yPercent: 85,
+  gsap.from(heroLines, {
+    duration: 1,
+    yPercent: 100,
     opacity: 0,
-    rotateX: -90,
-    stagger: 0.04,
     ease: "power2.out",
+    stagger: 0.3,
+    delay: 0.5,
   });
-  tl.from(expertiseWrapper, {
-    duration: 0.4,
-    opacity: 0,
-    rotateX: "55",
-  });
-  tl.from(expertiseHook, {
-    duration: 0.4,
-    opacity: 0,
-    rotateX: "55",
-  });
-
-  const expertiseTl = gsap.timeline({
-    repeat: -1,
-  });
-  expertises.forEach((item) => {
-    const chars = item.querySelectorAll(
-      ".hero-char"
-    ) as NodeListOf<HTMLElement>;
-    expertiseTl
-      .fromTo(
-        chars,
-        {
-          yPercent: 100,
-          opacity: 0,
-        },
-        {
-          duration: 0.5,
-          yPercent: 0,
-          opacity: 1,
-          stagger: 0.05,
-          ease: "power2.out",
-        }
-      )
-      .to(
-        chars,
-        {
-          duration: 0.5,
-          yPercent: -100,
-          opacity: 0,
-          stagger: 0.05,
-          ease: "power2.in",
-        },
-        "+=1"
-      );
-  });
-  tl.add(expertiseTl);
 </script>

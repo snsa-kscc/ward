@@ -53,7 +53,11 @@ if (data[0].subtitle) {
   }
 </style>
 
-<Layout lang={locale} title={data[0].title!} description={parsedDescription}>
+<Layout
+  lang={locale}
+  title=`${data[0].title!} — WARD`
+  description={parsedDescription}
+>
   <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
   <h1 class="title text-12xl container py-20 text-right font-bold">

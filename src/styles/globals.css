@@ -193,9 +193,72 @@
   @font-face {
     font-family: "Neue Haas Display";
     font-style: normal;
+    font-weight: 100;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-XXThin.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: italic;
+    font-weight: 100;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-XXThinItalic.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: normal;
+    font-weight: 200;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-XThin.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: italic;
+    font-weight: 200;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-XThinItalic.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-Thin.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: italic;
+    font-weight: 300;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-ThinItalic.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: normal;
     font-weight: 400;
     font-display: swap;
     src: url(/fonts/NeueHaasDisplay-Roman.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-RomanItalic.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-Medium.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: italic;
+    font-weight: 500;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-MediumItalic.woff2) format("woff2");
   }
   @font-face {
     font-family: "Neue Haas Display";
@@ -203,6 +266,27 @@
     font-weight: 700;
     font-display: swap;
     src: url(/fonts/NeueHaasDisplay-Bold.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-BoldItalic.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-Black.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Neue Haas Display";
+    font-style: italic;
+    font-weight: 800;
+    font-display: swap;
+    src: url(/fonts/NeueHaasDisplay-BlackItalic.woff2) format("woff2");
   }
 }
 

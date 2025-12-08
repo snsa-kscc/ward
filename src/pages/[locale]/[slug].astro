@@ -33,7 +33,7 @@ if (!data[0]) {
 
 <Layout
   lang={locale}
-  title={data[0].title!}
+  title=`${data[0].title!} — WARD`
   description={data[0].content || ""}
 >
   <Header lang={locale!} slug={slug} links={storeDataMap.navbarLinks} />
