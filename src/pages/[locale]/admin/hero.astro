@@ -67,23 +67,6 @@ if (Astro.request.method === "POST") {
         className="bg-transparent text-white"
         defaultValue={dict.title}
       />
-      {
-        dict.featureMedia && (
-          <div class="flex items-center gap-4 px-6 py-2">
-            <p>{dict.featureMedia}</p>
-            <Button className="btn" variant="destructive">
-              delete
-            </Button>
-          </div>
-        )
-      }
-      <Label htmlFor="featureMedia">Feature Media</Label>
-      <Input
-        type="file"
-        name="featureMedia"
-        className="text-black"
-        disabled={dict.featureMedia ? true : false}
-      />
       <Label htmlFor="aboutKey">About key</Label>
       <Textarea
         name="aboutKey"
@@ -135,7 +118,23 @@ if (Astro.request.method === "POST") {
           defaultValue={dict.dragKey}
         />
       </div>
-
+      {
+        dict.featureMedia && (
+          <div class="flex items-center gap-4 px-6 py-2">
+            <p>{dict.featureMedia}</p>
+            <Button className="btn" variant="destructive">
+              delete
+            </Button>
+          </div>
+        )
+      }
+      <Label htmlFor="featureMedia">Feature Media</Label>
+      <Input
+        type="file"
+        name="featureMedia"
+        className="text-black"
+        disabled={dict.featureMedia ? true : false}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

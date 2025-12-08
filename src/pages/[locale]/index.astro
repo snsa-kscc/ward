@@ -81,6 +81,6 @@ const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   <Capabilities data={storeDataMap} />
   <Logos data={brandsData} />
   <Clients clientsData={clientsData} storeDataMap={storeDataMap} />
-  <Picture locale={locale!} />
+  <Picture storeDataMap={storeDataMap} />
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>

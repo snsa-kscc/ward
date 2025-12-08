@@ -3,6 +3,7 @@ import { z } from "astro:schema";
 import { rm } from "fs/promises";
 import { eq, and, max } from "drizzle-orm";
 import { clients, brands, portfolio, store } from "@/../db/schema";
+import { locales } from "@/lib/utils";
 import { db } from "@/../db";
 import { Resend } from "resend";
 
@@ -92,10 +93,12 @@ export const server = {
     handler: async ({ title, lang }) => {
       try {
         await rm(`./public/assets/${title}`);
-        await db
-          .update(store)
-          .set({ value: null })
-          .where(and(eq(store.value, title), eq(store.lang, lang)));
+        for (const loc of locales) {
+          await db
+            .update(store)
+            .set({ value: null })
+            .where(and(eq(store.value, title), eq(store.lang, loc)));
+        }
       } catch (error) {
         console.error(error);
       }

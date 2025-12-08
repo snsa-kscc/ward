@@ -2,6 +2,9 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { gsap } from "gsap";
 
+export const locales = ["en", "hr"];
+export const defaultLocale = "en";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

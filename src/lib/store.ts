@@ -3,6 +3,7 @@ import path from "path";
 import { db } from "db";
 import { store } from "db/schema";
 import { eq, and } from "drizzle-orm";
+import { locales } from "@/lib/utils";
 
 export interface UpsertOptions {
   formData: FormData;
@@ -25,27 +26,27 @@ export async function upsertStoreData({
         if (file.size > 0 && file.name) {
           const buffer = Buffer.from(await file.arrayBuffer());
           await writeFile(path.join("./public/assets", file.name), buffer);
+          // Update or insert for each locale
+          for (const loc of locales) {
+            const existing = await db
+              .select()
+              .from(store)
+              .where(and(eq(store.key, key as string), eq(store.lang, loc)))
+              .limit(1);
 
-          const existing = await db
-            .select()
-            .from(store)
-            .where(and(eq(store.key, key as string), eq(store.lang, locale!)))
-            .limit(1);
-
-          if (existing.length > 0) {
-            await db
-              .update(store)
-              .set({ value: file.name })
-              .where(
-                and(eq(store.key, key as string), eq(store.lang, locale!)),
-              );
-          } else {
-            await db.insert(store).values({
-              section,
-              key: key as string,
-              value: file.name,
-              lang: locale!,
-            });
+            if (existing.length > 0) {
+              await db
+                .update(store)
+                .set({ value: file.name })
+                .where(and(eq(store.key, key as string), eq(store.lang, loc)));
+            } else {
+              await db.insert(store).values({
+                section,
+                key: key as string,
+                value: file.name,
+                lang: loc,
+              });
+            }
           }
         }
       } else {

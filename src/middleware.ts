@@ -1,7 +1,5 @@
 import { defineMiddleware, sequence } from "astro:middleware";
-
-const locales = ["en", "hr"];
-const defaultLocale = "en";
+import { locales, defaultLocale } from "@/lib/utils";
 
 export const i18nMiddleware = defineMiddleware((context, next) => {
   const url = new URL(context.request.url);
