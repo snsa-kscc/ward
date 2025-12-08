@@ -160,14 +160,12 @@ if (Astro.request.method === "POST") {
 
     const button = document.querySelector(".btn") as HTMLButtonElement;
     const file = document.querySelector("input[type=file]") as HTMLInputElement;
-    const locale = document.documentElement.lang;
 
     if (button) {
       button.addEventListener("click", async (e) => {
         e.preventDefault();
         const result = await actions.deleteMedia({
           title: button.previousElementSibling?.textContent ?? "",
-          lang: locale,
         });
         if (result.data === "deleted") {
           button.parentElement?.remove();

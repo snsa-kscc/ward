@@ -89,8 +89,8 @@ export const server = {
   }),
 
   deleteMedia: defineAction({
-    input: z.object({ title: z.string(), lang: z.string() }),
-    handler: async ({ title, lang }) => {
+    input: z.object({ title: z.string() }),
+    handler: async ({ title }) => {
       try {
         await rm(`./public/assets/${title}`);
         for (const loc of locales) {
