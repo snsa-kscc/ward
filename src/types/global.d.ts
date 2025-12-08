@@ -17,6 +17,7 @@ export type StoreData = {
   capabilities: string;
   capabilitiesDescription: string;
   workKey: string;
+  dragKey: string;
   contactKey: string;
   contactEmail: string;
   contactPhone: string;

@@ -89,7 +89,9 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
     <div
       class="drag-cursor pointer-events-none fixed z-50 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-stone-950 opacity-0 transition-opacity duration-300"
     >
-      <span class="text-lg font-medium text-stone-950">Drag</span>
+      <span class="text-lg font-medium text-stone-950"
+        >{storeDataMap.dragKey}</span
+      >
     </div>
     <div
       class="portfolio-track flex transition-transform duration-500 ease-out"
@@ -104,14 +106,14 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
 
           return (
             <div
-              class="portfolio-slide shrink-0 px-2 md:px-4"
+              class="portfolio-slide shrink-0 px-4 md:px-6"
               data-index={index}
             >
               <a
                 href={`/${locale !== "en" ? `${locale}/` : ""}portfolio/${item.slug}`}
                 class="group block"
               >
-                <div class="portfolio-image-wrapper relative aspect-4/5 overflow-hidden rounded-sm bg-stone-800">
+                <div class="portfolio-image-wrapper relative aspect-4/5 overflow-hidden rounded-2xl bg-stone-800">
                   <Image
                     class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     src={`/assets/portfolio/${firstImage}`}
@@ -203,20 +205,21 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
   const nextBtn = document.querySelector(".nav-btn[aria-label='Next']");
   const dragCursor = document.querySelector(".drag-cursor") as HTMLElement;
 
-  if (track && slides.length > 0 && slider) {
+  if (track && slides.length > 0 && slider && dragCursor) {
     let currentIndex = 0;
     let isDragging = false;
     let startX = 0;
     let currentTranslate = 0;
     let prevTranslate = 0;
+    let hasDragged = false;
 
-    const slidesPerView = () => {
+    const getSlidesPerView = () => {
       if (window.innerWidth < 640) return 1;
       if (window.innerWidth < 1024) return 2;
       return 3;
     };
 
-    const maxIndex = () => Math.max(0, slides.length - slidesPerView());
+    const getMaxIndex = () => Math.max(0, slides.length - getSlidesPerView());
 
     const getSlideWidth = () => (slides[0] as HTMLElement).offsetWidth;
 
@@ -236,64 +239,74 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
       setTrackPosition(currentTranslate);
     };
 
-    // Custom cursor
-    slider.addEventListener("mouseenter", () => {
-      dragCursor.style.opacity = "1";
-    });
-
-    slider.addEventListener("mouseleave", () => {
-      dragCursor.style.opacity = "0";
-      if (isDragging) {
-        handleDragEnd();
-      }
-    });
-
-    slider.addEventListener("mousemove", (e) => {
-      dragCursor.style.left = `${e.clientX}px`;
-      dragCursor.style.top = `${e.clientY}px`;
-
-      if (isDragging) {
-        const currentPosition = e.clientX;
-        currentTranslate = prevTranslate + currentPosition - startX;
-        setTrackPosition(currentTranslate, false);
-      }
-    });
-
-    // Drag functionality
-    let hasDragged = false;
-
-    slider.addEventListener("mousedown", (e) => {
+    const handleDragStart = (clientX: number) => {
       isDragging = true;
       hasDragged = false;
-      startX = e.clientX;
-    });
+      startX = clientX;
+    };
 
-    slider.addEventListener("mousemove", () => {
-      if (isDragging && Math.abs(currentTranslate - prevTranslate) > 5) {
+    const handleDragMove = (clientX: number, clientY: number) => {
+      // Cursor movement
+      dragCursor.style.left = `${clientX}px`;
+      dragCursor.style.top = `${clientY}px`;
+
+      if (!isDragging) return;
+
+      const currentPosition = clientX;
+      const diff = currentPosition - startX;
+      currentTranslate = prevTranslate + diff;
+      setTrackPosition(currentTranslate, false);
+
+      if (Math.abs(diff) > 5) {
         hasDragged = true;
         slider.classList.add("is-dragging");
       }
-    });
+    };
 
     const handleDragEnd = () => {
       if (!isDragging) return;
       isDragging = false;
       slider.classList.remove("is-dragging");
 
-      const movedBy = currentTranslate - prevTranslate;
+      // Calculate nearest index based on the dragged distance
+      const slideWidth = getSlideWidth();
+      const approximateIndex = -currentTranslate / slideWidth;
+      currentIndex = Math.round(approximateIndex);
 
-      if (movedBy < -50 && currentIndex < maxIndex()) {
-        currentIndex++;
-      } else if (movedBy > 50 && currentIndex > 0) {
-        currentIndex--;
-      }
+      // Clamp index within bounds
+      currentIndex = Math.max(0, Math.min(currentIndex, getMaxIndex()));
 
       updateSlider();
     };
 
-    slider.addEventListener("mouseup", handleDragEnd);
+    // Mouse Events
+    slider.addEventListener("mousedown", (e) => handleDragStart(e.clientX));
 
-    // Block link clicks only if user dragged
+    slider.addEventListener("mousemove", (e) => {
+      handleDragMove(e.clientX, e.clientY);
+    });
+
+    slider.addEventListener("mouseup", handleDragEnd);
+    slider.addEventListener("mouseleave", () => {
+      dragCursor.style.opacity = "0";
+      handleDragEnd();
+    });
+    slider.addEventListener("mouseenter", () => {
+      dragCursor.style.opacity = "1";
+    });
+
+    // Touch Events
+    slider.addEventListener("touchstart", (e) => {
+      handleDragStart(e.touches[0].clientX);
+    });
+
+    slider.addEventListener("touchmove", (e) => {
+      handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    slider.addEventListener("touchend", handleDragEnd);
+
+    // Click prevention
     slider.addEventListener(
       "click",
       (e) => {
@@ -307,39 +320,22 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
     );
 
     // Prevent native image drag
-    slider.addEventListener("dragstart", (e) => {
-      e.preventDefault();
-    });
+    slider.addEventListener("dragstart", (e) => e.preventDefault());
 
-    // Touch support
-    slider.addEventListener("touchstart", (e) => {
-      isDragging = true;
-      startX = e.touches[0].clientX;
-      slider.classList.add("is-dragging");
-    });
-
-    slider.addEventListener("touchmove", (e) => {
-      if (!isDragging) return;
-      const currentPosition = e.touches[0].clientX;
-      currentTranslate = prevTranslate + currentPosition - startX;
-      setTrackPosition(currentTranslate, false);
-    });
-
-    slider.addEventListener("touchend", handleDragEnd);
-
-    // Button navigation
+    // Navigation Buttons
     prevBtn?.addEventListener("click", () => {
       currentIndex = Math.max(0, currentIndex - 1);
       updateSlider();
     });
 
     nextBtn?.addEventListener("click", () => {
-      currentIndex = Math.min(maxIndex(), currentIndex + 1);
+      currentIndex = Math.min(getMaxIndex(), currentIndex + 1);
       updateSlider();
     });
 
+    // Resize
     window.addEventListener("resize", () => {
-      currentIndex = Math.min(currentIndex, maxIndex());
+      currentIndex = Math.min(currentIndex, getMaxIndex());
       updateSlider();
     });
   }
