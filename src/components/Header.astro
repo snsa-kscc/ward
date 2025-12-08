@@ -70,7 +70,7 @@ function capitalizeLink(str: string) {
           linksArray?.map((link) => (
             <a
               href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`}
-              class="relative text-2xl font-medium transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-stone-700 after:transition-all after:duration-300 after:ease-in-out hover:text-stone-700 hover:after:w-full"
+              class="relative text-2xl font-medium transition-colors after:absolute after:bottom-0 after:left-0 after:h-1 after:w-0 after:bg-stone-700 after:transition-all after:duration-300 after:ease-in-out hover:text-stone-700 hover:after:w-full"
             >
               {capitalizeLink(link.replaceAll("-", " "))}
             </a>
