@@ -7,7 +7,7 @@ import { eq, asc } from "drizzle-orm";
 import { portfolio, store, pages } from "db/schema";
 import type { StoreData } from "@/types/global";
 import { Image } from "astro:assets";
-import { formatParagraph } from "@/lib/utils";
+import { formatParagraph, getLocalizedValue } from "@/lib/utils";
 
 const { id, locale } = Astro.params;
 
@@ -31,13 +31,11 @@ if (!data[0]) {
   return Astro.redirect(`/404?locale=${locale}`);
 }
 const parsedDescription = data[0].content
-  ? JSON.parse(data[0].content)[locale!]
+  ? getLocalizedValue(data[0].content, locale!)
   : "";
-let parsedSubtitle = "";
-if (data[0].subtitle) {
-  const subtitleObject = JSON.parse(data[0].subtitle!);
-  parsedSubtitle = subtitleObject[locale!] || "";
-}
+const parsedSubtitle = data[0].subtitle
+  ? getLocalizedValue(data[0].subtitle, locale!)
+  : "";
 ---
 
 <style>

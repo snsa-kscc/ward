@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { StoreData } from "@/types/global";
+import { getLocalizedValue } from "@/lib/utils";
 
 type PortfolioItem = {
   id: number;
@@ -23,15 +24,6 @@ const { locale, data, storeDataMap } = Astro.props;
 
 // Simple multiplication of data array by 5
 const multipliedData = [...data, ...data, ...data, ...data, ...data];
-
-const getLocalizedValue = (jsonString: string, locale: string): string => {
-  try {
-    const parsed = JSON.parse(jsonString);
-    return parsed[locale] || parsed["en"] || "";
-  } catch {
-    return "";
-  }
-};
 ---
 
 <section

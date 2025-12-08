@@ -56,3 +56,12 @@ export function isInViewport(element: Element) {
     return bounds.bottom >= 0 && bounds.bottom <= window.innerHeight;
   });
 }
+
+export function getLocalizedValue(jsonString: string, locale: string): string {
+  try {
+    const parsed = JSON.parse(jsonString);
+    return parsed[locale] || parsed["en"] || "";
+  } catch {
+    return "";
+  }
+}
