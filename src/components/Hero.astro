@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import type { StoreData } from "@/types/global";
 
 type Props = {
@@ -25,18 +24,6 @@ const titleLines = data.title.split("__").map((line) => line.trim());
       }
     </div>
   </div>
-  {
-    data.featureMedia && (
-      <Image
-        src={`/assets/${data.featureMedia}`}
-        alt={data.featureMedia}
-        width={1500}
-        height={2000}
-        loading="eager"
-        class="mt-24 h-[100vmin] w-full"
-      />
-    )
-  }
 </section>
 
 <style>

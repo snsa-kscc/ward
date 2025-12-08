@@ -99,15 +99,23 @@ const parsedSubtitle = data[0].subtitle
       })
     }
   </div>
-  <div class="portfolio-item-description container pt-20">
-    <p
-      class="w-1/2"
-      set:html={formatParagraph(
-        data[0].content ? JSON.parse(data[0].content)[locale!] || "" : ""
-      )}
-    />
+  <div class="container pt-20">
+    <div class="flex items-start justify-between gap-8">
+      {
+        parsedSubtitle && (
+          <div class="text-3xl font-bold">
+            <p>{parsedSubtitle}</p>
+          </div>
+        )
+      }
+      <div
+        class="w-1/2"
+        set:html={formatParagraph(
+          data[0].content ? JSON.parse(data[0].content)[locale!] || "" : ""
+        )}
+      />
+    </div>
   </div>
-  <p>{parsedSubtitle}</p>
   <Footer locale={locale!} storeData={storeDataMap} pagesData={pagesData} />
 </Layout>
 <script>
