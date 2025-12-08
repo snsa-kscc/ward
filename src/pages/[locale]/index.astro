@@ -13,9 +13,9 @@ import { db } from "db";
 import { asc, eq } from "drizzle-orm";
 import { store, portfolio, brands, clients, pages } from "db/schema";
 import type { StoreData } from "@/types/global";
+import { defaultLocale } from "@/lib/utils";
 
 const { locale } = Astro.params;
-const defaultLocale = "en";
 
 const [storeData, portfolioData, brandsData, clientsData, pagesData] =
   await Promise.all([
