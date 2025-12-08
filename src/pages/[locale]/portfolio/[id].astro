@@ -79,25 +79,27 @@ const parsedSubtitle = data[0].subtitle
         ))
     }
   </h1>
-  <div
-    class="portfolio-item-wrapper my-20 flex min-w-max items-center gap-16 overflow-x-auto px-40 will-change-transform"
-  >
-    {
-      JSON.parse(data[0].media!).map((media: string, index: number) => {
-        return (
-          <div>
-            <Image
-              class="max-h-[80vh] w-full rounded-2xl"
-              src={`/assets/portfolio/${media}`}
-              alt={`${data[0].title}-${index + 1}`}
-              width={1500}
-              height={2000}
-              loading="eager"
-            />
-          </div>
-        );
-      })
-    }
+  <div class="portfolio-sticky-wrapper my-20 w-full overflow-hidden">
+    <div
+      class="portfolio-item-wrapper flex w-max items-center gap-16 px-40 will-change-transform"
+    >
+      {
+        JSON.parse(data[0].media!).map((media: string, index: number) => {
+          return (
+            <div>
+              <Image
+                class="max-h-[80vh] w-full rounded-2xl"
+                src={`/assets/portfolio/${media}`}
+                alt={`${data[0].title}-${index + 1}`}
+                width={1500}
+                height={2000}
+                loading="eager"
+              />
+            </div>
+          );
+        })
+      }
+    </div>
   </div>
   <div class="container pt-20">
     <div class="flex items-start justify-between gap-8">
@@ -120,13 +122,17 @@ const parsedSubtitle = data[0].subtitle
 </Layout>
 <script>
   import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
   const headerWords = document.querySelectorAll(".title>span>span");
-  const portfolioItemDescription = document.querySelector(
-    ".portfolio-item-description"
-  );
   const portfolioItemsWrapper = document.querySelector(
     ".portfolio-item-wrapper"
   ) as HTMLElement;
+  const portfolioStickyWrapper = document.querySelector(
+    ".portfolio-sticky-wrapper"
+  );
 
   document.addEventListener("DOMContentLoaded", () => {
     const loadingOverlay = document.querySelector(".loading-overlay");
@@ -150,26 +156,26 @@ const parsedSubtitle = data[0].subtitle
     duration: 0.7,
     ease: "none",
   });
-  gsap.to(portfolioItemsWrapper, {
-    x: () => -(portfolioItemsWrapper.scrollWidth - window.innerWidth + 100),
+  const scrollTl = gsap.timeline({
     scrollTrigger: {
-      trigger: portfolioItemsWrapper,
+      trigger: portfolioStickyWrapper,
       pin: true,
-      scrub: 0.7,
+      scrub: 1,
       start: "top 10%",
       end: () =>
         "+=" + (portfolioItemsWrapper.scrollWidth - window.innerWidth + 100),
       invalidateOnRefresh: true,
     },
   });
-  gsap.from(portfolioItemDescription, {
-    y: 75,
-    opacity: 0,
-    duration: 0.7,
-    ease: "power2.out",
-    scrollTrigger: {
-      trigger: portfolioItemDescription,
-      start: "top 80%",
+
+  scrollTl.to(
+    portfolioItemsWrapper,
+    {
+      x: () => -(portfolioItemsWrapper.scrollWidth - window.innerWidth + 100),
+      ease: "none",
+      duration: 0.8,
     },
-  });
+    0.1
+  );
+  scrollTl.to({}, { duration: 0.1 });
 </script>

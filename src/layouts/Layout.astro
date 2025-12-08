@@ -21,7 +21,7 @@ const sanitizedDescription =
 ---
 
 <!doctype html>
-<html lang={lang} class="scroll-smooth">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -29,6 +29,24 @@ const sanitizedDescription =
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={sanitizedDescription} />
     <title>{sanitizedtitle}</title>
+    <style is:global>
+      html.lenis,
+      body.lenis {
+        height: auto;
+      }
+      .lenis.lenis-smooth {
+        scroll-behavior: auto !important;
+      }
+      .lenis.lenis-smooth [data-lenis-prevent] {
+        overscroll-behavior: contain;
+      }
+      .lenis.lenis-stopped {
+        overflow: hidden;
+      }
+      .lenis.lenis-scrolling iframe {
+        pointer-events: none;
+      }
+    </style>
   </head>
   <body
     class={cn("bg-stone-50 text-stone-950", {
@@ -38,5 +56,22 @@ const sanitizedDescription =
     <slot />
     <TailwindIndicator />
     <Toaster client:load />
+    <script>
+      import Lenis from "lenis";
+      import gsap from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+      // Only initialize Lenis on non-admin routes
+      if (!window.location.pathname.includes("admin")) {
+        const lenis = new Lenis();
+        lenis.on("scroll", ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+          lenis.raf(time * 1000);
+        });
+
+        gsap.ticker.lagSmoothing(0);
+      }
+    </script>
   </body>
 </html>
