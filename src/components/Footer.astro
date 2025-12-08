@@ -41,12 +41,16 @@ const { locale, storeData, pagesData } = Astro.props;
             {storeData.contactKey}
           </p>
           <p>
-            <a class="underline" href={`mailto:${storeData.contactEmail}`}
+            <a
+              href={`mailto:${storeData.contactEmail}`}
+              class="relative pb-0.5 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-current after:transition-all after:duration-300 after:ease-in-out hover:after:w-full"
               >{storeData.contactEmail}</a
             >
           </p>
           <p>
-            tel: <a href={`tel:${storeData.contactPhone.replaceAll(" ", "")}`}
+            tel: <a
+              href={`tel:${storeData.contactPhone.replaceAll(" ", "")}`}
+              class="relative pb-0.5 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-current after:transition-all after:duration-300 after:ease-in-out hover:after:w-full"
               >{storeData.contactPhone}</a
             >
           </p>
@@ -61,7 +65,10 @@ const { locale, storeData, pagesData } = Astro.props;
           {
             pagesData.map((page) => (
               <div class="">
-                <a href={`/${locale !== "en" ? `${locale}/` : ""}${page.slug}`}>
+                <a
+                  href={`/${locale !== "en" ? `${locale}/` : ""}${page.slug}`}
+                  class="relative pb-0.5 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-current after:transition-all after:duration-300 after:ease-in-out hover:after:w-full"
+                >
                   {page.title}
                 </a>
               </div>
@@ -84,7 +91,7 @@ const { locale, storeData, pagesData } = Astro.props;
     <div
       class="pt-[clamp(10,40)] text-[clamp(var(--text-xl),var(--text-2xl))] font-bold"
     >
-      <p>{` ${new Date().getFullYear()} ${storeData.copyright}`}</p>
+      <p>{`© ${new Date().getFullYear()} ${storeData.copyright}`}</p>
     </div>
   </div>
 </footer>

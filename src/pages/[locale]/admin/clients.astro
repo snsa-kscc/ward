@@ -6,7 +6,8 @@ import { clients } from "db/schema";
 import { asc, eq } from "drizzle-orm";
 import ClientsManager from "@/components/admin/ClientsManager";
 
-const { locale } = Astro.params;
+// const { locale } = Astro.params;
+const locale = "en";
 const clientData = await db
   .select()
   .from(clients)

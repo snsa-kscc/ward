@@ -15,6 +15,7 @@ import { store, portfolio, brands, clients, pages } from "db/schema";
 import type { StoreData } from "@/types/global";
 
 const { locale } = Astro.params;
+const defaultLocale = "en";
 
 const [storeData, portfolioData, brandsData, clientsData, pagesData] =
   await Promise.all([
@@ -24,7 +25,7 @@ const [storeData, portfolioData, brandsData, clientsData, pagesData] =
     db
       .select()
       .from(clients)
-      .where(eq(clients.lang, locale!))
+      .where(eq(clients.lang, defaultLocale)) //we are gonna use default locale for clients
       .orderBy(asc(clients.order)),
     db
       .select()
