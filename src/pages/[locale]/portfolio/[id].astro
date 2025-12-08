@@ -60,7 +60,7 @@ if (data[0].subtitle) {
 >
   <div class="loading-overlay bg-zinc-900"></div>
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
-  <h1 class="title text-12xl container py-20 text-right font-bold">
+  <h1 class="title text-12xl container py-42 text-right font-medium">
     {
       data[0].title
         ?.split(/(\s)/)
@@ -81,13 +81,6 @@ if (data[0].subtitle) {
         ))
     }
   </h1>
-  {
-    parsedSubtitle && (
-      <h2 class="subtitle container text-right text-4xl font-light opacity-80">
-        {parsedSubtitle}
-      </h2>
-    )
-  }
   <div
     class="portfolio-item-wrapper my-20 flex min-w-max items-center gap-16 overflow-x-auto px-40 will-change-transform"
   >
@@ -96,7 +89,7 @@ if (data[0].subtitle) {
         return (
           <div>
             <Image
-              class="max-h-[80vh] w-full"
+              class="max-h-[80vh] w-full rounded-2xl"
               src={`/assets/portfolio/${media}`}
               alt={`${data[0].title}-${index + 1}`}
               width={1500}
@@ -151,13 +144,14 @@ if (data[0].subtitle) {
     ease: "none",
   });
   gsap.to(portfolioItemsWrapper, {
-    x: () => -(portfolioItemsWrapper.scrollWidth - window.innerWidth),
+    x: () => -(portfolioItemsWrapper.scrollWidth - window.innerWidth + 100),
     scrollTrigger: {
       trigger: portfolioItemsWrapper,
       pin: true,
       scrub: 0.7,
       start: "top 10%",
-      end: () => "+=" + (portfolioItemsWrapper.scrollWidth - window.innerWidth),
+      end: () =>
+        "+=" + (portfolioItemsWrapper.scrollWidth - window.innerWidth + 100),
       invalidateOnRefresh: true,
     },
   });

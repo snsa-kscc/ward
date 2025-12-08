@@ -1,6 +1,4 @@
 ---
-import { cn } from "@/lib/utils";
-
 type Props = {
   data: {
     capabilitiesKey: string;
@@ -10,176 +8,85 @@ type Props = {
 };
 
 const { data } = Astro.props;
+
+// Split capabilitiesKey on line breaks - first line normal, rest with opacity
+const capabilitiesKeyLines = data.capabilitiesKey
+  .split(/\r?\n/)
+  .filter((line) => line.trim());
+
+// Split capabilities text into words
+const capabilitiesWords = data.capabilitiesDescription
+  .split(/\s+/)
+  .filter((word) => word.trim());
 ---
 
-<section class="my-[clamp(40,72)] overflow-hidden">
-  <div
-    class="specs-wrapper container my-[clamp(14,24)] px-4 text-[clamp(var(--text-base),var(--text-8xl))] font-bold"
-  >
-    {
-      data.capabilitiesKey
-        .split(/(\s)/)
-        .map((word) => (
-          <div class="specs-word inline-block">
-            {word === " " ? (
-              <span class="specs-char inline-block">&nbsp;</span>
-            ) : (
-              word
-                .split("")
-                .map((char) => (
-                  <span class="specs-char inline-block">{char}</span>
-                ))
-            )}
-          </div>
-        ))
-    }
+<section class="relative container px-4 py-[clamp(40,62)]">
+  <div class="mb-[clamp(40,62)] w-2/3 text-left">
+    <h1 class="text-[clamp(var(--text-4xl),var(--text-6xl))] font-medium">
+      {data.capabilities}
+    </h1>
   </div>
-  {
-    data.capabilities.split("\r\n").map((item, idx) => {
-      return (
-        <div
-          class={cn(
-            "specs-slider relative w-max font-bold whitespace-nowrap",
-            idx === 0 ? "" : "reverse"
-          )}
-        >
-          {Array.from({ length: 2 }).map((_, i) => (
-            <p
-              class={cn(
-                "relative w-full text-[clamp(var(--text-6xl),var(--text-12xl))] will-change-transform",
-                i !== 0 ? "absolute top-0 left-full" : ""
-              )}
-              data-idx={`${idx}-${i}`}
-            >
-              {`${item} ${item}`}&nbsp;
-            </p>
-          ))}
-        </div>
-      );
-    })
-  }
-  <p
-    class="ml-auto w-full px-4 pt-40 leading-[5vh]! text-balance opacity-0 sm:w-1/2 lg:text-[clamp(var(--text-xl),var(--text-4xl))]"
-    data-specialities-description
+  <div
+    class="flex items-start gap-20 border-t border-b border-stone-200 py-[clamp(40,62)]"
   >
-    {data.capabilitiesDescription}
-  </p>
+    <div class="capabilities-key-wrapper basis-1/3">
+      {
+        capabilitiesKeyLines.map((line, index) => (
+          <p
+            class={
+              index === 0
+                ? "text-2xl leading-tight font-medium"
+                : "text-2xl leading-tight font-medium opacity-30"
+            }
+          >
+            {line}
+          </p>
+        ))
+      }
+    </div>
+
+    <div
+      class="capabilities-content basis-2/3 text-[clamp(var(--text-lg),var(--text-2xl))] leading-relaxed font-medium"
+    >
+      {
+        capabilitiesWords.map((word) => (
+          <span class="capabilities-word inline opacity-20">{word} </span>
+        ))
+      }
+    </div>
+  </div>
 </section>
 
 <style>
-  .specs-wrapper {
-    --color-highlight-start: #03c52f;
-    background: none;
-    color: var(--color-highlight-start);
-    position: relative;
-    white-space: nowrap;
+  .capabilities-key-wrapper {
+    color: #000;
+  }
+
+  .capabilities-content {
+    color: #000;
   }
 </style>
 
 <script>
   import gsap from "gsap";
   import ScrollTrigger from "gsap/ScrollTrigger";
-  import { isInViewport } from "@/lib/utils";
   gsap.registerPlugin(ScrollTrigger);
 
-  const specsElement = document.querySelector(
-    ".specs-wrapper span"
+  const capabilitiesSection = document.querySelector(
+    ".capabilities-content"
   ) as HTMLElement;
-  const specsChars = document.querySelectorAll(
-    ".specs-char"
+  const capabilitiesWords = document.querySelectorAll(
+    ".capabilities-word"
   ) as NodeListOf<HTMLElement>;
-  const animationDefaults = {
-    duration: 0.3,
-    ease: "power3.in",
-  };
 
-  function animateKeyChars() {
-    specsChars.forEach((char) => {
-      gsap.timeline({ defaults: animationDefaults }).fromTo(
-        char,
-        {
-          filter: "brightness(100%) drop-shadow(0px 0px 30px #0000ff)",
-          willChange: "filter",
-        },
-        {
-          delay: gsap.utils.random(0, 1),
-          repeat: 10,
-          yoyo: true,
-          filter: "brightness(300%) drop-shadow(0px 0px 40px #00ff00)",
-        }
-      );
-    });
-  }
-
-  function resetKeyChars() {
-    gsap.killTweensOf(specsChars);
-    gsap.set(specsChars, {
-      opacity: 1,
-    });
-  }
-
-  ScrollTrigger.create({
-    trigger: specsElement,
-    start: "top bottom",
-    onEnter: () => animateKeyChars(),
-    onEnterBack: () => animateKeyChars(),
-    onLeave: () => resetKeyChars(),
-    onLeaveBack: () => resetKeyChars(),
-  });
-
-  const sliders = document.querySelectorAll(
-    ".specs-slider"
-  ) as NodeListOf<HTMLDivElement>;
-  let direction = -1;
-
-  function animateSlider(slider: HTMLDivElement, directionMultiplier: number) {
-    const firstElement = slider.firstElementChild;
-    const lastElement = slider.lastElementChild;
-    let xPercent = 0;
-
-    function animate() {
-      if (xPercent < -100) {
-        xPercent = 0;
-      } else if (xPercent > 0) {
-        xPercent = -100;
-      }
-      gsap.set(firstElement, { xPercent });
-      gsap.set(lastElement, { xPercent });
-      xPercent += 0.1 * direction * directionMultiplier;
-      requestAnimationFrame(animate);
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  sliders.forEach((slider) => {
-    const isReverse = slider.classList.contains("reverse");
-    animateSlider(slider, isReverse ? -1 : 1);
-  });
-
-  ScrollTrigger.create({
-    trigger: sliders[0].parentElement,
-    start: 0,
-    end: 0,
-    onUpdate: (self) => (direction = self.direction * -1),
-  });
-
-  window.addEventListener(
-    "scroll",
-    () => {
-      const specsDesc = document.querySelector(
-        "[data-specialities-description]"
-      );
-      if (specsDesc && isInViewport(specsDesc)) {
-        specsDesc.classList.add(
-          "animate-in",
-          "fade-in",
-          "opacity-100",
-          "slide-in-from-right",
-          "duration-1000"
-        );
-      }
+  gsap.to(capabilitiesWords, {
+    opacity: 1,
+    stagger: 0.05,
+    scrollTrigger: {
+      trigger: capabilitiesSection,
+      start: "top 80%",
+      end: "bottom 40%",
+      scrub: 1,
     },
-    { passive: true }
-  );
+  });
 </script>

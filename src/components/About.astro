@@ -1,6 +1,4 @@
 ---
-import { formatParagraph } from "@/lib/utils";
-
 type Props = {
   data: {
     aboutKey: string;
@@ -11,86 +9,56 @@ type Props = {
 
 const { data } = Astro.props;
 
-const splitTag = "__";
-const parts: (text: string) => string[] = (text) =>
-  formatParagraph(text).split(splitTag).filter(Boolean);
+// Split aboutKey on line breaks - first line normal, rest with opacity
+const aboutKeyLines = data.aboutKey
+  .split(/\r?\n/)
+  .filter((line) => line.trim());
+
+// Split about text into words
+const aboutWords = data.about.split(/\s+/).filter((word) => word.trim());
 ---
 
 <section
   id={data.navbarLinks
     .split(",")
     .map((link) => link.trim())
-    .at(1)}
-  class="container my-[clamp(40,72)] flex items-start gap-20 px-4"
+    .at(0)}
+  class="relative container flex items-start gap-20 border-t border-b border-stone-200 px-4 py-[clamp(40,62)]"
 >
-  <div
-    class="about-key-wrapper mb-[clamp(14,24)] basis-1/3 text-[clamp(var(--text-base),var(--text-8xl))] font-bold will-change-transform"
-  >
+  <div class="about-key-wrapper basis-1/3">
     {
-      data.aboutKey
-        .split(/(\s)/)
-        .map((word) => (
-          <div class="about-key-word inline-block">
-            {word === " " ? (
-              <span class="about-key-char inline-block">&nbsp;</span>
-            ) : (
-              word
-                .split("")
-                .map((char) => (
-                  <span class="about-key-char inline-block">{char}</span>
-                ))
-            )}
-          </div>
-        ))
+      aboutKeyLines.map((line, index) => (
+        <p
+          class={
+            index === 0
+              ? "text-2xl leading-tight font-medium"
+              : "text-2xl leading-tight font-medium opacity-30"
+          }
+        >
+          {line}
+        </p>
+      ))
     }
   </div>
+
   <div
-    class="highlighted inline-block text-[clamp(var(--text-lg),var(--text-4xl))] leading-[7vh]! text-balance"
+    class="about-content basis-2/3 text-[clamp(var(--text-lg),var(--text-2xl))] leading-relaxed font-medium"
   >
     {
-      parts(data.about).map((part, index) => {
-        if (index % 2 === 1) {
-          const splitChars = part.split("").map((char) => {
-            if (char === " ") {
-              return (
-                <span class="about-char inline-block" data-char={char}>
-                  &nbsp;
-                </span>
-              );
-            }
-            return (
-              <span class="about-char inline-block" data-char={char}>
-                {char}
-              </span>
-            );
-          });
-          return <mark data-char={part}>{splitChars}</mark>;
-        }
-        return <span set:html={part} />;
-      })
+      aboutWords.map((word) => (
+        <span class="about-word inline opacity-20">{word} </span>
+      ))
     }
   </div>
 </section>
 
 <style>
   .about-key-wrapper {
-    --color-highlight-start: #085ed0;
-    background: none;
-    color: var(--color-highlight-start);
-    display: inline-block;
-    position: relative;
-    white-space: nowrap;
+    color: #000;
   }
 
-  .highlighted mark {
-    --color-highlight-start: #fff;
-    --color-highlight-end: #03c52f;
-    --color-highlight-end-alt: #085ed0;
-    background: none;
-    color: var(--color-highlight-start);
-    display: inline-block;
-    position: relative;
-    white-space: nowrap;
+  .about-content {
+    color: #000;
   }
 </style>
 
@@ -99,104 +67,19 @@ const parts: (text: string) => string[] = (text) =>
   import ScrollTrigger from "gsap/ScrollTrigger";
   gsap.registerPlugin(ScrollTrigger);
 
-  const aboutKeyWrapper = document.querySelector(
-    ".about-key-wrapper"
-  ) as HTMLElement;
+  const aboutSection = document.querySelector(".about-content") as HTMLElement;
+  const aboutWords = document.querySelectorAll(
+    ".about-word"
+  ) as NodeListOf<HTMLElement>;
 
-  gsap.to(aboutKeyWrapper, {
-    rotate: 360,
+  gsap.to(aboutWords, {
+    opacity: 1,
+    stagger: 0.05,
     scrollTrigger: {
-      trigger: aboutKeyWrapper,
-      start: "top 70%",
-      end: "top 40%",
+      trigger: aboutSection,
+      start: "top 80%",
+      end: "bottom 40%",
       scrub: 1,
     },
-  });
-
-  const highlightedKeyElement = document.querySelector(
-    ".about-key-wrapper span"
-  ) as HTMLElement;
-  const keyChars = document.querySelectorAll(
-    ".about-key-char"
-  ) as NodeListOf<HTMLElement>;
-  const animationDefaults = {
-    duration: 0.3,
-    ease: "power3.in",
-  };
-
-  function animateKeyChars() {
-    keyChars.forEach((char) => {
-      gsap.timeline({ defaults: animationDefaults }).fromTo(
-        char,
-        {
-          filter: "brightness(100%) drop-shadow(0px 0px 30px #00ff00)",
-          willChange: "filter",
-        },
-        {
-          delay: gsap.utils.random(0, 1),
-          repeat: 10,
-          yoyo: true,
-          filter: "brightness(300%) drop-shadow(0px 0px 40px #0000ff)",
-        }
-      );
-    });
-  }
-
-  function resetKeyChars() {
-    gsap.killTweensOf(keyChars);
-    gsap.set(keyChars, {
-      opacity: 1,
-    });
-  }
-
-  ScrollTrigger.create({
-    trigger: highlightedKeyElement,
-    start: "top bottom",
-    onEnter: () => animateKeyChars(),
-    onEnterBack: () => animateKeyChars(),
-    onLeave: () => resetKeyChars(),
-    onLeaveBack: () => resetKeyChars(),
-  });
-
-  const highlightedElement = document.querySelector(
-    ".highlighted mark"
-  ) as HTMLElement;
-  const chars = document.querySelectorAll(
-    ".about-char"
-  ) as NodeListOf<HTMLElement>;
-
-  function animateChars() {
-    if (!highlightedElement) return;
-
-    gsap
-      .timeline({ defaults: animationDefaults })
-      .set(chars, { willChange: "transform, color" })
-      .to(chars, {
-        stagger: 0.05,
-        scale: 1.45,
-        color: getComputedStyle(highlightedElement).getPropertyValue(
-          "--color-highlight-end"
-        ),
-      })
-      .to(
-        chars,
-        {
-          duration: 0.4,
-          ease: "sine",
-          stagger: 0.05,
-          scale: 1,
-          color: getComputedStyle(highlightedElement).getPropertyValue(
-            "--color-highlight-end-alt"
-          ),
-        },
-        animationDefaults.duration
-      );
-  }
-
-  ScrollTrigger.create({
-    trigger: highlightedElement,
-    start: "top bottom",
-    onEnter: () => animateChars(),
-    once: true,
   });
 </script>
