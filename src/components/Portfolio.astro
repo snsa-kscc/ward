@@ -297,6 +297,16 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
       dragCursor.style.opacity = "1";
     });
 
+    // Hide cursor when moving outside the slider area
+    document.addEventListener("mousemove", (e) => {
+      const isHovering = slider.contains(e.target as Node);
+      if (!isHovering) {
+        dragCursor.style.opacity = "0";
+      } else if (dragCursor.style.opacity !== "1") {
+        dragCursor.style.opacity = "1";
+      }
+    });
+
     // Touch Events
     slider.addEventListener("touchstart", (e) => {
       handleDragStart(e.touches[0].clientX);
