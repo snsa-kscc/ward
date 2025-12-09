@@ -214,6 +214,8 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
     let currentTranslate = 0;
     let prevTranslate = 0;
     let hasDragged = false;
+    let lastX = 0;
+    let lastY = 0;
 
     const getSlidesPerView = () => {
       if (window.innerWidth < 640) return 1;
@@ -281,30 +283,27 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
       updateSlider();
     };
 
+    const handleMouseLeave = () => {
+      dragCursor.style.opacity = "0";
+      handleDragEnd();
+    };
+
     // Mouse Events
     slider.addEventListener("mousedown", (e) => handleDragStart(e.clientX));
 
     slider.addEventListener("mousemove", (e) => {
+      if (dragCursor.style.opacity === "0") {
+        dragCursor.style.opacity = "1";
+      }
+      lastX = e.clientX;
+      lastY = e.clientY;
       handleDragMove(e.clientX, e.clientY);
     });
 
     slider.addEventListener("mouseup", handleDragEnd);
-    slider.addEventListener("mouseleave", () => {
-      dragCursor.style.opacity = "0";
-      handleDragEnd();
-    });
+    slider.addEventListener("mouseleave", handleMouseLeave);
     slider.addEventListener("mouseenter", () => {
       dragCursor.style.opacity = "1";
-    });
-
-    // Hide cursor when moving outside the slider area
-    document.addEventListener("mousemove", (e) => {
-      const isHovering = slider.contains(e.target as Node);
-      if (!isHovering) {
-        dragCursor.style.opacity = "0";
-      } else if (dragCursor.style.opacity !== "1") {
-        dragCursor.style.opacity = "1";
-      }
     });
 
     // Touch Events
@@ -350,5 +349,22 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
       currentIndex = Math.min(currentIndex, getMaxIndex());
       updateSlider();
     });
+
+    // Handle scroll to ensure cursor hides when scrolling past section
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (dragCursor.style.opacity === "0") return;
+
+        const { left, right, top, bottom } = slider.getBoundingClientRect();
+        const isOver =
+          lastX >= left && lastX <= right && lastY >= top && lastY <= bottom;
+
+        if (!isOver) {
+          handleMouseLeave();
+        }
+      },
+      { passive: true }
+    );
   }
 </script>
