@@ -18,7 +18,15 @@ export const server = {
         .select()
         .from(portfolio)
         .where(eq(portfolio.title, title));
-      const filenames: string[] = JSON.parse(res[0].media as string);
+
+      if (!res[0]?.media) {
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "Portfolio item media not found",
+        });
+      }
+
+      const filenames: string[] = JSON.parse(res[0].media);
       const filteredFilenames = filenames.filter(
         (filename) => filename !== item,
       );
@@ -42,7 +50,17 @@ export const server = {
         .select()
         .from(portfolio)
         .where(eq(portfolio.title, title));
-      const filenames: string[] = JSON.parse(res[0].media as string);
+
+      if (!res[0]) {
+        return "deleted";
+      }
+
+      if (!res[0].media) {
+        await db.delete(portfolio).where(eq(portfolio.title, title));
+        return "deleted";
+      }
+
+      const filenames: string[] = JSON.parse(res[0].media);
       for (const filename of filenames) {
         try {
           await rm(`./public/assets/portfolio/${filename}`);
@@ -63,7 +81,17 @@ export const server = {
     input: z.object({ id: z.number() }),
     handler: async ({ id }) => {
       const res = await db.select().from(brands).where(eq(brands.id, id));
-      const logo = res[0].logo as string;
+
+      if (!res[0]) {
+        return "deleted";
+      }
+
+      if (!res[0].logo) {
+        await db.delete(brands).where(eq(brands.id, id));
+        return "deleted";
+      }
+
+      const logo = res[0].logo;
       try {
         await rm(`./public/assets/brands/${logo}`);
         await db.delete(brands).where(eq(brands.id, id));

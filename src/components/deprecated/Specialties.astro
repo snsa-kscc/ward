@@ -154,12 +154,15 @@ const { data } = Astro.props;
     animateSlider(slider, isReverse ? -1 : 1);
   });
 
-  ScrollTrigger.create({
-    trigger: sliders[0].parentElement,
-    start: 0,
-    end: 0,
-    onUpdate: (self) => (direction = self.direction * -1),
-  });
+  const firstSlider = sliders[0];
+  if (firstSlider && firstSlider.parentElement) {
+    ScrollTrigger.create({
+      trigger: firstSlider.parentElement,
+      start: 0,
+      end: 0,
+      onUpdate: (self) => (direction = self.direction * -1),
+    });
+  }
 
   window.addEventListener(
     "scroll",

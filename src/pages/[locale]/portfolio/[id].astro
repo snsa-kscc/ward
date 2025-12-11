@@ -90,7 +90,7 @@ const parsedSubtitle = data[0].subtitle
               <Image
                 class="max-h-[80vh] w-full rounded-2xl"
                 src={`/assets/portfolio/${media}`}
-                alt={`${data[0].title}-${index + 1}`}
+                alt={`${data[0]?.title ?? "Portfolio Image"}-${index + 1}`}
                 width={1500}
                 height={2000}
                 loading="eager"

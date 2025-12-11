@@ -36,7 +36,7 @@ export function splitItems(
   const partSize = Math.floor(n / 3);
   const remainder = n % 3;
 
-  const sizes = [partSize, partSize, partSize];
+  const sizes: [number, number, number] = [partSize, partSize, partSize];
 
   if (remainder === 1) {
     sizes[1] += 1;

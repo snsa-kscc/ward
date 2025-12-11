@@ -36,7 +36,13 @@ if (Astro.request.method === "POST") {
       .select()
       .from(portfolio)
       .where(eq(portfolio.slug, id!));
-    filenames = JSON.parse(res[0].media as string);
+
+    if (res[0]?.media) {
+      filenames = JSON.parse(res[0].media);
+    } else {
+      filenames = [];
+    }
+
     const formData = await Astro.request.formData();
     const title = formData.get("title") as string;
     const subtitle = formData.get("subtitle") as string;

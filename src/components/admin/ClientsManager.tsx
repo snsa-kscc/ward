@@ -108,6 +108,8 @@ export default function ClientsManager({ items, locale }: ClientsManagerProps) {
     // Find the actual client to determine if it's new or existing
     const clientToDelete = clients[index];
 
+    if (!clientToDelete) return;
+
     if (!clientToDelete.isNew && typeof clientToDelete.id === "number") {
       try {
         const result = await actions.deleteClient({

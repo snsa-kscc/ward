@@ -308,11 +308,15 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
 
     // Touch Events
     slider.addEventListener("touchstart", (e) => {
-      handleDragStart(e.touches[0].clientX);
+      if (e.touches[0]) {
+        handleDragStart(e.touches[0].clientX);
+      }
     });
 
     slider.addEventListener("touchmove", (e) => {
-      handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      if (e.touches[0]) {
+        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
     });
 
     slider.addEventListener("touchend", handleDragEnd);

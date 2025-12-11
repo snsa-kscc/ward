@@ -9,7 +9,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
     return next();
   }
 
-  if (locales.includes(segment)) {
+  if (segment && locales.includes(segment)) {
     return next();
   } else {
     return context.rewrite(`/${defaultLocale}${url.pathname}`);
@@ -24,13 +24,19 @@ export const authMiddleware = defineMiddleware((context, next) => {
     const basicAuth = context.request.headers.get("authorization");
 
     if (basicAuth) {
-      const [user, password] = atob(basicAuth.split(" ")[1]).split(":");
+      const authParts = basicAuth.split(" ");
+      const token = authParts[1];
 
-      if (
-        user === import.meta.env.PUBLIC_SITE_USER &&
-        password === import.meta.env.PUBLIC_SITE_PASSWORD
-      ) {
-        return next();
+      if (token) {
+        const decoded = atob(token);
+        const [user, password] = decoded.split(":");
+
+        if (
+          user === import.meta.env.PUBLIC_SITE_USER &&
+          password === import.meta.env.PUBLIC_SITE_PASSWORD
+        ) {
+          return next();
+        }
       }
     }
 
