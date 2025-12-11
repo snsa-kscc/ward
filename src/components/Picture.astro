@@ -16,34 +16,55 @@ const cells = Array.from({ length: 9 }).map((_, i) => ({
 }));
 ---
 
-<section class="js-picture-section relative h-[100vmin] w-full overflow-hidden">
-  <div class="grid h-full w-full grid-cols-3 grid-rows-3">
-    {
-      cells.map((cell) => (
-        <div class="picture-cell relative h-[calc(100%+1px)] w-[calc(100%+1px)] overflow-hidden">
-          <div class="picture-cell-inner h-full w-full">
-            <Image
-              src={`/assets/${storeDataMap.featureMedia}`}
-              alt={
-                storeDataMap?.featureMedia?.split(".").slice(0, -1).join("-") ||
-                ""
-              }
-              class="absolute max-w-none object-cover"
-              width={1900}
-              height={2000}
-              style={{
-                width: "300%",
-                height: "300%",
-                left: `${cell.col * -100}%`,
-                top: `${cell.row * -100}%`,
-              }}
-            />
+<>
+  <section
+    class="js-picture-section relative h-[100vmin] w-full overflow-hidden"
+  >
+    <div class="grid h-full w-full grid-cols-3 grid-rows-3">
+      {
+        cells.map((cell) => (
+          <div class="picture-cell relative h-[calc(100%+1px)] w-[calc(100%+1px)] overflow-hidden">
+            <div class="picture-cell-inner h-full w-full">
+              <Image
+                src={`/assets/${storeDataMap.featureMedia}`}
+                alt={
+                  storeDataMap?.featureMedia
+                    ?.split(".")
+                    .slice(0, -1)
+                    .join("-") || ""
+                }
+                class="absolute max-w-none object-cover"
+                width={1900}
+                height={2000}
+                style={{
+                  width: "300%",
+                  height: "300%",
+                  left: `${cell.col * -100}%`,
+                  top: `${cell.row * -100}%`,
+                }}
+              />
+            </div>
           </div>
-        </div>
-      ))
-    }
-  </div>
-</section>
+        ))
+      }
+    </div>
+  </section>
+  {
+    (
+      <div class="h-[100vmin] w-full">
+        <video
+          src={`/assets/${storeDataMap.reelMedia}`}
+          autoplay
+          loop
+          muted
+          playsinline
+          class="h-full w-full object-cover"
+          preload="metadata"
+        />
+      </div>
+    )
+  }
+</>
 
 <script>
   import gsap from "gsap";

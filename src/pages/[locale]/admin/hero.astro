@@ -31,7 +31,7 @@ if (Astro.request.method === "POST") {
     formData,
     section: "hero",
     locale: locale!,
-    fileKeys: ["featureMedia"],
+    fileKeys: ["featureMedia", "reelMedia"],
   });
 
   if (result.success) {
@@ -135,6 +135,23 @@ if (Astro.request.method === "POST") {
         className="text-black"
         disabled={dict.featureMedia ? true : false}
       />
+      {
+        dict.reelMedia && (
+          <div class="flex items-center gap-4 px-6 py-2">
+            <p>{dict.reelMedia}</p>
+            <Button className="btn" variant="destructive">
+              delete
+            </Button>
+          </div>
+        )
+      }
+      <Label htmlFor="reelMedia">Reel Media</Label>
+      <Input
+        type="file"
+        name="reelMedia"
+        className="text-black"
+        disabled={dict.reelMedia ? true : false}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>
@@ -158,20 +175,30 @@ if (Astro.request.method === "POST") {
       });
     }
 
-    const button = document.querySelector(".btn") as HTMLButtonElement;
-    const file = document.querySelector("input[type=file]") as HTMLInputElement;
+    const buttons = document.querySelectorAll(
+      ".btn"
+    ) as NodeListOf<HTMLButtonElement>;
 
-    if (button) {
-      button.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const result = await actions.deleteMedia({
-          title: button.previousElementSibling?.textContent ?? "",
+    buttons.forEach((button) => {
+      if (button) {
+        button.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const result = await actions.deleteMedia({
+            title: button.previousElementSibling?.textContent ?? "",
+          });
+          if (result.data === "deleted") {
+            // Find the parent div, then look for the next label and its associated input
+            const mediaDiv = button.parentElement;
+            const nextLabel = mediaDiv?.nextElementSibling as HTMLLabelElement;
+            const fileInput = nextLabel?.nextElementSibling as HTMLInputElement;
+
+            button.parentElement?.remove();
+            if (fileInput && fileInput.type === "file") {
+              fileInput.disabled = false;
+            }
+          }
         });
-        if (result.data === "deleted") {
-          button.parentElement?.remove();
-          file.disabled = false;
-        }
-      });
-    }
+      }
+    });
   </script>
 </Layout>

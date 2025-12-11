@@ -10,6 +10,7 @@ export type StoreData = {
   navbarLinks: string;
   title: string;
   featureMedia: string;
+  reelMedia: string;
   aboutKey: string;
   about: string;
   clientsKey: string;
