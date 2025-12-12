@@ -2,12 +2,82 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
 import { rm } from "fs/promises";
 import { eq, and, max } from "drizzle-orm";
-import { clients, brands, portfolio, store } from "@/../db/schema";
+import { awards, clients, brands, portfolio, store } from "@/../db/schema";
 import { locales } from "@/lib/utils";
 import { db } from "@/../db";
 import { Resend } from "resend";
 
 const resend = new Resend(import.meta.env.PUBLIC_RESEND_API);
+
+const makeTextListActions = (table: any) => {
+  return {
+    remove: defineAction({
+      input: z.object({ id: z.number(), lang: z.string() }),
+      handler: async ({ id, lang }) => {
+        try {
+          await db
+            .delete(table)
+            .where(and(eq(table.id, id), eq(table.lang, lang)));
+        } catch (error) {
+          console.error(error);
+        }
+        return "deleted";
+      },
+    }),
+    reorder: defineAction({
+      input: z.object({
+        items: z.array(z.object({ id: z.number(), order: z.number() })),
+      }),
+      handler: async ({ items }) => {
+        for (const item of items) {
+          await db
+            .update(table)
+            .set({ order: item.order })
+            .where(eq(table.id, item.id));
+        }
+        return "updated";
+      },
+    }),
+    create: defineAction({
+      input: z.object({
+        item: z.string(),
+        lang: z.string(),
+        order: z.number().optional(),
+      }),
+      handler: async ({ item, lang, order }) => {
+        let newOrder;
+
+        if (order !== undefined) {
+          newOrder = order;
+        } else {
+          const maxOrderResult = await db
+            .select({ maxOrder: max(table.order) })
+            .from(table)
+            .where(eq(table.lang, lang));
+          newOrder = (maxOrderResult[0]?.maxOrder ?? 0) + 1;
+        }
+
+        const result = await db
+          .insert(table)
+          .values({ item, createdAt: new Date(), lang, order: newOrder });
+        return result[0].insertId;
+      },
+    }),
+    update: defineAction({
+      input: z.object({ id: z.number(), item: z.string(), lang: z.string() }),
+      handler: async ({ id, item, lang }) => {
+        await db
+          .update(table)
+          .set({ item })
+          .where(and(eq(table.id, id), eq(table.lang, lang)));
+        return "updated";
+      },
+    }),
+  };
+};
+
+const clientsActions = makeTextListActions(clients);
+const awardsActions = makeTextListActions(awards);
 
 export const server = {
   deletePortfolioMedia: defineAction({
@@ -102,20 +172,6 @@ export const server = {
     },
   }),
 
-  deleteClient: defineAction({
-    input: z.object({ id: z.number(), lang: z.string() }),
-    handler: async ({ id, lang }) => {
-      try {
-        await db
-          .delete(clients)
-          .where(and(eq(clients.id, id), eq(clients.lang, lang)));
-      } catch (error) {
-        console.error(error);
-      }
-      return "deleted";
-    },
-  }),
-
   deleteMedia: defineAction({
     input: z.object({ title: z.string() }),
     handler: async ({ title }) => {
@@ -182,55 +238,12 @@ export const server = {
     },
   }),
 
-  reorderClients: defineAction({
-    input: z.object({
-      items: z.array(z.object({ id: z.number(), order: z.number() })),
-    }),
-    handler: async ({ items }) => {
-      for (const item of items) {
-        await db
-          .update(clients)
-          .set({ order: item.order })
-          .where(eq(clients.id, item.id));
-      }
-      return "updated";
-    },
-  }),
-
-  createClient: defineAction({
-    input: z.object({
-      item: z.string(),
-      lang: z.string(),
-      order: z.number().optional(),
-    }),
-    handler: async ({ item, lang, order }) => {
-      let newOrder;
-
-      if (order !== undefined) {
-        newOrder = order;
-      } else {
-        const maxOrderResult = await db
-          .select({ maxOrder: max(clients.order) })
-          .from(clients)
-          .where(eq(clients.lang, lang));
-        newOrder = (maxOrderResult[0]?.maxOrder ?? 0) + 1;
-      }
-
-      const result = await db
-        .insert(clients)
-        .values({ item, createdAt: new Date(), lang, order: newOrder });
-      return result[0].insertId;
-    },
-  }),
-
-  updateClient: defineAction({
-    input: z.object({ id: z.number(), item: z.string(), lang: z.string() }),
-    handler: async ({ id, item, lang }) => {
-      await db
-        .update(clients)
-        .set({ item })
-        .where(and(eq(clients.id, id), eq(clients.lang, lang)));
-      return "updated";
-    },
-  }),
+  reorderClients: clientsActions.reorder,
+  reorderAwards: awardsActions.reorder,
+  createClient: clientsActions.create,
+  createAward: awardsActions.create,
+  updateClient: clientsActions.update,
+  updateAward: awardsActions.update,
+  deleteClient: clientsActions.remove,
+  deleteAward: awardsActions.remove,
 };

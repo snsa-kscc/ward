@@ -120,6 +120,13 @@ if (Astro.request.method === "POST") {
         rows={5}
         defaultValue={dict.clientsKey}
       />
+      <Label htmlFor="awardsKey">Awards key</Label>
+      <Textarea
+        name="awardsKey"
+        className="bg-transparent text-white"
+        rows={5}
+        defaultValue={dict.awardsKey}
+      />
       <Button type="submit" variant="secondary">send</Button>
     </form>
   </div>

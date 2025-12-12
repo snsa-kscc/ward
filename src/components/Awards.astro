@@ -1,0 +1,131 @@
+---
+import type { StoreData } from "@/types/global";
+
+type Props = {
+  awardsData: {
+    id: number;
+    createdAt: Date;
+    item: string | null;
+  }[];
+  storeDataMap: StoreData;
+};
+
+const { awardsData, storeDataMap } = Astro.props;
+const halfLength = Math.ceil(awardsData.length / 2);
+const firstHalf = awardsData.slice(0, halfLength);
+const secondHalf = awardsData.slice(halfLength);
+---
+
+<section class="my-[clamp(40,72)]">
+  <div class="container px-4 py-20">
+    <div
+      class="text-[clamp(var(--text-xl),var(--text-5xl))] leading-tight font-bold opacity-0"
+      data-awards
+    >
+      {storeDataMap.awardsKey}
+    </div>
+    <div class="my-40 flex items-center justify-between gap-4">
+      <div
+        class="bar-char-wrapper w-1/2 text-[clamp(var(--text-xl),var(--text-5xl))] font-bold"
+      >
+        {
+          storeDataMap.awardsKey
+            .split(/(\s)/)
+            .map((word) => (
+              <div class="word-wrapper inline-block">
+                {word === " " ? (
+                  <span class="bar-char inline-block">&nbsp;</span>
+                ) : (
+                  word
+                    .split("")
+                    .map((char) => (
+                      <span class="bar-char inline-block">{char}</span>
+                    ))
+                )}
+              </div>
+            ))
+        }
+      </div>
+      <a
+        href={`#${storeDataMap.navbarLinks
+          .split(",")
+          .map((link) => link.trim())
+          .at(-1)}`}
+        class="bg-ward-green hover:bg-ward-blue rounded-full px-[clamp(10,16)] py-[clamp(2,6)] text-[clamp(var(--text-xl),var(--text-2xl))] font-bold text-slate-100 duration-300"
+      >
+        {storeDataMap.awardsKey}
+      </a>
+    </div>
+  </div>
+  <div
+    class="container flex flex-col gap-16 p-8 font-bold lg:flex-row lg:text-[clamp(var(--text-xl),var(--text-2xl))]"
+  >
+    <div>
+      {
+        firstHalf.map((item) => {
+          return <p class="mb-8">{item.item}</p>;
+        })
+      }
+    </div>
+    <div class="mt-40">
+      {
+        secondHalf.map((item) => {
+          return <p class="mb-8">{item.item}</p>;
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .bar-char {
+    will-change: filter, transform;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { isInViewport } from "@/lib/utils";
+
+  const barChars = document.querySelectorAll(
+    ".bar-char"
+  ) as NodeListOf<HTMLElement>;
+  gsap.fromTo(
+    barChars,
+    {
+      scaleY: 0.1,
+      scaleX: 1.8,
+      filter: "blur(10px) brightness(50%)",
+    },
+    {
+      ease: "power1.out",
+      scaleY: 1,
+      scaleX: 1,
+      filter: "blur(0px) brightness(100%)",
+      stagger: 0.05,
+      scrollTrigger: {
+        trigger: ".bar-char-wrapper",
+        start: "top 80%",
+        end: "top center",
+        scrub: 1,
+      },
+    }
+  );
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      const awards = document.querySelector("[data-awards]");
+      if (awards && isInViewport(awards)) {
+        awards.classList.add(
+          "animate-in",
+          "fade-in",
+          "opacity-100",
+          "slide-in-from-bottom",
+          "duration-300"
+        );
+      }
+    },
+    { passive: true }
+  );
+</script>

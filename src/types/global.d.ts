@@ -14,6 +14,7 @@ export type StoreData = {
   aboutKey: string;
   about: string;
   clientsKey: string;
+  awardsKey: string;
   capabilitiesKey: string;
   capabilities: string;
   capabilitiesDescription: string;

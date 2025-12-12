@@ -1,0 +1,27 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AdminNavbar from "@/components/admin/AdminNavbar.astro";
+import { db } from "db";
+import { awards } from "db/schema";
+import { asc, eq } from "drizzle-orm";
+import AwardsManager from "@/components/admin/AwardsManager";
+import { defaultLocale as locale } from "@/lib/utils";
+
+const awardsData = await db
+  .select()
+  .from(awards)
+  .where(eq(awards.lang, locale!))
+  .orderBy(asc(awards.order));
+const items = awardsData.map((item) => ({
+  id: item.id,
+  item: item.item!,
+}));
+---
+
+<Layout lang={locale} title="Awards Management">
+  <AdminNavbar lang={locale!} />
+  <div class="container px-8">
+    <h1 class="title py-20 text-3xl">Awards Management</h1>
+    <AwardsManager client:only="react" items={items} locale={locale!} />
+  </div>
+</Layout>
