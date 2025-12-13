@@ -34,6 +34,9 @@ jobs:
             git pull
             if [[ "${{ steps.check-npm.outputs.run_npm_install }}" == "true" ]]; then
               npm install --omit=dev
+              sleep 5
+              pkill -9 npm || true
+              sleep 2
             fi
             npm run build
             pkill lsnode || true
