@@ -5,12 +5,14 @@ import { db } from "db";
 import { clients } from "db/schema";
 import { asc, eq } from "drizzle-orm";
 import ClientsManager from "@/components/admin/ClientsManager";
-import { defaultLocale as locale } from "@/lib/utils";
+import { defaultLocale } from "@/lib/utils";
+
+const { locale } = Astro.params;
 
 const clientData = await db
   .select()
   .from(clients)
-  .where(eq(clients.lang, locale!))
+  .where(eq(clients.lang, defaultLocale))
   .orderBy(asc(clients.order));
 const items = clientData.map((item) => ({
   id: item.id,
@@ -22,6 +24,6 @@ const items = clientData.map((item) => ({
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Clients Management</h1>
-    <ClientsManager client:only="react" items={items} locale={locale!} />
+    <ClientsManager client:only="react" items={items} locale={defaultLocale} />
   </div>
 </Layout>

@@ -5,12 +5,14 @@ import { db } from "db";
 import { awards } from "db/schema";
 import { asc, eq } from "drizzle-orm";
 import AwardsManager from "@/components/admin/AwardsManager";
-import { defaultLocale as locale } from "@/lib/utils";
+import { defaultLocale } from "@/lib/utils";
+
+const { locale } = Astro.params;
 
 const awardsData = await db
   .select()
   .from(awards)
-  .where(eq(awards.lang, locale!))
+  .where(eq(awards.lang, defaultLocale))
   .orderBy(asc(awards.order));
 const items = awardsData.map((item) => ({
   id: item.id,
@@ -22,6 +24,6 @@ const items = awardsData.map((item) => ({
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Awards Management</h1>
-    <AwardsManager client:only="react" items={items} locale={locale!} />
+    <AwardsManager client:only="react" items={items} locale={defaultLocale} />
   </div>
 </Layout>

@@ -5,12 +5,14 @@ import { db } from "db";
 import { specialities } from "db/schema";
 import { asc, eq } from "drizzle-orm";
 import SpecialitiesManager from "@/components/admin/SpecialitiesManager";
-import { defaultLocale as locale } from "@/lib/utils";
+import { defaultLocale } from "@/lib/utils";
+
+const { locale } = Astro.params;
 
 const specialitiesData = await db
   .select()
   .from(specialities)
-  .where(eq(specialities.lang, locale!))
+  .where(eq(specialities.lang, defaultLocale))
   .orderBy(asc(specialities.order));
 
 const items = specialitiesData.map((item) => ({
@@ -24,6 +26,10 @@ const items = specialitiesData.map((item) => ({
   <AdminNavbar lang={locale!} />
   <div class="container px-8">
     <h1 class="title py-20 text-3xl">Specialities Management</h1>
-    <SpecialitiesManager client:only="react" items={items} locale={locale!} />
+    <SpecialitiesManager
+      client:only="react"
+      items={items}
+      locale={defaultLocale}
+    />
   </div>
 </Layout>
