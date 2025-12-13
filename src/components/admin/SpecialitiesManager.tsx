@@ -201,9 +201,11 @@ export default function SpecialitiesManager({
 
     setIsSaving(true);
     try {
-      for (const listItem of listItems) {
-        if (listItem.isNew && listItem.item.trim()) {
-          const order = listItems.indexOf(listItem) + 1;
+      const createPromises = listItems
+        .map((listItem, index) => {
+          if (!listItem.isNew || !listItem.item.trim()) return null;
+
+          const order = index + 1;
           const formData = new FormData();
           formData.append("item", listItem.item);
           formData.append("lang", locale);
@@ -211,8 +213,12 @@ export default function SpecialitiesManager({
           if (listItem.file) {
             formData.append("file", listItem.file);
           }
-          await actions.createSpeciality(formData);
-        }
+          return actions.createSpeciality(formData);
+        })
+        .filter(Boolean);
+
+      if (createPromises.length > 0) {
+        await Promise.all(createPromises);
       }
 
       const existingItems = listItems.filter(
@@ -226,12 +232,16 @@ export default function SpecialitiesManager({
         await actions.reorderSpecialities({ items: updatedOrder });
       }
 
-      for (const listItem of listItems) {
-        if (
-          !listItem.isNew &&
-          listItem.item.trim() &&
-          typeof listItem.id === "number"
-        ) {
+      const updatePromises = listItems
+        .map((listItem) => {
+          if (
+            listItem.isNew ||
+            !listItem.item.trim() ||
+            typeof listItem.id !== "number"
+          ) {
+            return null;
+          }
+
           const formData = new FormData();
           formData.append("id", String(listItem.id));
           formData.append("item", listItem.item);
@@ -239,28 +249,26 @@ export default function SpecialitiesManager({
           if (listItem.file) {
             formData.append("file", listItem.file);
           }
-          await actions.updateSpeciality(formData);
-        }
+          return actions.updateSpeciality(formData);
+        })
+        .filter(Boolean);
+
+      if (updatePromises.length > 0) {
+        await Promise.all(updatePromises);
       }
 
-      toast({
-        title: "Success",
-        description: "All changes saved successfully!",
-      });
       setHasChanges(false);
       setExpandedItems(new Set());
 
-      setTimeout(() => {
-        navigate(window.location.pathname);
-      }, 2000);
+      navigate(`${window.location.pathname}?update=success`);
     } catch {
       toast({
         title: "Error",
         description: "Failed to save changes.",
         variant: "destructive",
       });
-    } finally {
-      setIsSaving(false);
+
+      navigate(`${window.location.pathname}?update=error`);
     }
   };
 
@@ -297,7 +305,7 @@ export default function SpecialitiesManager({
   return (
     <div className="space-y-4 py-8">
       <div className="flex items-center justify-between gap-2">
-        <p>After saving wait for 2 seconds for the page to refresh.</p>
+        <p>When deleting no need to save.</p>
         <div className="flex items-center gap-2">
           <Button onClick={addNewItem} size="sm">
             <Plus className="mr-2 h-4 w-4" />

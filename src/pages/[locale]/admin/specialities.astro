@@ -32,4 +32,23 @@ const items = specialitiesData.map((item) => ({
       locale={defaultLocale}
     />
   </div>
+  <script>
+    import { toast } from "@/hooks/use-toast";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const updateStatus = urlParams.get("update");
+
+    if (updateStatus === "success") {
+      toast({
+        title: "Success",
+        description: "Update successful!",
+      });
+    } else if (updateStatus === "error") {
+      toast({
+        title: "Error",
+        description: "Update failed.",
+        variant: "destructive",
+      });
+    }
+  </script>
 </Layout>

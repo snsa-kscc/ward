@@ -77,14 +77,14 @@ export default function ListManager({
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasChanges) {
+      if (!isSaving && hasChanges) {
         e.preventDefault();
       }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [hasChanges]);
+  }, [hasChanges, isSaving]);
 
   const toggleExpanded = (id: string | number) => {
     setExpandedItems((prev) => {
@@ -160,18 +160,36 @@ export default function ListManager({
     setIsSaving(true);
     try {
       const newItems: { index: number; item: string }[] = [];
-      for (const listItem of listItems) {
-        if (listItem.isNew && listItem.item.trim()) {
-          const order = listItems.indexOf(listItem) + 1;
-          await actions.create({
+
+      const createRequests = listItems
+        .map((listItem, index) => {
+          if (!listItem.isNew || !listItem.item.trim()) return null;
+
+          const order = index + 1;
+          return {
+            promise: actions.create({
+              item: listItem.item,
+              lang: locale,
+              order,
+            }),
+            index,
             item: listItem.item,
-            lang: locale,
-            order,
-          });
-          newItems.push({
-            index: listItems.indexOf(listItem),
-            item: listItem.item,
-          });
+          };
+        })
+        .filter(
+          (
+            r,
+          ): r is {
+            promise: ReturnType<typeof actions.create>;
+            index: number;
+            item: string;
+          } => r !== null,
+        );
+
+      if (createRequests.length > 0) {
+        await Promise.all(createRequests.map((r) => r.promise));
+        for (const r of createRequests) {
+          newItems.push({ index: r.index, item: r.item });
         }
       }
 
@@ -190,39 +208,40 @@ export default function ListManager({
         await actions.reorder({ items: updatedOrder });
       }
 
-      for (const listItem of listItems) {
-        if (
-          !listItem.isNew &&
-          listItem.item.trim() &&
-          typeof listItem.id === "number"
-        ) {
-          await actions.update({
+      const updatePromises = listItems
+        .map((listItem) => {
+          if (
+            listItem.isNew ||
+            !listItem.item.trim() ||
+            typeof listItem.id !== "number"
+          ) {
+            return null;
+          }
+
+          return actions.update({
             id: listItem.id,
             item: listItem.item,
             lang: locale,
           });
-        }
-      }
+        })
+        .filter(Boolean);
 
-      toast({
-        title: "Success",
-        description: labels.saveSuccess,
-      });
+      if (updatePromises.length > 0) {
+        await Promise.all(updatePromises);
+      }
 
       setHasChanges(false);
       setExpandedItems(new Set());
 
-      setTimeout(() => {
-        navigate(window.location.pathname);
-      }, 2000);
+      navigate(`${window.location.pathname}?update=success`);
     } catch (error) {
       toast({
         title: "Error",
         description: labels.saveFailed,
         variant: "destructive",
       });
-    } finally {
-      setIsSaving(false);
+
+      navigate(`${window.location.pathname}?update=error`);
     }
   };
 
@@ -268,10 +287,7 @@ export default function ListManager({
   return (
     <div className="space-y-4 py-8">
       <div className="flex items-center justify-between gap-2">
-        <p>
-          After saving wait for 2 seconds for the page to refresh. When
-          deleting, no need to save.
-        </p>
+        <p>When deleting no need to save.</p>
         <div className="flex items-center gap-2">
           <Button onClick={addNewItem} size="sm">
             <Plus className="mr-2 h-4 w-4" />
