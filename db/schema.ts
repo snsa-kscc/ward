@@ -42,6 +42,15 @@ export const awards = mysqlTable("award", {
   order: int("order").default(0),
 });
 
+export const specialities = mysqlTable("speciality", {
+  id: int("id").notNull().primaryKey().autoincrement(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  item: text("item"),
+  media: varchar("media", { length: 1024 }),
+  lang: varchar("lang", { length: 6 }),
+  order: int("order").default(0),
+});
+
 export const brands = mysqlTable("brand", {
   id: int("id").notNull().primaryKey().autoincrement(),
   logo: text("logo"),

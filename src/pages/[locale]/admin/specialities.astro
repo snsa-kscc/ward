@@ -1,0 +1,29 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AdminNavbar from "@/components/admin/AdminNavbar.astro";
+import { db } from "db";
+import { specialities } from "db/schema";
+import { asc, eq } from "drizzle-orm";
+import SpecialitiesManager from "@/components/admin/SpecialitiesManager";
+import { defaultLocale as locale } from "@/lib/utils";
+
+const specialitiesData = await db
+  .select()
+  .from(specialities)
+  .where(eq(specialities.lang, locale!))
+  .orderBy(asc(specialities.order));
+
+const items = specialitiesData.map((item) => ({
+  id: item.id,
+  item: item.item ?? "",
+  media: item.media ?? null,
+}));
+---
+
+<Layout lang={locale} title="Specialities Management">
+  <AdminNavbar lang={locale!} />
+  <div class="container px-8">
+    <h1 class="title py-20 text-3xl">Specialities Management</h1>
+    <SpecialitiesManager client:only="react" items={items} locale={locale!} />
+  </div>
+</Layout>
