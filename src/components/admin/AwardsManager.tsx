@@ -12,10 +12,10 @@ export default function AwardsManager({ items, locale }: AwardsManagerProps) {
       items={items}
       locale={locale}
       actions={{
-        create: actions.createAward,
-        update: actions.updateAward,
-        remove: actions.deleteAward,
-        reorder: actions.reorderAwards,
+        create: actions.createAward.orThrow,
+        update: actions.updateAward.orThrow,
+        remove: actions.deleteAward.orThrow,
+        reorder: actions.reorderAwards.orThrow,
       }}
       labels={{
         addButton: "Add Award",

@@ -25,10 +25,16 @@ export interface ListManagerActions {
     item: string;
     lang: string;
     order?: number;
-  }) => Promise<any>;
-  update: (input: { id: number; item: string; lang: string }) => Promise<any>;
-  remove: (input: { id: number; lang: string }) => Promise<any>;
-  reorder: (input: { items: { id: number; order: number }[] }) => Promise<any>;
+  }) => Promise<number>;
+  update: (input: {
+    id: number;
+    item: string;
+    lang: string;
+  }) => Promise<"updated">;
+  remove: (input: { id: number; lang: string }) => Promise<"deleted">;
+  reorder: (input: {
+    items: { id: number; order: number }[];
+  }) => Promise<"updated">;
 }
 
 export interface ListManagerLabels {
@@ -143,7 +149,7 @@ export default function ListManager({
           lang: locale,
         });
 
-        if (result.data === "deleted") {
+        if (result === "deleted") {
           setListItems((prev) =>
             prev.filter((listItem) => listItem.id !== itemToDelete.id),
           );

@@ -9,7 +9,7 @@ import { Resend } from "resend";
 
 const resend = new Resend(import.meta.env.PUBLIC_RESEND_API);
 
-const makeTextListActions = (table: any) => {
+const makeTextListActions = (table: typeof clients | typeof awards) => {
   return {
     remove: defineAction({
       input: z.object({ id: z.number(), lang: z.string() }),
@@ -21,7 +21,7 @@ const makeTextListActions = (table: any) => {
         } catch (error) {
           console.error(error);
         }
-        return "deleted";
+        return "deleted" as const;
       },
     }),
     reorder: defineAction({
@@ -35,7 +35,7 @@ const makeTextListActions = (table: any) => {
             .set({ order: item.order })
             .where(eq(table.id, item.id));
         }
-        return "updated";
+        return "updated" as const;
       },
     }),
     create: defineAction({
@@ -60,7 +60,7 @@ const makeTextListActions = (table: any) => {
         const result = await db
           .insert(table)
           .values({ item, createdAt: new Date(), lang, order: newOrder });
-        return result[0].insertId;
+        return Number(result[0].insertId);
       },
     }),
     update: defineAction({
@@ -70,7 +70,7 @@ const makeTextListActions = (table: any) => {
           .update(table)
           .set({ item })
           .where(and(eq(table.id, id), eq(table.lang, lang)));
-        return "updated";
+        return "updated" as const;
       },
     }),
   };

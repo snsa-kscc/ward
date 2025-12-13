@@ -12,10 +12,10 @@ export default function ClientsManager({ items, locale }: ClientsManagerProps) {
       items={items}
       locale={locale}
       actions={{
-        create: actions.createClient,
-        update: actions.updateClient,
-        remove: actions.deleteClient,
-        reorder: actions.reorderClients,
+        create: actions.createClient.orThrow,
+        update: actions.updateClient.orThrow,
+        remove: actions.deleteClient.orThrow,
+        reorder: actions.reorderClients.orThrow,
       }}
       labels={{
         addButton: "Add Client",
