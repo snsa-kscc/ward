@@ -321,6 +321,7 @@ export default function SpecialitiesManager({
         {listItems.map((listItem, index) => {
           const id = getItemId(listItem, index);
           const expanded = isExpanded(listItem, index);
+          const draggable = !listItem.isNew && !expanded;
 
           return (
             <div
@@ -328,15 +329,15 @@ export default function SpecialitiesManager({
               className={`bg-card rounded-lg border transition-colors ${
                 listItem.isNew ? "opacity-85" : "hover:bg-muted/90 cursor-move"
               }`}
-              draggable={!listItem.isNew}
+              draggable={draggable}
               onDragStart={
-                listItem.isNew ? undefined : (e) => handleDragStart(e, listItem)
+                draggable ? (e) => handleDragStart(e, listItem) : undefined
               }
-              onDragOver={listItem.isNew ? undefined : handleDragOver}
+              onDragOver={draggable ? handleDragOver : undefined}
               onDragEnter={
-                listItem.isNew ? undefined : () => handleDragEnter(listItem)
+                draggable ? () => handleDragEnter(listItem) : undefined
               }
-              onDragEnd={listItem.isNew ? undefined : handleDragEnd}
+              onDragEnd={draggable ? handleDragEnd : undefined}
             >
               <div className="flex items-center justify-between p-4">
                 <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -376,6 +377,8 @@ export default function SpecialitiesManager({
                   <Textarea
                     value={listItem.item}
                     onChange={(e) => updateItemText(id, e.target.value)}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => e.stopPropagation()}
                     placeholder="Enter speciality text..."
                     className="text-foreground min-h-[100px] bg-transparent"
                   />
@@ -410,6 +413,8 @@ export default function SpecialitiesManager({
                       required={listItem.isNew && !listItem.media}
                       type="file"
                       className="text-black"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
                       onChange={(e) => {
                         const file = e.currentTarget.files?.[0] ?? null;
                         updateItemFile(id, file);

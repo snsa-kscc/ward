@@ -4,12 +4,10 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   ChevronDown,
   ChevronUp,
-  Edit2,
   GripVertical,
   Plus,
   Save,
   Trash2,
-  X,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { navigate } from "astro:transitions/client";
@@ -64,7 +62,6 @@ export default function ListManager({
     items.map((item) => ({ ...item, isNew: false })),
   );
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const [editingItems, setEditingItems] = useState<Set<string>>(new Set());
   const [hasChanges, setHasChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [draggedItem, setDraggedItem] = useState<ListItem | null>(null);
@@ -102,19 +99,6 @@ export default function ListManager({
     });
   };
 
-  const toggleEditing = (id: string | number) => {
-    setEditingItems((prev) => {
-      const newSet = new Set(prev);
-      const idStr = id.toString();
-      if (newSet.has(idStr)) {
-        newSet.delete(idStr);
-      } else {
-        newSet.add(idStr);
-      }
-      return newSet;
-    });
-  };
-
   const addNewItem = () => {
     const newId = `new-${Date.now()}-${Math.random()}`;
     setListItems((prev) => {
@@ -122,7 +106,6 @@ export default function ListManager({
       return newListItems;
     });
     setExpandedItems((prev) => new Set([...prev, newId]));
-    setEditingItems((prev) => new Set([...prev, newId]));
     setHasChanges(true);
   };
 
@@ -227,7 +210,6 @@ export default function ListManager({
       });
 
       setHasChanges(false);
-      setEditingItems(new Set());
       setExpandedItems(new Set());
 
       setTimeout(() => {
@@ -283,11 +265,6 @@ export default function ListManager({
     return expandedItems.has(id);
   };
 
-  const isEditing = (listItem: ListItem, index: number) => {
-    const id = getItemId(listItem, index);
-    return editingItems.has(id);
-  };
-
   return (
     <div className="space-y-4 py-8">
       <div className="flex items-center justify-between gap-2">
@@ -318,7 +295,7 @@ export default function ListManager({
         {listItems.map((listItem, index) => {
           const id = getItemId(listItem, index);
           const expanded = isExpanded(listItem, index);
-          const editing = isEditing(listItem, index);
+          const draggable = !listItem.isNew && !expanded;
 
           return (
             <div
@@ -326,15 +303,15 @@ export default function ListManager({
               className={`bg-card rounded-lg border transition-colors ${
                 listItem.isNew ? "opacity-85" : "hover:bg-muted/90 cursor-move"
               }`}
-              draggable={!listItem.isNew}
+              draggable={draggable}
               onDragStart={
-                listItem.isNew ? undefined : (e) => handleDragStart(e, listItem)
+                draggable ? (e) => handleDragStart(e, listItem) : undefined
               }
-              onDragOver={listItem.isNew ? undefined : handleDragOver}
+              onDragOver={draggable ? handleDragOver : undefined}
               onDragEnter={
-                listItem.isNew ? undefined : () => handleDragEnter(listItem)
+                draggable ? () => handleDragEnter(listItem) : undefined
               }
-              onDragEnd={listItem.isNew ? undefined : handleDragEnd}
+              onDragEnd={draggable ? handleDragEnd : undefined}
             >
               <div className="flex items-center justify-between p-4">
                 <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -351,15 +328,6 @@ export default function ListManager({
                       <ChevronDown className="h-4 w-4" />
                     )}
                   </Button>
-                  {!editing ? (
-                    <Button size="sm" onClick={() => toggleEditing(id)}>
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                  ) : (
-                    <Button size="sm" onClick={() => toggleEditing(id)}>
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
                   <Button
                     variant="ghost"
                     size="sm"
@@ -373,18 +341,14 @@ export default function ListManager({
 
               {expanded && (
                 <div className="border-t p-4">
-                  {editing ? (
-                    <Textarea
-                      value={listItem.item}
-                      onChange={(e) => updateItem(id, e.target.value)}
-                      placeholder={labels.textareaPlaceholder}
-                      className="text-foreground min-h-[100px] bg-transparent"
-                    />
-                  ) : (
-                    <p className="text-foreground whitespace-pre-wrap">
-                      {listItem.item}
-                    </p>
-                  )}
+                  <Textarea
+                    value={listItem.item}
+                    onChange={(e) => updateItem(id, e.target.value)}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    placeholder={labels.textareaPlaceholder}
+                    className="text-foreground min-h-[100px] bg-transparent"
+                  />
                 </div>
               )}
             </div>
