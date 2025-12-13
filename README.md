@@ -1,6 +1,6 @@
 # WARD Website
 
-A modern, responsive website built with Astro 5, Tailwind CSS v4, GSAP animations, and postcss-clampwind for fluid typography and spacing.
+A modern, responsive website built with Astro 5, Tailwind CSS v4, GSAP animations, and postcss-clampwind for fluid typography and spacings.
 
 ## 🚀 Tech Stack
 
