@@ -4,6 +4,7 @@ import Hero from "@/components/Hero.astro";
 import About from "@/components/About.astro";
 import Portfolio from "@/components/Portfolio.astro";
 import Capabilities from "@/components/Capabilities.astro";
+import Specialities from "@/components/Specialities.astro";
 import Logos from "@/components/Logos.astro";
 import Clients from "@/components/Clients.astro";
 import Awards from "@/components/Awards.astro";
@@ -12,7 +13,15 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { db } from "db";
 import { asc, eq } from "drizzle-orm";
-import { store, portfolio, brands, clients, awards, pages } from "db/schema";
+import {
+  store,
+  portfolio,
+  brands,
+  clients,
+  awards,
+  pages,
+  specialities,
+} from "db/schema";
 import type { StoreData } from "@/types/global";
 import { defaultLocale } from "@/lib/utils";
 
@@ -25,6 +34,7 @@ const [
   clientsData,
   awardsData,
   pagesData,
+  specialitiesData,
 ] = await Promise.all([
   db.select().from(store).where(eq(store.lang, locale!)),
   db.select().from(portfolio).orderBy(asc(portfolio.order)),
@@ -44,6 +54,11 @@ const [
     .from(pages)
     .where(eq(pages.lang, locale!))
     .orderBy(asc(pages.name)),
+  db
+    .select()
+    .from(specialities)
+    .where(eq(specialities.lang, locale!))
+    .orderBy(asc(specialities.order)),
 ]);
 
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
@@ -91,6 +106,7 @@ const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
     storeDataMap={storeDataMap}
   />
   <Capabilities data={storeDataMap} />
+  <Specialities items={specialitiesData} />
   <Logos data={brandsData} />
   <Clients clientsData={clientsData} storeDataMap={storeDataMap} />
   <Awards awardsData={awardsData} storeDataMap={storeDataMap} />
