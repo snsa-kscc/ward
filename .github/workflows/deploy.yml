@@ -33,7 +33,7 @@ jobs:
             cd www/feature.ward.hr
             git pull
             if [[ "${{ steps.check-npm.outputs.run_npm_install }}" == "true" ]]; then
-              npm install --production
+              npm install --omit=dev
             fi
             npm run build
             pkill lsnode || true
