@@ -18,12 +18,6 @@ const secondHalf = clientsData.slice(halfLength);
 
 <section class="my-[clamp(40,72)]">
   <div class="container px-4 py-20">
-    <div
-      class="text-[clamp(var(--text-xl),var(--text-5xl))] leading-tight font-bold opacity-0"
-      data-projects
-    >
-      {storeDataMap.clientsKey}
-    </div>
     <div class="my-40 flex items-center justify-between gap-4">
       <div
         class="bar-char-wrapper w-1/2 text-[clamp(var(--text-xl),var(--text-5xl))] font-bold"
@@ -46,15 +40,6 @@ const secondHalf = clientsData.slice(halfLength);
             ))
         }
       </div>
-      <a
-        href={`#${storeDataMap.navbarLinks
-          .split(",")
-          .map((link) => link.trim())
-          .at(-1)}`}
-        class="bg-ward-green hover:bg-ward-blue rounded-full px-[clamp(10,16)] py-[clamp(2,6)] text-[clamp(var(--text-xl),var(--text-2xl))] font-bold text-slate-100 duration-300"
-      >
-        {storeDataMap.clientsKey}
-      </a>
     </div>
   </div>
   <div
