@@ -135,8 +135,15 @@ const { items } = Astro.props as Props;
 
     let lastX = 0;
     let lastY = 0;
-    let isOverPreview = false;
+    let isOverPreview = false; // Used only for hide logic, not position updates
     let isReducedMotion = false;
+
+    // Linear interpolation variables
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let animationId: number | null = null;
 
     try {
       isReducedMotion = window.matchMedia(
@@ -154,30 +161,69 @@ const { items } = Astro.props as Props;
       return Math.min(Math.max(value, min), max);
     };
 
-    const positionPreview = (clientX: number, clientY: number) => {
+    const lerp = (start: number, end: number, factor: number) => {
+      return start + (end - start) * factor;
+    };
+
+    const animate = () => {
+      const smoothingFactor = isReducedMotion ? 1 : 0.15;
+
+      currentX = lerp(currentX, targetX, smoothingFactor);
+      currentY = lerp(currentY, targetY, smoothingFactor);
+
       const offset = 18;
       const padding = 12;
       const rect = previewEl.getBoundingClientRect();
       const maxX = window.innerWidth - rect.width - padding;
       const maxY = window.innerHeight - rect.height - padding;
 
-      const x = clamp(clientX + offset, padding, maxX);
-      const y = clamp(clientY - rect.height / 2, padding, maxY);
+      const x = clamp(currentX + offset, padding, maxX);
+      const y = clamp(currentY - rect.height / 2, padding, maxY);
       previewEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+      // Continue animation if not at target
+      const distance = Math.sqrt(
+        Math.pow(targetX - currentX, 2) + Math.pow(targetY - currentY, 2)
+      );
+
+      if (distance > 0.5 && !isReducedMotion) {
+        animationId = requestAnimationFrame(animate);
+      } else {
+        animationId = null;
+      }
+    };
+
+    const positionPreview = (clientX: number, clientY: number) => {
+      targetX = clientX;
+      targetY = clientY;
+
+      if (isReducedMotion) {
+        currentX = targetX;
+        currentY = targetY;
+        animate();
+      } else if (!animationId) {
+        animationId = requestAnimationFrame(animate);
+      }
     };
 
     const crossfadeTo = (nextSrc: string) => {
       if (!nextSrc || nextSrc === activeSrc) return;
 
       activeSrc = nextSrc;
+
+      // Clear any pending onload to prevent stale swaps
+      back.onload = null;
       back.src = nextSrc;
 
       const swap = () => {
-        front.style.opacity = "0";
-        back.style.opacity = "1";
-        const tmp = front;
-        front = back;
-        back = tmp;
+        // Only swap if this is still the active source
+        if (back.src.endsWith(activeSrc.split("/").pop() || "")) {
+          front.style.opacity = "0";
+          back.style.opacity = "1";
+          const tmp = front;
+          front = back;
+          back = tmp;
+        }
       };
 
       if (back.complete) {
@@ -192,6 +238,10 @@ const { items } = Astro.props as Props;
 
     const show = () => {
       setVisible(true);
+      currentX = lastX;
+      currentY = lastY;
+      targetX = lastX;
+      targetY = lastY;
       positionPreview(lastX, lastY);
     };
 
@@ -200,7 +250,13 @@ const { items } = Astro.props as Props;
       const stillOverTrigger = !!el?.closest("[data-speciality-trigger]");
       const stillOverPreview = !!el?.closest("[data-specialities-preview]");
       isOverPreview = stillOverPreview;
-      if (!stillOverTrigger && !stillOverPreview) setVisible(false);
+      if (!stillOverTrigger && !stillOverPreview) {
+        setVisible(false);
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+      }
     };
 
     window.addEventListener(
@@ -208,8 +264,18 @@ const { items } = Astro.props as Props;
       (e) => {
         lastX = e.clientX;
         lastY = e.clientY;
-        if (previewEl.classList.contains("is-visible") && !isOverPreview) {
+        if (previewEl.classList.contains("is-visible")) {
           positionPreview(lastX, lastY);
+        }
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (previewEl.classList.contains("is-visible")) {
+          requestAnimationFrame(hideIfNotHovering);
         }
       },
       { passive: true }
@@ -220,7 +286,7 @@ const { items } = Astro.props as Props;
       (e) => {
         lastX = e.clientX;
         lastY = e.clientY;
-        if (!isOverPreview) positionPreview(lastX, lastY);
+        positionPreview(lastX, lastY);
       },
       { passive: true }
     );
@@ -237,7 +303,6 @@ const { items } = Astro.props as Props;
       "mouseenter",
       () => {
         isOverPreview = true;
-        show();
       },
       { passive: true }
     );
@@ -246,7 +311,6 @@ const { items } = Astro.props as Props;
       "mouseleave",
       () => {
         isOverPreview = false;
-        requestAnimationFrame(hideIfNotHovering);
       },
       { passive: true }
     );
@@ -257,7 +321,7 @@ const { items } = Astro.props as Props;
         (e) => {
           lastX = e.clientX;
           lastY = e.clientY;
-          if (!isOverPreview) positionPreview(lastX, lastY);
+          positionPreview(lastX, lastY);
         },
         { passive: true }
       );
