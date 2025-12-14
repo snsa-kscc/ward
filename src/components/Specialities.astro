@@ -25,23 +25,23 @@ const { title = "Specialities", items } = Astro.props as Props;
 
     {
       items.length ? (
-        <ol class="mt-12 space-y-6 text-[clamp(var(--text-lg),var(--text-2xl))] font-medium">
+        <div class="mt-12 flex items-center justify-between gap-8 text-[clamp(var(--text-lg),var(--text-2xl))] font-medium">
           {items.map((s) => (
-            <li class="flex flex-col gap-3">
+            <div class="flex flex-col gap-4">
               {s.media ? (
                 <Image
                   src={`/assets/specialities/${s.media}`}
                   alt={s.item ?? "Speciality"}
-                  class="aspect-video w-full rounded-lg object-cover"
-                  width={500}
-                  height={500}
+                  class="rounded-lg object-cover"
+                  width={100}
+                  height={100}
                   loading="lazy"
                 />
               ) : null}
               <span>{s.item}</span>
-            </li>
+            </div>
           ))}
-        </ol>
+        </div>
       ) : (
         <p class="mt-12 opacity-70">No specialities yet.</p>
       )

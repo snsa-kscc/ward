@@ -43,17 +43,17 @@ const clientsKeyLines = storeDataMap.clientsKey
     class="clients-content basis-2/3 text-[clamp(var(--text-lg),var(--text-xl))] leading-relaxed font-medium"
   >
     <div class="flex flex-col justify-around gap-14 lg:flex-row">
-      <div>
+      <div class="clients-col clients-col-1">
         {
           firstHalf.map((item) => {
-            return <p>{item.item}</p>;
+            return <p class="clients-item opacity-20">{item.item}</p>;
           })
         }
       </div>
-      <div>
+      <div class="clients-col clients-col-2">
         {
           secondHalf.map((item) => {
-            return <p>{item.item}</p>;
+            return <p class="clients-item opacity-20">{item.item}</p>;
           })
         }
       </div>
@@ -73,22 +73,45 @@ const clientsKeyLines = storeDataMap.clientsKey
 
 <script>
   import gsap from "gsap";
-  import { isInViewport } from "@/lib/utils";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
 
-  window.addEventListener(
-    "scroll",
-    () => {
-      const projects = document.querySelector("[data-projects]");
-      if (projects && isInViewport(projects)) {
-        projects.classList.add(
-          "animate-in",
-          "fade-in",
-          "opacity-100",
-          "slide-in-from-bottom",
-          "duration-300"
-        );
-      }
-    },
-    { passive: true }
-  );
+  const clientsSection = document.querySelector(
+    ".clients-content"
+  ) as HTMLElement;
+  const clientsCol1Items = document.querySelectorAll(
+    ".clients-col-1 .clients-item"
+  ) as NodeListOf<HTMLElement>;
+  const clientsCol2Items = document.querySelectorAll(
+    ".clients-col-2 .clients-item"
+  ) as NodeListOf<HTMLElement>;
+
+  if (clientsSection && (clientsCol1Items.length || clientsCol2Items.length)) {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: clientsSection,
+        start: "top 80%",
+        end: "bottom 40%",
+        scrub: 1,
+      },
+    });
+
+    if (clientsCol1Items.length) {
+      tl.to(clientsCol1Items, {
+        opacity: 1,
+        stagger: 0.04,
+      });
+    }
+
+    if (clientsCol2Items.length) {
+      tl.to(
+        clientsCol2Items,
+        {
+          opacity: 1,
+          stagger: 0.04,
+        },
+        clientsCol1Items.length ? 0.15 : 0
+      );
+    }
+  }
 </script>

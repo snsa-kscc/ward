@@ -20,7 +20,7 @@ const awardsKeyLines = storeDataMap.awardsKey
 <section
   class="relative container flex items-start gap-20 border-t border-b border-stone-200 px-4 py-[clamp(40,62)]"
 >
-  <div class="awards-key-wrapper basis-1/3 opacity-0" data-awards>
+  <div class="awards-key-wrapper basis-1/3">
     {
       awardsKeyLines.map((line, index) => (
         <p
@@ -42,7 +42,9 @@ const awardsKeyLines = storeDataMap.awardsKey
     <div>
       {
         awardsData.map((item) => {
-          return <p class="mb-2 last:mb-0">{item.item}</p>;
+          return (
+            <p class="awards-item mb-2 opacity-20 last:mb-0">{item.item}</p>
+          );
         })
       }
     </div>
@@ -61,22 +63,26 @@ const awardsKeyLines = storeDataMap.awardsKey
 
 <script>
   import gsap from "gsap";
-  import { isInViewport } from "@/lib/utils";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
 
-  window.addEventListener(
-    "scroll",
-    () => {
-      const awards = document.querySelector("[data-awards]");
-      if (awards && isInViewport(awards)) {
-        awards.classList.add(
-          "animate-in",
-          "fade-in",
-          "opacity-100",
-          "slide-in-from-bottom",
-          "duration-300"
-        );
-      }
-    },
-    { passive: true }
-  );
+  const awardsSection = document.querySelector(
+    ".awards-content"
+  ) as HTMLElement;
+  const awardsItems = document.querySelectorAll(
+    ".awards-item"
+  ) as NodeListOf<HTMLElement>;
+
+  if (awardsSection && awardsItems.length) {
+    gsap.to(awardsItems, {
+      opacity: 1,
+      stagger: 0.06,
+      scrollTrigger: {
+        trigger: awardsSection,
+        start: "top 80%",
+        end: "bottom 40%",
+        scrub: 1,
+      },
+    });
+  }
 </script>
