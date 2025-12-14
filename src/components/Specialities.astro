@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-
 export type SpecialityItem = {
   id: number;
   item: string | null;
@@ -8,37 +6,34 @@ export type SpecialityItem = {
 };
 
 type Props = {
-  title?: string;
   items: SpecialityItem[];
 };
 
-const { title = "Specialities", items } = Astro.props as Props;
+const { items } = Astro.props as Props;
 ---
 
 <section class="my-[clamp(20,30)]">
   <div class="container px-4 py-16">
-    <h2
-      class="text-[clamp(var(--text-xl),var(--text-5xl))] leading-tight font-bold"
-    >
-      {title}
-    </h2>
-
     {
       items.length ? (
-        <div class="mt-12 flex items-center justify-between gap-8 text-[clamp(var(--text-lg),var(--text-2xl))] font-medium">
-          {items.map((s) => (
-            <div class="flex flex-col gap-4">
-              {s.media ? (
-                <Image
-                  src={`/assets/specialities/${s.media}`}
-                  alt={s.item ?? "Speciality"}
-                  class="rounded-lg object-cover"
-                  width={100}
-                  height={100}
-                  loading="lazy"
-                />
-              ) : null}
-              <span>{s.item}</span>
+        <div class="mt-12" data-specialities-list>
+          {items.map((s, index) => (
+            <div
+              class="group container px-4"
+              data-speciality-trigger
+              data-index={index}
+              data-media={s.media ?? ""}
+            >
+              <div
+                class={`flex items-start justify-between gap-6 border-stone-200 py-[clamp(4,8)] lg:ml-auto lg:w-1/2 ${index === 0 ? "border-t " : ""}border-b`}
+              >
+                <p class="min-w-0 flex-1 text-[clamp(var(--text-4xl),var(--text-5xl))] leading-[1.05] font-semibold text-stone-950 transition-colors duration-300 group-hover:text-stone-500">
+                  {s.item}
+                </p>
+                <span class="shrink-0 pt-[clamp(3,8)] text-[clamp(var(--text-sm),var(--text-base))] leading-none font-semibold text-stone-500 tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
             </div>
           ))}
         </div>
@@ -48,3 +43,254 @@ const { title = "Specialities", items } = Astro.props as Props;
     }
   </div>
 </section>
+
+<div
+  class="specialities-preview fixed top-0 left-0 hidden overflow-hidden rounded-xl bg-stone-100/60 lg:block"
+  data-specialities-preview
+>
+  <img
+    alt=""
+    class="specialities-preview-img absolute inset-0 h-full w-full object-cover opacity-0"
+    data-preview-a
+    loading="lazy"
+  />
+  <img
+    alt=""
+    class="specialities-preview-img absolute inset-0 h-full w-full object-cover opacity-0"
+    data-preview-b
+    loading="lazy"
+  />
+</div>
+
+<style>
+  .specialities-preview {
+    aspect-ratio: 4 / 3;
+    width: min(360px, 70vw);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 60;
+    transition:
+      opacity 250ms ease,
+      visibility 250ms ease;
+    will-change: opacity, transform;
+  }
+
+  .specialities-preview.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .specialities-preview-img {
+    transition: opacity 500ms ease;
+    will-change: opacity;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .specialities-preview,
+    .specialities-preview-img {
+      transition-duration: 0ms;
+    }
+  }
+</style>
+
+<script>
+  const listEl = document.querySelector(
+    "[data-specialities-list]"
+  ) as HTMLElement | null;
+  const previewEl = document.querySelector(
+    "[data-specialities-preview]"
+  ) as HTMLElement | null;
+  const triggers = Array.from(
+    document.querySelectorAll("[data-speciality-trigger]")
+  ) as HTMLElement[];
+
+  const imgA = document.querySelector(
+    "[data-preview-a]"
+  ) as HTMLImageElement | null;
+  const imgB = document.querySelector(
+    "[data-preview-b]"
+  ) as HTMLImageElement | null;
+
+  if (listEl && previewEl && imgA && imgB && triggers.length) {
+    const mediaBasePath = "/assets/specialities/";
+
+    const preloaded = new Set<string>();
+    triggers
+      .map((t) => t.dataset.media ?? "")
+      .filter(Boolean)
+      .forEach((m) => {
+        const src = `${mediaBasePath}${m}`;
+        if (preloaded.has(src)) return;
+        preloaded.add(src);
+        const img = new Image();
+        img.decoding = "async";
+        img.src = src;
+      });
+
+    let activeSrc = "";
+    let front = imgA;
+    let back = imgB;
+
+    let lastX = 0;
+    let lastY = 0;
+    let isOverPreview = false;
+    let isReducedMotion = false;
+
+    try {
+      isReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+    } catch {
+      isReducedMotion = false;
+    }
+
+    const setVisible = (visible: boolean) => {
+      previewEl.classList.toggle("is-visible", visible);
+    };
+
+    const clamp = (value: number, min: number, max: number) => {
+      return Math.min(Math.max(value, min), max);
+    };
+
+    const positionPreview = (clientX: number, clientY: number) => {
+      const offset = 18;
+      const padding = 12;
+      const rect = previewEl.getBoundingClientRect();
+      const maxX = window.innerWidth - rect.width - padding;
+      const maxY = window.innerHeight - rect.height - padding;
+
+      const x = clamp(clientX + offset, padding, maxX);
+      const y = clamp(clientY - rect.height / 2, padding, maxY);
+      previewEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    };
+
+    const crossfadeTo = (nextSrc: string) => {
+      if (!nextSrc || nextSrc === activeSrc) return;
+
+      activeSrc = nextSrc;
+      back.src = nextSrc;
+
+      const swap = () => {
+        front.style.opacity = "0";
+        back.style.opacity = "1";
+        const tmp = front;
+        front = back;
+        back = tmp;
+      };
+
+      if (back.complete) {
+        requestAnimationFrame(swap);
+      } else {
+        back.onload = () => {
+          requestAnimationFrame(swap);
+          back.onload = null;
+        };
+      }
+    };
+
+    const show = () => {
+      setVisible(true);
+      positionPreview(lastX, lastY);
+    };
+
+    const hideIfNotHovering = () => {
+      const el = document.elementFromPoint(lastX, lastY);
+      const stillOverTrigger = !!el?.closest("[data-speciality-trigger]");
+      const stillOverPreview = !!el?.closest("[data-specialities-preview]");
+      isOverPreview = stillOverPreview;
+      if (!stillOverTrigger && !stillOverPreview) setVisible(false);
+    };
+
+    window.addEventListener(
+      "mousemove",
+      (e) => {
+        lastX = e.clientX;
+        lastY = e.clientY;
+        if (previewEl.classList.contains("is-visible") && !isOverPreview) {
+          positionPreview(lastX, lastY);
+        }
+      },
+      { passive: true }
+    );
+
+    listEl.addEventListener(
+      "mousemove",
+      (e) => {
+        lastX = e.clientX;
+        lastY = e.clientY;
+        if (!isOverPreview) positionPreview(lastX, lastY);
+      },
+      { passive: true }
+    );
+
+    listEl.addEventListener(
+      "mouseleave",
+      () => {
+        requestAnimationFrame(hideIfNotHovering);
+      },
+      { passive: true }
+    );
+
+    previewEl.addEventListener(
+      "mouseenter",
+      () => {
+        isOverPreview = true;
+        show();
+      },
+      { passive: true }
+    );
+
+    previewEl.addEventListener(
+      "mouseleave",
+      () => {
+        isOverPreview = false;
+        requestAnimationFrame(hideIfNotHovering);
+      },
+      { passive: true }
+    );
+
+    triggers.forEach((el) => {
+      el.addEventListener(
+        "mousemove",
+        (e) => {
+          lastX = e.clientX;
+          lastY = e.clientY;
+          if (!isOverPreview) positionPreview(lastX, lastY);
+        },
+        { passive: true }
+      );
+
+      el.addEventListener(
+        "mouseenter",
+        () => {
+          const media = el.dataset.media ?? "";
+          if (!media) return;
+          show();
+          const nextSrc = `${mediaBasePath}${media}`;
+          if (!activeSrc) {
+            front.src = nextSrc;
+            front.style.opacity = "1";
+            activeSrc = nextSrc;
+          } else {
+            crossfadeTo(nextSrc);
+          }
+        },
+        { passive: true }
+      );
+
+      el.addEventListener(
+        "mouseleave",
+        () => {
+          if (isReducedMotion) {
+            hideIfNotHovering();
+          } else {
+            requestAnimationFrame(hideIfNotHovering);
+          }
+        },
+        { passive: true }
+      );
+    });
+  }
+</script>

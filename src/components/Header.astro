@@ -59,18 +59,21 @@ function capitalizeLink(str: string) {
     class="container flex items-center justify-between px-[clamp(6,10)] py-[clamp(6,8)] text-[clamp(var(--text-base),var(--text-lg))]"
   >
     <div class="flex items-center">
-      <a href={lang === "hr" ? "/hr" : "/"} class="text-3xl font-medium">WARD</a
+      <a
+        href={lang === "hr" ? "/hr" : "/"}
+        class="text-3xl font-medium transition-colors hover:text-stone-500"
       >
+        WARD
+      </a>
     </div>
 
-    <!-- Desktop Navigation -->
     <div class="hidden items-center space-x-[clamp(16,24)] md:flex">
       <div class="flex items-center space-x-4">
         {
           linksArray?.map((link) => (
             <a
               href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`}
-              class="relative text-2xl font-medium transition-colors after:absolute after:bottom-0 after:left-0 after:h-1 after:w-0 after:bg-stone-700 after:transition-all after:duration-300 after:ease-in-out hover:text-stone-700 hover:after:w-full"
+              class="relative text-2xl font-medium transition-colors after:absolute after:bottom-0 after:left-0 after:h-1 after:w-0 after:bg-stone-500 after:transition-all after:duration-300 after:ease-in-out hover:text-stone-500 hover:after:w-full"
             >
               {capitalizeLink(link.replaceAll("-", " "))}
             </a>
@@ -78,7 +81,6 @@ function capitalizeLink(str: string) {
         }
       </div>
 
-      <!-- Hidden language selector (keep functionality) -->
       <a
         href={href}
         class="sr-only font-medium"
@@ -88,7 +90,6 @@ function capitalizeLink(str: string) {
       </a>
     </div>
 
-    <!-- Mobile Hamburger Menu -->
     <div class="md:hidden">
       <button
         id="mobile-menu-button"
@@ -109,12 +110,13 @@ function capitalizeLink(str: string) {
     </div>
   </div>
 
-  <!-- Mobile Menu -->
   <div
     id="mobile-menu"
     class="absolute top-full left-0 w-full -translate-x-full transform border-t border-stone-200 bg-stone-50 transition-transform duration-300 ease-in-out md:hidden"
   >
-    <div class="container px-[clamp(6,10)] py-[clamp(6,10)]">
+    <div
+      class="container border-b border-stone-200 px-[clamp(6,10)] py-[clamp(6,10)]"
+    >
       <div class="flex flex-col space-y-[clamp(12,16)]">
         {
           linksArray?.map((link) => (
@@ -165,8 +167,11 @@ function capitalizeLink(str: string) {
       // Scrolling down - show header
       header.classList.remove("-translate-y-full");
       header.classList.add("translate-y-0");
-    } else if (currentScrollY < lastScrollY && currentScrollY > 10) {
-      // Scrolling up - hide header, but only if past 10px offset
+    } else if (
+      currentScrollY < lastScrollY &&
+      currentScrollY > 10 &&
+      !isMenuOpen
+    ) {
       header.classList.add("-translate-y-full");
       header.classList.remove("translate-y-0");
     }
