@@ -16,6 +16,18 @@ const { locale, storeData, pagesData } = Astro.props;
 
 <footer class="mt-[clamp(40,72)]">
   <div
+    class="bar-char-wrapper container px-4 pb-[clamp(10,20)] text-[clamp(var(--text-3xl),var(--text-8xl))] font-bold"
+  >
+    {
+      storeData.contactHook1.split("").map((char: string) => {
+        if (char === " ") {
+          return <span class="bar-char inline-block">&nbsp;</span>;
+        }
+        return <span class="bar-char inline-block">{char}</span>;
+      })
+    }
+  </div>
+  <div
     id={storeData.navbarLinks
       .split(",")
       .map((link) => link.trim())
@@ -96,6 +108,12 @@ const { locale, storeData, pagesData } = Astro.props;
   </div>
 </footer>
 
+<style>
+  .bar-char {
+    will-change: filter, transform;
+  }
+</style>
+
 <script>
   import { gsap } from "gsap";
   import ScrollTrigger from "gsap/ScrollTrigger";
@@ -105,30 +123,60 @@ const { locale, storeData, pagesData } = Astro.props;
     const footerChars = document.querySelectorAll(
       ".cta-char"
     ) as NodeListOf<HTMLElement>;
-    if (!footerChars.length) return;
+    const barChars = document.querySelectorAll(
+      ".bar-char"
+    ) as NodeListOf<HTMLElement>;
 
-    gsap.fromTo(
-      footerChars,
-      {
-        opacity: 0,
-        skewX: -20,
-        willChange: "filter, transform",
-        filter: "blur(8px)",
-      },
-      {
-        ease: "sine",
-        opacity: 1,
-        skewX: 0,
-        filter: "blur(0px)",
-        stagger: 0.04,
-        scrollTrigger: {
-          trigger: ".footer-wrapper",
-          start: "top 80%",
-          end: "top 40%",
-          scrub: 1,
+    if (!barChars.length && !footerChars.length) return;
+
+    if (barChars.length) {
+      gsap.fromTo(
+        barChars,
+        {
+          scaleY: 0.1,
+          scaleX: 1.8,
+          filter: "blur(10px) brightness(50%)",
         },
-      }
-    );
+        {
+          ease: "power1.out",
+          scaleY: 1,
+          scaleX: 1,
+          filter: "blur(0px) brightness(100%)",
+          stagger: 0.05,
+          scrollTrigger: {
+            trigger: ".bar-char-wrapper",
+            start: "top 80%",
+            end: "top center",
+            scrub: 1,
+          },
+        }
+      );
+    }
+
+    if (footerChars.length) {
+      gsap.fromTo(
+        footerChars,
+        {
+          opacity: 0,
+          skewX: -20,
+          willChange: "filter, transform",
+          filter: "blur(8px)",
+        },
+        {
+          ease: "sine",
+          opacity: 1,
+          skewX: 0,
+          filter: "blur(0px)",
+          stagger: 0.04,
+          scrollTrigger: {
+            trigger: ".footer-wrapper",
+            start: "top 80%",
+            end: "top 40%",
+            scrub: 1,
+          },
+        }
+      );
+    }
   }
 
   document.addEventListener("DOMContentLoaded", initFooterAnimation);
