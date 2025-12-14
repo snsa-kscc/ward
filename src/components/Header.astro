@@ -81,13 +81,15 @@ function capitalizeLink(str: string) {
         }
       </div>
 
-      <a
-        href={href}
-        class="sr-only font-medium"
-        aria-label="Switch to {anotherLocale.toUpperCase()} language"
-      >
-        {anotherLocale.toUpperCase()}
-      </a>
+      <div class="ml-10 border-l border-stone-300 pl-10">
+        <a
+          href={href}
+          class="relative text-2xl font-medium transition-colors after:absolute after:bottom-0 after:left-0 after:h-1 after:w-0 after:bg-stone-500 after:transition-all after:duration-300 after:ease-in-out hover:text-stone-500 hover:after:w-full"
+          aria-label="Switch to {anotherLocale.toUpperCase()} language"
+        >
+          {anotherLocale.toUpperCase()}
+        </a>
+      </div>
     </div>
 
     <div class="md:hidden">
@@ -122,12 +124,21 @@ function capitalizeLink(str: string) {
           linksArray?.map((link) => (
             <a
               href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`}
-              class="py-2 font-medium transition-colors hover:text-stone-700"
+              class="py-2 font-medium transition-colors hover:text-stone-500"
             >
               {capitalizeLink(link.replaceAll("-", " "))}
             </a>
           ))
         }
+        <div class="border-t border-stone-200 pt-[clamp(2,4)]">
+          <a
+            href={href}
+            class="py-2 font-medium transition-colors hover:text-stone-500"
+            aria-label="Switch to {anotherLocale.toUpperCase()} language"
+          >
+            {anotherLocale.toUpperCase()}
+          </a>
+        </div>
       </div>
     </div>
   </div>

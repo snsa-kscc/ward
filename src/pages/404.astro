@@ -5,9 +5,13 @@ const isHr = Astro.url.pathname.startsWith("/hr/");
 ---
 
 <Layout lang={isHr ? "hr" : "en"} title="404 — WARD" description="404">
-  <div class="container">
-    <div class="py-20 text-9xl font-bold">404</div>
-    <div class="not-found-message py-20 text-xl font-bold">
+  <div class="container flex flex-col items-center text-stone-950">
+    <div class="py-20 text-[clamp(var(--text-6xl),var(--text-20xl))] font-bold">
+      404
+    </div>
+    <div
+      class="not-found-message py-20 text-[clamp(var(--text-3xl),var(--text-7xl))] font-bold"
+    >
       {isHr ? "Stranica nije pronađena" : "Page not found"}
     </div>
   </div>
