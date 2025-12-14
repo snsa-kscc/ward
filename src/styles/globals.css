@@ -17,6 +17,7 @@
   --text-13xl: 13rem;
   --text-14xl: 14rem;
   --text-15xl: 15rem;
+  --text-20xl: 20rem;
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
