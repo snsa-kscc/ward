@@ -21,7 +21,7 @@ const aboutWords = data.about.split(/\s+/).filter((word) => word.trim());
     .split(",")
     .map((link) => link.trim())
     .at(0)}
-  class="relative container flex items-start gap-20 border-t border-b border-stone-200 px-4 py-[clamp(40,62)]"
+  class="relative container flex flex-col items-start gap-20 border-t border-b border-stone-200 px-6 py-[clamp(40,62)] md:flex-row"
 >
   <div class="about-key-wrapper basis-1/3">
     {

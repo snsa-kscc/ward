@@ -21,7 +21,7 @@ const clientsKeyLines = storeDataMap.clientsKey
 ---
 
 <section
-  class="relative container flex items-start gap-20 border-t border-b border-stone-200 px-4 py-[clamp(40,62)]"
+  class="relative container flex flex-col items-start gap-20 border-t border-b border-stone-200 px-6 py-[clamp(40,62)] md:flex-row"
 >
   <div class="clients-key-wrapper basis-1/3">
     {
@@ -42,18 +42,26 @@ const clientsKeyLines = storeDataMap.clientsKey
   <div
     class="clients-content basis-2/3 text-[clamp(var(--text-lg),var(--text-xl))] leading-relaxed font-medium"
   >
-    <div class="flex flex-col justify-around gap-14 lg:flex-row">
+    <div class="flex justify-around gap-14">
       <div class="clients-col clients-col-1">
         {
           firstHalf.map((item) => {
-            return <p class="clients-item opacity-20">{item.item}</p>;
+            return (
+              <p class="clients-item mb-2 opacity-20 last:mb-0 md:mb-1">
+                {item.item}
+              </p>
+            );
           })
         }
       </div>
       <div class="clients-col clients-col-2">
         {
           secondHalf.map((item) => {
-            return <p class="clients-item opacity-20">{item.item}</p>;
+            return (
+              <p class="clients-item mb-2 opacity-20 last:mb-0 md:mb-1">
+                {item.item}
+              </p>
+            );
           })
         }
       </div>
