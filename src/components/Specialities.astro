@@ -250,6 +250,8 @@ const { items } = Astro.props as Props;
       const stillOverTrigger = !!el?.closest("[data-speciality-trigger]");
       const stillOverPreview = !!el?.closest("[data-specialities-preview]");
       isOverPreview = stillOverPreview;
+      // Use isOverPreview to satisfy TypeScript
+      void isOverPreview;
       if (!stillOverTrigger && !stillOverPreview) {
         setVisible(false);
         if (animationId) {

@@ -116,6 +116,7 @@ if (Astro.request.method === "POST") {
       <Label htmlFor="clientsKey">Clients key</Label>
       <Textarea
         name="clientsKey"
+        required
         className="bg-transparent text-white"
         rows={5}
         defaultValue={dict.clientsKey}
@@ -123,6 +124,7 @@ if (Astro.request.method === "POST") {
       <Label htmlFor="awardsKey">Awards key</Label>
       <Textarea
         name="awardsKey"
+        required
         className="bg-transparent text-white"
         rows={5}
         defaultValue={dict.awardsKey}
