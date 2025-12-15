@@ -68,31 +68,11 @@ const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
 }, {} as StoreData);
 ---
 
-<style>
-  .loading-overlay {
-    position: fixed;
-    pointer-events: none;
-    inset: 0;
-    z-index: 100;
-  }
-  .loading-overlay.js-loaded {
-    visibility: hidden;
-    opacity: 0;
-  }
-</style>
-
 <Layout
   lang={locale}
   title={storeDataMap.title}
   description={storeDataMap.about}
 >
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const loadingOverlay = document.querySelector(".loading-overlay");
-      loadingOverlay?.classList.add("js-loaded");
-    });
-  </script>
-  <div class="loading-overlay bg-zinc-900"></div>
   <Header
     lang={locale!}
     links={storeDataMap.navbarLinks}
