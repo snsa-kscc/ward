@@ -13,10 +13,10 @@ const { items } = Astro.props as Props;
 ---
 
 <section class="my-[clamp(20,30)]">
-  <div class="container px-4 py-16">
+  <div class="container px-6">
     {
       items.length ? (
-        <div class="mt-12" data-specialities-list>
+        <div data-specialities-list>
           {items.map((s, index) => (
             <div
               class="group container px-4"
@@ -49,13 +49,13 @@ const { items } = Astro.props as Props;
   data-specialities-preview
 >
   <img
-    alt=""
+    alt="Preview image A"
     class="specialities-preview-img absolute inset-0 h-full w-full object-cover opacity-0"
     data-preview-a
     loading="lazy"
   />
   <img
-    alt=""
+    alt="Preview image B"
     class="specialities-preview-img absolute inset-0 h-full w-full object-cover opacity-0"
     data-preview-b
     loading="lazy"

@@ -56,9 +56,9 @@ function capitalizeLink(str: string) {
   class="fixed top-0 z-50 w-full translate-y-0 border-b border-stone-200 bg-stone-50 text-stone-950 transition-transform duration-300"
 >
   <div
-    class="container flex items-center justify-between px-[clamp(6,10)] py-[clamp(6,8)] text-[clamp(var(--text-base),var(--text-lg))]"
+    class="container mx-auto flex items-center justify-between px-6 py-6 text-[clamp(var(--text-base),var(--text-lg))]"
   >
-    <div class="flex items-center">
+    <div class="ml-3 flex items-center md:ml-0">
       <a
         href={lang === "hr" ? "/hr" : "/"}
         class="text-3xl font-medium transition-colors hover:text-stone-500"
@@ -95,7 +95,7 @@ function capitalizeLink(str: string) {
     <div class="md:hidden">
       <button
         id="mobile-menu-button"
-        class="relative flex h-[clamp(24,32)] w-[clamp(24,32)] flex-col items-center justify-center focus:outline-none"
+        class="relative flex h-14 w-14 flex-col items-center justify-center focus:outline-none"
         aria-label="Toggle menu"
       >
         <span class="sr-only">Menu</span>
@@ -116,24 +116,22 @@ function capitalizeLink(str: string) {
     id="mobile-menu"
     class="absolute top-full left-0 w-full -translate-x-full transform border-t border-stone-200 bg-stone-50 transition-transform duration-300 ease-in-out md:hidden"
   >
-    <div
-      class="container border-b border-stone-200 px-[clamp(6,10)] py-[clamp(6,10)]"
-    >
-      <div class="flex flex-col space-y-[clamp(12,16)]">
+    <div class="container border-b border-stone-200 px-6 py-5 text-lg">
+      <div class="flex flex-col">
         {
           linksArray?.map((link) => (
             <a
               href={lang === "hr" ? `/${lang}/#${link}` : `/#${link}`}
-              class="py-2 font-medium transition-colors hover:text-stone-500"
+              class="pb-5 font-medium transition-colors hover:text-stone-500"
             >
               {capitalizeLink(link.replaceAll("-", " "))}
             </a>
           ))
         }
-        <div class="border-t border-stone-200 pt-[clamp(2,4)]">
+        <div class="flex flex-col border-t border-stone-200">
           <a
             href={href}
-            class="py-2 font-medium transition-colors hover:text-stone-500"
+            class="pt-5 font-medium transition-colors hover:text-stone-500"
             aria-label="Switch to {anotherLocale.toUpperCase()} language"
           >
             {anotherLocale.toUpperCase()}
