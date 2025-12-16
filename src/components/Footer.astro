@@ -16,15 +16,22 @@ const { locale, storeData, pagesData } = Astro.props;
 
 <footer class="mt-[clamp(32,62)] px-6">
   <div
-    class="bar-char-wrapper container pb-[clamp(10,20)] text-[clamp(var(--text-2xl),var(--text-8xl))] font-bold"
+    class="bar-char-wrapper container pb-[clamp(10,20)] text-[clamp(var(--text-5xl),var(--text-9xl))] font-bold"
   >
     {
-      storeData.contactHook1.split("").map((char: string) => {
-        if (char === " ") {
-          return <span class="bar-char inline-block">&nbsp;</span>;
-        }
-        return <span class="bar-char inline-block">{char}</span>;
-      })
+      storeData.contactHook1
+        .split("__")
+        .map((row: string) => row.trim())
+        .map((row: string) => (
+          <div class="bar-row">
+            {row.split("").map((char: string) => {
+              if (char === " ") {
+                return <span class="bar-char inline-block">&nbsp;</span>;
+              }
+              return <span class="bar-char inline-block">{char}</span>;
+            })}
+          </div>
+        ))
     }
   </div>
   <div
@@ -93,7 +100,7 @@ const { locale, storeData, pagesData } = Astro.props;
     </div>
   </div>
   <div
-    class="footer-wrapper pb-[clamp(10,15)] text-right text-[clamp(var(--text-7xl),var(--text-20xl))] font-bold 2xl:container"
+    class="footer-wrapper pb-[clamp(10,15)] text-[clamp(var(--text-7xl),var(--text-20xl))] font-bold md:text-right 2xl:container"
   >
     {
       storeData.contactHook2.split("").map((char: string) => {
