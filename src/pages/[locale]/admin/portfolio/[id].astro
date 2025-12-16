@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import PortfolioMediaTable from "@/components/admin/PortfolioMediaTable";
-import { writeFile } from "fs/promises";
+import { writeFile, rm } from "fs/promises";
 import path from "path";
 import { db } from "db";
 import { eq } from "drizzle-orm";
@@ -31,6 +31,7 @@ if (res[0].subtitle) {
 let slug;
 
 if (Astro.request.method === "POST") {
+  let additionalFilenames: string[] = [];
   try {
     const res = await db
       .select()
@@ -55,13 +56,13 @@ if (Astro.request.method === "POST") {
     }
 
     slug = slugify(title);
-    let additionalFilenames: string[] = [];
     for (const file of formData.getAll("file") as File[]) {
       if (file.name) {
         const buffer = Buffer.from(await file.arrayBuffer());
         await writeFile(
           path.join("./public/assets/portfolio", file.name),
-          buffer
+          buffer,
+          { flag: "wx" }
         );
         additionalFilenames.push(file.name);
       }
@@ -83,6 +84,15 @@ if (Astro.request.method === "POST") {
       .where(eq(portfolio.slug, id!));
   } catch (error) {
     console.error("Error updating data:", error);
+    for (const filename of additionalFilenames) {
+      try {
+        await rm(path.join("./public/assets/portfolio", filename), {
+          force: true,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
     return Astro.redirect(`/${locale}/admin/portfolio/${slug}?update=error`);
   }
 

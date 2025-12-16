@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { writeFile } from "fs/promises";
+import { writeFile, rm } from "fs/promises";
 import path from "path";
-import { rm } from "fs/promises";
 import { db } from "db";
 import { portfolio } from "db/schema";
 import { slugify } from "@/lib/utils";
@@ -23,7 +22,9 @@ if (Astro.request.method === "POST") {
   const slug = slugify(title);
   for (const file of formData.getAll("file") as File[]) {
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join("./public/assets/portfolio", file.name), buffer);
+    await writeFile(path.join("./public/assets/portfolio", file.name), buffer, {
+      flag: "wx",
+    });
     filenames.push(file.name);
   }
 
@@ -49,7 +50,9 @@ if (Astro.request.method === "POST") {
     console.error(error);
     for (const filename of filenames) {
       try {
-        await rm(path.join("./public/assets/portfolio", filename));
+        await rm(path.join("./public/assets/portfolio", filename), {
+          force: true,
+        });
       } catch (error) {
         console.error(error);
       }

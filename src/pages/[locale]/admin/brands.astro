@@ -7,7 +7,7 @@ import { asc, eq, and } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { writeFile } from "fs/promises";
+import { writeFile, rm } from "fs/promises";
 import path from "path";
 import { max } from "drizzle-orm";
 import BrandsTable from "@/components/admin/BrandsTable";
@@ -33,6 +33,7 @@ const dict = res.reduce(
 );
 
 if (Astro.request.method === "POST") {
+  let uploadedFilenames: string[] = [];
   try {
     const formData = await Astro.request.formData();
 
@@ -49,9 +50,11 @@ if (Astro.request.method === "POST") {
           const buffer = Buffer.from(await file.arrayBuffer());
           await writeFile(
             path.join("./public/assets/brands", file.name),
-            buffer
+            buffer,
+            { flag: "wx" }
           );
 
+          uploadedFilenames.push(file.name);
           await db.insert(brands).values({ logo: file.name, order: newOrder });
           newOrder++;
         }
@@ -84,6 +87,15 @@ if (Astro.request.method === "POST") {
     }
   } catch (error) {
     console.error("Error updating data:", error);
+    for (const filename of uploadedFilenames) {
+      try {
+        await rm(path.join("./public/assets/brands", filename), {
+          force: true,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
     return Astro.redirect(`/${locale}/admin/brands?update=error`);
   }
   return Astro.redirect(`/${locale}/admin/brands?update=success`);
