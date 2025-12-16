@@ -172,7 +172,13 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .nav-btn:hover .nav-btn-bg {
+  @media (hover: hover) {
+    .nav-btn:hover .nav-btn-bg {
+      transform: scale(1);
+    }
+  }
+
+  .nav-btn:active .nav-btn-bg {
     transform: scale(1);
   }
 
