@@ -218,7 +218,11 @@ export default function SpecialitiesManager({
         .filter(Boolean);
 
       if (createPromises.length > 0) {
-        await Promise.all(createPromises);
+        const createResults = await Promise.all(createPromises);
+        const createErrors = createResults.filter((r) => r?.error);
+        if (createErrors.length > 0) {
+          throw new Error("Failed to create specialities");
+        }
       }
 
       const existingItems = listItems.filter(
@@ -229,7 +233,12 @@ export default function SpecialitiesManager({
           const actualIndex = listItems.indexOf(it);
           return { id: it.id as number, order: actualIndex + 1 };
         });
-        await actions.reorderSpecialities({ items: updatedOrder });
+        const reorderResult = await actions.reorderSpecialities({
+          items: updatedOrder,
+        });
+        if (reorderResult.error) {
+          throw new Error("Failed to reorder specialities");
+        }
       }
 
       const updatePromises = listItems
@@ -254,7 +263,11 @@ export default function SpecialitiesManager({
         .filter(Boolean);
 
       if (updatePromises.length > 0) {
-        await Promise.all(updatePromises);
+        const updateResults = await Promise.all(updatePromises);
+        const updateErrors = updateResults.filter((r) => r?.error);
+        if (updateErrors.length > 0) {
+          throw new Error("Failed to update specialities");
+        }
       }
 
       setHasChanges(false);

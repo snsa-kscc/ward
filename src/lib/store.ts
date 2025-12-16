@@ -1,4 +1,4 @@
-import { writeFile } from "fs/promises";
+import { writeFile, rm } from "fs/promises";
 import path from "path";
 import { db } from "db";
 import { store } from "db/schema";
@@ -18,6 +18,7 @@ export async function upsertStoreData({
   locale,
   fileKeys = [],
 }: UpsertOptions) {
+  const uploadedFilenames: string[] = [];
   try {
     for (const [key, value] of formData.entries()) {
       if (fileKeys.includes(key)) {
@@ -25,7 +26,10 @@ export async function upsertStoreData({
         const file = value as File;
         if (file.size > 0 && file.name) {
           const buffer = Buffer.from(await file.arrayBuffer());
-          await writeFile(path.join("./public/assets", file.name), buffer);
+          await writeFile(path.join("./public/assets", file.name), buffer, {
+            flag: "wx",
+          });
+          uploadedFilenames.push(file.name);
           // Update or insert for each locale
           for (const loc of locales) {
             const existing = await db
@@ -75,6 +79,13 @@ export async function upsertStoreData({
     return { success: true };
   } catch (error) {
     console.error("Error upserting data:", error);
+    for (const filename of uploadedFilenames) {
+      try {
+        await rm(path.join("./public/assets", filename), { force: true });
+      } catch (error) {
+        console.error(error);
+      }
+    }
     return { success: false, error };
   }
 }

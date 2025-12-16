@@ -130,6 +130,7 @@ const specialitiesActions = {
         await writeFile(
           path.join("./public/assets/specialities", maybeFile.name),
           buffer,
+          { flag: "wx" },
         );
         filename = maybeFile.name;
       }
@@ -165,7 +166,9 @@ const specialitiesActions = {
       if (maybeFile && maybeFile.size > 0 && maybeFile.name) {
         if (current?.media) {
           try {
-            await rm(path.join("./public/assets/specialities", current.media));
+            await rm(path.join("./public/assets/specialities", current.media), {
+              force: true,
+            });
           } catch (error) {
             console.error(error);
           }
@@ -174,6 +177,7 @@ const specialitiesActions = {
         await writeFile(
           path.join("./public/assets/specialities", maybeFile.name),
           buffer,
+          { flag: "wx" },
         );
         nextMedia = maybeFile.name;
       }
@@ -200,7 +204,9 @@ const specialitiesActions = {
       const current = res[0];
       if (current?.media) {
         try {
-          await rm(path.join("./public/assets/specialities", current.media));
+          await rm(path.join("./public/assets/specialities", current.media), {
+            force: true,
+          });
         } catch (error) {
           console.error(error);
         }
@@ -231,7 +237,9 @@ const specialitiesActions = {
       }
 
       try {
-        await rm(path.join("./public/assets/specialities", current.media));
+        await rm(path.join("./public/assets/specialities", current.media), {
+          force: true,
+        });
       } catch (error) {
         console.error(error);
       }
@@ -268,7 +276,7 @@ export const server = {
         (filename) => filename !== item,
       );
       try {
-        await rm(`./public/assets/portfolio/${item}`);
+        await rm(`./public/assets/portfolio/${item}`, { force: true });
       } catch (error) {
         console.error(error);
       }
@@ -300,7 +308,7 @@ export const server = {
       const filenames: string[] = JSON.parse(res[0].media);
       for (const filename of filenames) {
         try {
-          await rm(`./public/assets/portfolio/${filename}`);
+          await rm(`./public/assets/portfolio/${filename}`, { force: true });
         } catch (error) {
           console.error(error);
         }
@@ -330,7 +338,7 @@ export const server = {
 
       const logo = res[0].logo;
       try {
-        await rm(`./public/assets/brands/${logo}`);
+        await rm(`./public/assets/brands/${logo}`, { force: true });
         await db.delete(brands).where(eq(brands.id, id));
       } catch (error) {
         console.error(error);
@@ -343,7 +351,7 @@ export const server = {
     input: z.object({ title: z.string() }),
     handler: async ({ title }) => {
       try {
-        await rm(`./public/assets/${title}`);
+        await rm(`./public/assets/${title}`, { force: true });
         for (const loc of locales) {
           await db
             .update(store)
