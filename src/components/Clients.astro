@@ -20,50 +20,52 @@ const clientsKeyLines = storeDataMap.clientsKey
   .filter((line) => line.trim());
 ---
 
-<section
-  class="relative container flex flex-col items-start gap-20 border-t border-b border-stone-200 px-6 py-[clamp(40,62)] md:flex-row"
->
-  <div class="clients-key-wrapper basis-1/3">
-    {
-      clientsKeyLines.map((line, index) => (
-        <p
-          class={
-            index === 0
-              ? "text-2xl leading-tight font-medium"
-              : "text-2xl leading-tight font-medium opacity-30"
-          }
-        >
-          {line}
-        </p>
-      ))
-    }
-  </div>
-
+<section class="px-6">
   <div
-    class="clients-content basis-2/3 text-[clamp(var(--text-lg),var(--text-xl))] leading-relaxed font-medium"
+    class="relative container flex flex-col items-start gap-20 border-t border-b border-stone-200 py-[clamp(32,62)] md:flex-row"
   >
-    <div class="flex justify-around gap-14">
-      <div class="clients-col clients-col-1">
-        {
-          firstHalf.map((item) => {
-            return (
-              <p class="clients-item mb-2 opacity-20 last:mb-0 md:mb-1">
-                {item.item}
-              </p>
-            );
-          })
-        }
-      </div>
-      <div class="clients-col clients-col-2">
-        {
-          secondHalf.map((item) => {
-            return (
-              <p class="clients-item mb-2 opacity-20 last:mb-0 md:mb-1">
-                {item.item}
-              </p>
-            );
-          })
-        }
+    <div class="clients-key-wrapper basis-1/3">
+      {
+        clientsKeyLines.map((line, index) => (
+          <p
+            class={
+              index === 0
+                ? "text-2xl leading-tight font-medium"
+                : "text-2xl leading-tight font-medium opacity-30"
+            }
+          >
+            {line}
+          </p>
+        ))
+      }
+    </div>
+
+    <div
+      class="clients-content basis-2/3 text-[clamp(var(--text-lg),var(--text-2xl))] leading-relaxed font-medium"
+    >
+      <div class="flex justify-around gap-14">
+        <div class="clients-col clients-col-1">
+          {
+            firstHalf.map((item) => {
+              return (
+                <p class="clients-item mb-2 opacity-20 last:mb-0 md:mb-1">
+                  {item.item}
+                </p>
+              );
+            })
+          }
+        </div>
+        <div class="clients-col clients-col-2">
+          {
+            secondHalf.map((item) => {
+              return (
+                <p class="clients-item mb-2 opacity-20 last:mb-0 md:mb-1">
+                  {item.item}
+                </p>
+              );
+            })
+          }
+        </div>
       </div>
     </div>
   </div>

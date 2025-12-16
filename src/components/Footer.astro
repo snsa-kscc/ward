@@ -14,9 +14,9 @@ type Props = {
 const { locale, storeData, pagesData } = Astro.props;
 ---
 
-<footer class="mt-[clamp(40,72)]">
+<footer class="mt-[clamp(32,62)] px-6">
   <div
-    class="bar-char-wrapper container px-4 pb-[clamp(10,20)] text-[clamp(var(--text-3xl),var(--text-8xl))] font-bold"
+    class="bar-char-wrapper container pb-[clamp(10,20)] text-[clamp(var(--text-2xl),var(--text-8xl))] font-bold"
   >
     {
       storeData.contactHook1.split("").map((char: string) => {
@@ -32,10 +32,10 @@ const { locale, storeData, pagesData } = Astro.props;
       .split(",")
       .map((link) => link.trim())
       .at(-1)}
-    class="container my-[clamp(10,20)] px-4"
+    class="container my-[clamp(10,20)]"
   >
-    <div class="flex flex-col justify-between gap-16 sm:flex-row">
-      <div class="flex basis-1/3 gap-16">
+    <div class="flex flex-wrap justify-between gap-x-16 gap-y-12">
+      <div class="flex shrink-0 basis-full gap-6 sm:gap-16 lg:basis-1/2">
         <div class="basis-1/2">
           <p
             class="pb-8 text-[clamp(var(--text-xl),var(--text-2xl))] font-bold"
@@ -79,7 +79,7 @@ const { locale, storeData, pagesData } = Astro.props;
           }
         </div>
       </div>
-      <div class="basis-1/3">
+      <div class="max-w-md basis-full lg:basis-1/3">
         <p class="pb-8 text-[clamp(var(--text-xl),var(--text-2xl))] font-bold">
           {storeData.newsletterKey}
         </p>
@@ -93,7 +93,7 @@ const { locale, storeData, pagesData } = Astro.props;
     </div>
   </div>
   <div
-    class="footer-wrapper container px-4 pb-[clamp(10,15)] text-right text-[clamp(var(--text-6xl),var(--text-20xl))] font-bold"
+    class="footer-wrapper pb-[clamp(10,15)] text-right text-[clamp(var(--text-7xl),var(--text-20xl))] font-bold"
   >
     {
       storeData.contactHook2.split("").map((char: string) => {

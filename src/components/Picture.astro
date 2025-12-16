@@ -19,7 +19,7 @@ const cells = Array.from({ length: 9 }).map((_, i) => ({
 <>
   {
     storeDataMap.featureMedia && (
-      <section class="js-picture-section relative h-[100vmin] w-full overflow-hidden py-16">
+      <section class="js-picture-section relative my-[clamp(32,62)] h-[60vh] w-full overflow-hidden md:h-[80vh]">
         <div class="grid h-full w-full grid-cols-3 grid-rows-3">
           {cells.map((cell) => (
             <div class="picture-cell relative h-[calc(100%+1px)] w-[calc(100%+1px)] overflow-hidden">
@@ -50,7 +50,7 @@ const cells = Array.from({ length: 9 }).map((_, i) => ({
     )
   }
 
-  <section class="h-[100vmin] w-full py-16">
+  <section class="my-[clamp(32,62)] h-[60vh] w-full md:h-[80vh]">
     <video
       src={`/assets/${storeDataMap.reelMedia}`}
       autoplay

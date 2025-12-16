@@ -12,36 +12,34 @@ type Props = {
 const { items } = Astro.props as Props;
 ---
 
-<section class="my-[clamp(20,30)]">
-  <div class="container px-6">
-    {
-      items.length ? (
-        <div data-specialities-list>
-          {items.map((s, index) => (
+<section class="container px-6">
+  {
+    items.length ? (
+      <div data-specialities-list>
+        {items.map((s, index) => (
+          <div
+            class="group"
+            data-speciality-trigger
+            data-index={index}
+            data-media={s.media ?? ""}
+          >
             <div
-              class="group container px-4"
-              data-speciality-trigger
-              data-index={index}
-              data-media={s.media ?? ""}
+              class={`flex items-start justify-between gap-6 border-stone-200 py-[clamp(4,8)] lg:ml-auto lg:w-1/2 ${index === 0 ? "border-t " : ""}border-b`}
             >
-              <div
-                class={`flex items-start justify-between gap-6 border-stone-200 py-[clamp(4,8)] lg:ml-auto lg:w-1/2 ${index === 0 ? "border-t " : ""}border-b`}
-              >
-                <p class="min-w-0 flex-1 text-[clamp(var(--text-3xl),var(--text-5xl))] leading-[1.05] font-semibold text-stone-950 transition-colors duration-300 group-hover:text-stone-500">
-                  {s.item}
-                </p>
-                <span class="shrink-0 pt-[clamp(3,8)] text-[clamp(var(--text-sm),var(--text-base))] leading-none font-semibold text-stone-500 tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-              </div>
+              <p class="min-w-0 flex-1 text-[clamp(var(--text-3xl),var(--text-5xl))] leading-[1.05] font-semibold text-stone-950 transition-colors duration-300 group-hover:text-stone-500">
+                {s.item}
+              </p>
+              <span class="shrink-0 pt-[clamp(3,8)] text-[clamp(var(--text-sm),var(--text-base))] leading-none font-semibold text-stone-500 tabular-nums">
+                {String(index + 1).padStart(2, "0")}
+              </span>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p class="mt-12 opacity-70">No specialities yet.</p>
-      )
-    }
-  </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p class="mt-12 opacity-70">No specialities yet.</p>
+    )
+  }
 </section>
 
 <div
@@ -79,7 +77,6 @@ const { items } = Astro.props as Props;
   .specialities-preview.is-visible {
     opacity: 1;
     visibility: visible;
-    pointer-events: auto;
   }
 
   .specialities-preview-img {
@@ -135,7 +132,6 @@ const { items } = Astro.props as Props;
 
     let lastX = 0;
     let lastY = 0;
-    let isOverPreview = false; // Used only for hide logic, not position updates
     let isReducedMotion = false;
 
     // Linear interpolation variables
@@ -248,11 +244,7 @@ const { items } = Astro.props as Props;
     const hideIfNotHovering = () => {
       const el = document.elementFromPoint(lastX, lastY);
       const stillOverTrigger = !!el?.closest("[data-speciality-trigger]");
-      const stillOverPreview = !!el?.closest("[data-specialities-preview]");
-      isOverPreview = stillOverPreview;
-      // Use isOverPreview to satisfy TypeScript
-      void isOverPreview;
-      if (!stillOverTrigger && !stillOverPreview) {
+      if (!stillOverTrigger) {
         setVisible(false);
         if (animationId) {
           cancelAnimationFrame(animationId);
@@ -297,22 +289,6 @@ const { items } = Astro.props as Props;
       "mouseleave",
       () => {
         requestAnimationFrame(hideIfNotHovering);
-      },
-      { passive: true }
-    );
-
-    previewEl.addEventListener(
-      "mouseenter",
-      () => {
-        isOverPreview = true;
-      },
-      { passive: true }
-    );
-
-    previewEl.addEventListener(
-      "mouseleave",
-      () => {
-        isOverPreview = false;
       },
       { passive: true }
     );
