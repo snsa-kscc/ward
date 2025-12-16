@@ -37,13 +37,13 @@ if (!data[0]) {
   description={data[0].content || ""}
 >
   <Header lang={locale!} slug={slug} links={storeDataMap.navbarLinks} />
-  <div class="container">
+  <div class="container px-6">
     <div
-      class="mt-40 py-40 text-right text-[clamp(var(--text-5xl),var(--text-11xl))] font-bold"
+      class="mt-40 py-20 text-right text-[clamp(var(--text-5xl),var(--text-11xl))] font-bold md:py-40"
     >
       {data[0].title}
     </div>
-    <div class="w-2/3 py-20 text-xl">
+    <div class="w-full py-10 text-lg md:w-2/3 md:py-20 md:text-xl">
       <p set:html={formatParagraph(data[0].content || "")} />
     </div>
   </div>

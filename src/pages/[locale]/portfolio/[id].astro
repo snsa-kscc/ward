@@ -45,7 +45,7 @@ const parsedSubtitle = data[0].subtitle
 >
   <Header lang={locale!} id={id} links={storeDataMap.navbarLinks} />
   <h1
-    class="title container py-42 text-right text-[clamp(var(--text-5xl),var(--text-9xl))] font-medium text-stone-950"
+    class="title container px-6 pt-42 pb-20 text-right text-[clamp(var(--text-5xl),var(--text-9xl))] font-medium text-stone-950 md:pb-42"
   >
     {
       data[0].title
@@ -89,8 +89,8 @@ const parsedSubtitle = data[0].subtitle
       }
     </div>
   </div>
-  <div class="portfolio-content container pt-20 opacity-0">
-    <div class="flex items-start justify-between gap-8">
+  <div class="portfolio-content container px-6 pt-20 opacity-0">
+    <div class="flex flex-col items-start justify-between gap-16 md:flex-row">
       {
         parsedSubtitle && (
           <div class="text-3xl font-bold">
@@ -99,7 +99,7 @@ const parsedSubtitle = data[0].subtitle
         )
       }
       <div
-        class="w-1/2"
+        class="w-full text-lg md:w-1/2 md:text-xl"
         set:html={formatParagraph(
           data[0].content ? JSON.parse(data[0].content)[locale!] || "" : ""
         )}
