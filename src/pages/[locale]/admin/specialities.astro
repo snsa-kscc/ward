@@ -37,6 +37,21 @@ const items = specialitiesData.map((item) => ({
 
     const urlParams = new URLSearchParams(window.location.search);
     const updateStatus = urlParams.get("update");
+    const errorType = urlParams.get("error");
+
+    const getErrorMessage = (error: string | null) => {
+      switch (error) {
+        case "create_failed":
+          return "Failed to create specialities.";
+        case "reorder_failed":
+          return "Failed to reorder specialities.";
+        case "update_failed":
+          return "Failed to update specialities.";
+        case "unknown_error":
+        default:
+          return "An unknown error occurred.";
+      }
+    };
 
     if (updateStatus === "success") {
       toast({
@@ -46,7 +61,7 @@ const items = specialitiesData.map((item) => ({
     } else if (updateStatus === "error") {
       toast({
         title: "Error",
-        description: "Update failed.",
+        description: getErrorMessage(errorType),
         variant: "destructive",
       });
     }

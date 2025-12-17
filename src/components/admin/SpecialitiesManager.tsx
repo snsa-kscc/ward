@@ -221,7 +221,7 @@ export default function SpecialitiesManager({
         const createResults = await Promise.all(createPromises);
         const createErrors = createResults.filter((r) => r?.error);
         if (createErrors.length > 0) {
-          throw new Error("Failed to create specialities");
+          throw new Error("create_failed");
         }
       }
 
@@ -237,7 +237,7 @@ export default function SpecialitiesManager({
           items: updatedOrder,
         });
         if (reorderResult.error) {
-          throw new Error("Failed to reorder specialities");
+          throw new Error("reorder_failed");
         }
       }
 
@@ -266,7 +266,7 @@ export default function SpecialitiesManager({
         const updateResults = await Promise.all(updatePromises);
         const updateErrors = updateResults.filter((r) => r?.error);
         if (updateErrors.length > 0) {
-          throw new Error("Failed to update specialities");
+          throw new Error("update_failed");
         }
       }
 
@@ -274,14 +274,13 @@ export default function SpecialitiesManager({
       setExpandedItems(new Set());
 
       navigate(`${window.location.pathname}?update=success`);
-    } catch {
-      toast({
-        title: "Error",
-        description: "Failed to save changes.",
-        variant: "destructive",
-      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "unknown_error";
 
-      navigate(`${window.location.pathname}?update=error`);
+      navigate(
+        `${window.location.pathname}?update=error&error=${encodeURIComponent(errorMessage)}`,
+      );
     }
   };
 
