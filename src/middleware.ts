@@ -32,8 +32,8 @@ export const authMiddleware = defineMiddleware((context, next) => {
         const [user, password] = decoded.split(":");
 
         if (
-          user === import.meta.env.PUBLIC_SITE_USER &&
-          password === import.meta.env.PUBLIC_SITE_PASSWORD
+          user === import.meta.env.SITE_USER &&
+          password === import.meta.env.SITE_PASSWORD
         ) {
           return next();
         }

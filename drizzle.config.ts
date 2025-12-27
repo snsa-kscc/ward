@@ -5,6 +5,6 @@ export default defineConfig({
   schema: "./db/schema.ts",
   out: "./drizzle",
   dbCredentials: {
-    url: `mysql://${process.env.PUBLIC_MYSQL_USER}:${process.env.PUBLIC_MYSQL_PASSWORD}@${process.env.PUBLIC_MYSQL_HOST}:${process.env.PUBLIC_MYSQL_PORT}/${process.env.PUBLIC_MYSQL_DATABASE}`,
+    url: `mysql://${process.env.MYSQL_USER}:${process.env.MYSQL_PASSWORD}@${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}/${process.env.MYSQL_DATABASE}`,
   },
 });

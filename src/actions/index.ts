@@ -15,7 +15,7 @@ import { locales } from "@/lib/utils";
 import { db } from "@/../db";
 import { Resend } from "resend";
 
-const resend = new Resend(import.meta.env.PUBLIC_RESEND_API);
+const resend = new Resend(import.meta.env.RESEND_API);
 
 const makeTextListActions = (table: typeof clients | typeof awards) => {
   return {
@@ -371,7 +371,7 @@ export const server = {
     handler: async ({ email }) => {
       const { data, error } = await resend.contacts.create({
         email,
-        audienceId: import.meta.env.PUBLIC_RESEND_AUDIENCE_ID,
+        audienceId: import.meta.env.RESEND_AUDIENCE_ID,
       });
       if (!data || error) {
         throw new ActionError({
