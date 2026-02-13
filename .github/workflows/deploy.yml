@@ -30,7 +30,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -e
-            cd www/feature.ward.hr
+            cd www
             git pull
             if [[ "${{ steps.check-npm.outputs.run_npm_install }}" == "true" ]]; then
               npm install --omit=dev
