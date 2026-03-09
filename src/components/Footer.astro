@@ -16,7 +16,7 @@ const { locale, storeData, pagesData } = Astro.props;
 
 <footer class="mt-[clamp(32,62)] px-6">
   <div
-    class="bar-char-wrapper container pb-[clamp(10,20)] text-[clamp(var(--text-5xl),var(--text-9xl))] font-bold"
+    class="bar-char-wrapper container pb-[clamp(10,20)] text-[clamp(var(--text-7xl),var(--text-10xl))] leading-[0.9] font-medium tracking-tight sm:leading-[0.8]"
   >
     {
       storeData.contactHook1
@@ -24,11 +24,17 @@ const { locale, storeData, pagesData } = Astro.props;
         .map((row: string) => row.trim())
         .map((row: string) => (
           <div class="bar-row">
-            {row.split("").map((char: string) => {
-              if (char === " ") {
+            {row.split(/(\s+)/).map((word: string) => {
+              if (/^\s+$/.test(word)) {
                 return <span class="bar-char inline-block">&nbsp;</span>;
               }
-              return <span class="bar-char inline-block">{char}</span>;
+              return (
+                <span class="inline-block whitespace-nowrap">
+                  {word.split("").map((char: string) => (
+                    <span class="bar-char inline-block">{char}</span>
+                  ))}
+                </span>
+              );
             })}
           </div>
         ))
@@ -131,7 +137,7 @@ const { locale, storeData, pagesData } = Astro.props;
 
 <style>
   .bar-char {
-    will-change: filter, transform;
+    will-change: transform;
   }
 </style>
 
@@ -142,10 +148,10 @@ const { locale, storeData, pagesData } = Astro.props;
 
   function initFooterAnimation() {
     const footerChars = document.querySelectorAll(
-      ".cta-char"
+      ".cta-char",
     ) as NodeListOf<HTMLElement>;
     const barChars = document.querySelectorAll(
-      ".bar-char"
+      ".bar-char",
     ) as NodeListOf<HTMLElement>;
 
     if (!barChars.length && !footerChars.length) return;
@@ -170,7 +176,7 @@ const { locale, storeData, pagesData } = Astro.props;
             end: "top center",
             scrub: 1,
           },
-        }
+        },
       );
     }
 
@@ -194,14 +200,14 @@ const { locale, storeData, pagesData } = Astro.props;
             start: "top 80%",
             once: true,
           },
-        }
+        },
       );
     }
   }
 
   function initScrollToTop() {
     const button = document.querySelector(
-      "[data-scroll-to-top]"
+      "[data-scroll-to-top]",
     ) as HTMLButtonElement | null;
 
     if (!button) return;
@@ -218,7 +224,7 @@ const { locale, storeData, pagesData } = Astro.props;
           duration: 5000,
           iterations: Infinity,
           easing: "ease-in-out",
-        }
+        },
       );
     };
 

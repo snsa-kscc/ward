@@ -13,11 +13,14 @@ const titleLines = data.title.split("__").map((line) => line.trim());
 <section class="container mt-[clamp(36,38)] px-6">
   <div class="flex flex-col items-center justify-center py-[clamp(24,38)]">
     <h1
-      class="hero-title-container text-left text-[clamp(var(--text-5xl),var(--text-9xl))] leading-none font-medium"
+      class="hero-title-container text-left text-[clamp(var(--text-7xl),var(--text-10xl))] leading-[0.9] font-medium tracking-tight sm:leading-[0.8]"
     >
       {
         titleLines.map((line, index) => (
-          <div class="hero-line-wrapper overflow-hidden" data-line={index}>
+          <div
+            class="hero-line-wrapper -mb-4 overflow-hidden pb-4"
+            data-line={index}
+          >
             <div class="hero-line">{line}</div>
           </div>
         ))
@@ -42,7 +45,7 @@ const titleLines = data.title.split("__").map((line) => line.trim());
   import gsap from "gsap";
 
   const heroLines = document.querySelectorAll(
-    ".hero-line"
+    ".hero-line",
   ) as NodeListOf<HTMLElement>;
 
   gsap.fromTo(
@@ -55,6 +58,6 @@ const titleLines = data.title.split("__").map((line) => line.trim());
       ease: "power2.out",
       stagger: 0.3,
       delay: 0.5,
-    }
+    },
   );
 </script>

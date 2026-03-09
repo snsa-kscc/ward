@@ -12,6 +12,11 @@ const capabilitiesKeyLines = data.capabilitiesKey
   .split(/\r?\n/)
   .filter((line) => line.trim());
 
+// Split capabilities heading on __ delimiter for slide-up animation
+const capabilitiesHeadingLines = data.capabilities
+  .split("__")
+  .map((line) => line.trim());
+
 // Split capabilities text into words
 const capabilitiesWords = data.capabilitiesDescription
   .split(/\s+/)
@@ -19,9 +24,20 @@ const capabilitiesWords = data.capabilitiesDescription
 ---
 
 <section class="relative container px-6 py-[clamp(32,62)]">
-  <div class="mb-[clamp(32,62)] w-2/3 text-left">
-    <h2 class="text-[clamp(var(--text-4xl),var(--text-6xl))] font-medium">
-      {data.capabilities}
+  <div class="mb-[clamp(32,62)] w-full text-left">
+    <h2
+      class="cap-heading text-[clamp(var(--text-7xl),var(--text-10xl))] leading-[0.9] font-medium tracking-tight sm:leading-[0.8]"
+    >
+      {
+        capabilitiesHeadingLines.map((line, index) => (
+          <div
+            class="cap-heading-wrapper -mb-4 overflow-hidden pb-4"
+            data-line={index}
+          >
+            <div class="cap-heading-line">{line}</div>
+          </div>
+        ))
+      }
     </h2>
   </div>
   <div
@@ -63,6 +79,16 @@ const capabilitiesWords = data.capabilitiesDescription
   .capabilities-content {
     color: rgb(var(--color-stone-950));
   }
+
+  .cap-heading-wrapper {
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  .cap-heading-line {
+    will-change: transform;
+    opacity: 0;
+  }
 </style>
 
 <script>
@@ -70,11 +96,34 @@ const capabilitiesWords = data.capabilitiesDescription
   import ScrollTrigger from "gsap/ScrollTrigger";
   gsap.registerPlugin(ScrollTrigger);
 
+  const capHeadingLines = document.querySelectorAll(
+    ".cap-heading-line",
+  ) as NodeListOf<HTMLElement>;
+
+  if (capHeadingLines.length) {
+    gsap.fromTo(
+      capHeadingLines,
+      { yPercent: 100, opacity: 0 },
+      {
+        duration: 1,
+        yPercent: 0,
+        opacity: 1,
+        ease: "power2.out",
+        stagger: 0.3,
+        scrollTrigger: {
+          trigger: ".cap-heading-wrapper",
+          start: "top 80%",
+          once: true,
+        },
+      },
+    );
+  }
+
   const capabilitiesSection = document.querySelector(
-    ".capabilities-content"
+    ".capabilities-content",
   ) as HTMLElement;
   const capabilitiesWords = document.querySelectorAll(
-    ".capabilities-word"
+    ".capabilities-word",
   ) as NodeListOf<HTMLElement>;
 
   gsap.to(capabilitiesWords, {
