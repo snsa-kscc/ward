@@ -26,7 +26,7 @@ const { items } = Astro.props as Props;
             <div
               class={`flex items-start justify-between gap-6 border-stone-200 py-[clamp(4,8)] lg:ml-auto lg:w-1/2 ${index === 0 ? "border-t " : ""}border-b`}
             >
-              <p class="min-w-0 flex-1 text-[clamp(var(--text-3xl),var(--text-5xl))] leading-[1.05] font-semibold text-stone-950 transition-colors duration-300 group-hover:text-stone-500">
+              <p class="min-w-0 flex-1 text-5xl leading-[1.05] font-semibold text-stone-950 transition-colors duration-300 group-hover:text-stone-500">
                 {s.item}
               </p>
               <span class="shrink-0 pt-[clamp(3,8)] text-[clamp(var(--text-sm),var(--text-base))] leading-none font-semibold text-stone-500 tabular-nums">
@@ -60,6 +60,24 @@ const { items } = Astro.props as Props;
   />
 </div>
 
+<div
+  class="specialities-mobile-preview fixed right-4 bottom-4 overflow-hidden rounded-xl bg-stone-100/60 lg:hidden"
+  data-specialities-mobile-preview
+>
+  <img
+    alt="Mobile preview A"
+    class="specialities-preview-img absolute inset-0 h-full w-full object-cover opacity-0"
+    data-mobile-preview-a
+    loading="lazy"
+  />
+  <img
+    alt="Mobile preview B"
+    class="specialities-preview-img absolute inset-0 h-full w-full object-cover opacity-0"
+    data-mobile-preview-b
+    loading="lazy"
+  />
+</div>
+
 <style>
   .specialities-preview {
     aspect-ratio: 4 / 3;
@@ -79,6 +97,16 @@ const { items } = Astro.props as Props;
     visibility: visible;
   }
 
+  .specialities-mobile-preview {
+    aspect-ratio: 4 / 3;
+    width: min(200px, 45vw);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 60;
+    will-change: opacity, transform;
+  }
+
   .specialities-preview-img {
     transition: opacity 500ms ease;
     will-change: opacity;
@@ -86,6 +114,7 @@ const { items } = Astro.props as Props;
 
   @media (prefers-reduced-motion: reduce) {
     .specialities-preview,
+    .specialities-mobile-preview,
     .specialities-preview-img {
       transition-duration: 0ms;
     }
@@ -93,26 +122,21 @@ const { items } = Astro.props as Props;
 </style>
 
 <script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
   const listEl = document.querySelector(
-    "[data-specialities-list]"
-  ) as HTMLElement | null;
-  const previewEl = document.querySelector(
-    "[data-specialities-preview]"
+    "[data-specialities-list]",
   ) as HTMLElement | null;
   const triggers = Array.from(
-    document.querySelectorAll("[data-speciality-trigger]")
+    document.querySelectorAll("[data-speciality-trigger]"),
   ) as HTMLElement[];
 
-  const imgA = document.querySelector(
-    "[data-preview-a]"
-  ) as HTMLImageElement | null;
-  const imgB = document.querySelector(
-    "[data-preview-b]"
-  ) as HTMLImageElement | null;
-
-  if (listEl && previewEl && imgA && imgB && triggers.length) {
+  if (listEl && triggers.length) {
     const mediaBasePath = "/assets/specialities/";
 
+    // Preload all images
     const preloaded = new Set<string>();
     triggers
       .map((t) => t.dataset.media ?? "")
@@ -126,213 +150,378 @@ const { items } = Astro.props as Props;
         img.src = src;
       });
 
-    let activeSrc = "";
-    let front = imgA;
-    let back = imgB;
+    // Shared crossfade helper — works with any A/B image pair
+    function createCrossfader(imgA: HTMLImageElement, imgB: HTMLImageElement) {
+      let activeSrc = "";
+      let front = imgA;
+      let back = imgB;
 
-    let lastX = 0;
-    let lastY = 0;
-    let isReducedMotion = false;
+      return {
+        get activeSrc() {
+          return activeSrc;
+        },
+        crossfadeTo(nextSrc: string) {
+          if (!nextSrc || nextSrc === activeSrc) return;
+          activeSrc = nextSrc;
 
-    // Linear interpolation variables
-    let currentX = 0;
-    let currentY = 0;
-    let targetX = 0;
-    let targetY = 0;
-    let animationId: number | null = null;
+          back.onload = null;
+          back.src = nextSrc;
 
-    try {
-      isReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-    } catch {
-      isReducedMotion = false;
+          const swap = () => {
+            if (back.src.endsWith(activeSrc.split("/").pop() || "")) {
+              front.style.opacity = "0";
+              back.style.opacity = "1";
+              const tmp = front;
+              front = back;
+              back = tmp;
+            }
+          };
+
+          if (back.complete) {
+            requestAnimationFrame(swap);
+          } else {
+            back.onload = () => {
+              requestAnimationFrame(swap);
+              back.onload = null;
+            };
+          }
+        },
+        setInitial(src: string) {
+          activeSrc = src;
+          front.src = src;
+          front.style.opacity = "1";
+        },
+        reset() {
+          activeSrc = "";
+          front.style.opacity = "0";
+          back.style.opacity = "0";
+          front.src = "";
+          back.src = "";
+          front = imgA;
+          back = imgB;
+        },
+      };
     }
 
-    const setVisible = (visible: boolean) => {
-      previewEl.classList.toggle("is-visible", visible);
-    };
+    // ─── Desktop: mouse-follow preview (lg+) ───
+    gsap.matchMedia().add("(min-width: 1024px)", () => {
+      const previewEl = document.querySelector(
+        "[data-specialities-preview]",
+      ) as HTMLElement | null;
+      const imgA = document.querySelector(
+        "[data-preview-a]",
+      ) as HTMLImageElement | null;
+      const imgB = document.querySelector(
+        "[data-preview-b]",
+      ) as HTMLImageElement | null;
 
-    const clamp = (value: number, min: number, max: number) => {
-      return Math.min(Math.max(value, min), max);
-    };
+      if (!previewEl || !imgA || !imgB) return;
 
-    const lerp = (start: number, end: number, factor: number) => {
-      return start + (end - start) * factor;
-    };
+      const fader = createCrossfader(imgA, imgB);
 
-    const animate = () => {
-      const smoothingFactor = isReducedMotion ? 1 : 0.15;
+      let lastX = 0;
+      let lastY = 0;
+      let currentX = 0;
+      let currentY = 0;
+      let targetX = 0;
+      let targetY = 0;
+      let animationId: number | null = null;
 
-      currentX = lerp(currentX, targetX, smoothingFactor);
-      currentY = lerp(currentY, targetY, smoothingFactor);
-
-      const offset = 18;
-      const padding = 12;
-      const rect = previewEl.getBoundingClientRect();
-      const maxX = window.innerWidth - rect.width - padding;
-      const maxY = window.innerHeight - rect.height - padding;
-
-      const x = clamp(currentX + offset, padding, maxX);
-      const y = clamp(currentY - rect.height / 2, padding, maxY);
-      previewEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-
-      // Continue animation if not at target
-      const distance = Math.sqrt(
-        Math.pow(targetX - currentX, 2) + Math.pow(targetY - currentY, 2)
-      );
-
-      if (distance > 0.5 && !isReducedMotion) {
-        animationId = requestAnimationFrame(animate);
-      } else {
-        animationId = null;
+      let isReducedMotion = false;
+      try {
+        isReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+      } catch {
+        isReducedMotion = false;
       }
-    };
 
-    const positionPreview = (clientX: number, clientY: number) => {
-      targetX = clientX;
-      targetY = clientY;
+      const setVisible = (visible: boolean) => {
+        previewEl.classList.toggle("is-visible", visible);
+      };
 
-      if (isReducedMotion) {
-        currentX = targetX;
-        currentY = targetY;
-        animate();
-      } else if (!animationId) {
-        animationId = requestAnimationFrame(animate);
-      }
-    };
+      const clamp = (value: number, min: number, max: number) =>
+        Math.min(Math.max(value, min), max);
 
-    const crossfadeTo = (nextSrc: string) => {
-      if (!nextSrc || nextSrc === activeSrc) return;
+      const lerp = (start: number, end: number, factor: number) =>
+        start + (end - start) * factor;
 
-      activeSrc = nextSrc;
+      const animate = () => {
+        const smoothingFactor = isReducedMotion ? 1 : 0.15;
+        currentX = lerp(currentX, targetX, smoothingFactor);
+        currentY = lerp(currentY, targetY, smoothingFactor);
 
-      // Clear any pending onload to prevent stale swaps
-      back.onload = null;
-      back.src = nextSrc;
+        const offset = 18;
+        const padding = 12;
+        const rect = previewEl.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width - padding;
+        const maxY = window.innerHeight - rect.height - padding;
 
-      const swap = () => {
-        // Only swap if this is still the active source
-        if (back.src.endsWith(activeSrc.split("/").pop() || "")) {
-          front.style.opacity = "0";
-          back.style.opacity = "1";
-          const tmp = front;
-          front = back;
-          back = tmp;
+        const x = clamp(currentX + offset, padding, maxX);
+        const y = clamp(currentY - rect.height / 2, padding, maxY);
+        previewEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+        const distance = Math.sqrt(
+          (targetX - currentX) ** 2 + (targetY - currentY) ** 2,
+        );
+        if (distance > 0.5 && !isReducedMotion) {
+          animationId = requestAnimationFrame(animate);
+        } else {
+          animationId = null;
         }
       };
 
-      if (back.complete) {
-        requestAnimationFrame(swap);
-      } else {
-        back.onload = () => {
-          requestAnimationFrame(swap);
-          back.onload = null;
-        };
-      }
-    };
-
-    const show = () => {
-      setVisible(true);
-      currentX = lastX;
-      currentY = lastY;
-      targetX = lastX;
-      targetY = lastY;
-      positionPreview(lastX, lastY);
-    };
-
-    const hideIfNotHovering = () => {
-      const el = document.elementFromPoint(lastX, lastY);
-      const stillOverTrigger = !!el?.closest("[data-speciality-trigger]");
-      if (!stillOverTrigger) {
-        setVisible(false);
-        if (animationId) {
-          cancelAnimationFrame(animationId);
-          animationId = null;
+      const positionPreview = (clientX: number, clientY: number) => {
+        targetX = clientX;
+        targetY = clientY;
+        if (isReducedMotion) {
+          currentX = targetX;
+          currentY = targetY;
+          animate();
+        } else if (!animationId) {
+          animationId = requestAnimationFrame(animate);
         }
-      }
-    };
+      };
 
-    window.addEventListener(
-      "mousemove",
-      (e) => {
+      const show = () => {
+        setVisible(true);
+        currentX = lastX;
+        currentY = lastY;
+        targetX = lastX;
+        targetY = lastY;
+        positionPreview(lastX, lastY);
+      };
+
+      const hideIfNotHovering = () => {
+        const el = document.elementFromPoint(lastX, lastY);
+        const stillOverTrigger = !!el?.closest("[data-speciality-trigger]");
+        if (!stillOverTrigger) {
+          setVisible(false);
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+          }
+        }
+      };
+
+      const onWindowMouseMove = (e: MouseEvent) => {
         lastX = e.clientX;
         lastY = e.clientY;
         if (previewEl.classList.contains("is-visible")) {
           positionPreview(lastX, lastY);
         }
-      },
-      { passive: true }
-    );
+      };
 
-    window.addEventListener(
-      "scroll",
-      () => {
+      const onScroll = () => {
         if (previewEl.classList.contains("is-visible")) {
           requestAnimationFrame(hideIfNotHovering);
         }
-      },
-      { passive: true }
-    );
+      };
 
-    listEl.addEventListener(
-      "mousemove",
-      (e) => {
+      const onListMouseMove = (e: MouseEvent) => {
         lastX = e.clientX;
         lastY = e.clientY;
         positionPreview(lastX, lastY);
-      },
-      { passive: true }
-    );
+      };
 
-    listEl.addEventListener(
-      "mouseleave",
-      () => {
+      const onListMouseLeave = () => {
         requestAnimationFrame(hideIfNotHovering);
-      },
-      { passive: true }
-    );
+      };
 
-    triggers.forEach((el) => {
-      el.addEventListener(
-        "mousemove",
-        (e) => {
+      window.addEventListener("mousemove", onWindowMouseMove, {
+        passive: true,
+      });
+      window.addEventListener("scroll", onScroll, { passive: true });
+      listEl.addEventListener("mousemove", onListMouseMove, {
+        passive: true,
+      });
+      listEl.addEventListener("mouseleave", onListMouseLeave, {
+        passive: true,
+      });
+
+      const triggerHandlers: Array<{
+        el: HTMLElement;
+        move: (e: MouseEvent) => void;
+        enter: () => void;
+        leave: () => void;
+      }> = [];
+
+      triggers.forEach((el) => {
+        const move = (e: MouseEvent) => {
           lastX = e.clientX;
           lastY = e.clientY;
           positionPreview(lastX, lastY);
-        },
-        { passive: true }
-      );
-
-      el.addEventListener(
-        "mouseenter",
-        () => {
+        };
+        const enter = () => {
           const media = el.dataset.media ?? "";
           if (!media) return;
           show();
           const nextSrc = `${mediaBasePath}${media}`;
-          if (!activeSrc) {
-            front.src = nextSrc;
-            front.style.opacity = "1";
-            activeSrc = nextSrc;
+          if (!fader.activeSrc) {
+            fader.setInitial(nextSrc);
           } else {
-            crossfadeTo(nextSrc);
+            fader.crossfadeTo(nextSrc);
           }
-        },
-        { passive: true }
-      );
-
-      el.addEventListener(
-        "mouseleave",
-        () => {
+        };
+        const leave = () => {
           if (isReducedMotion) {
             hideIfNotHovering();
           } else {
             requestAnimationFrame(hideIfNotHovering);
           }
-        },
-        { passive: true }
-      );
+        };
+
+        el.addEventListener("mousemove", move, { passive: true });
+        el.addEventListener("mouseenter", enter, { passive: true });
+        el.addEventListener("mouseleave", leave, { passive: true });
+        triggerHandlers.push({ el, move, enter, leave });
+      });
+
+      // Cleanup when breakpoint no longer matches
+      return () => {
+        window.removeEventListener("mousemove", onWindowMouseMove);
+        window.removeEventListener("scroll", onScroll);
+        listEl.removeEventListener("mousemove", onListMouseMove);
+        listEl.removeEventListener("mouseleave", onListMouseLeave);
+        triggerHandlers.forEach(({ el, move, enter, leave }) => {
+          el.removeEventListener("mousemove", move);
+          el.removeEventListener("mouseenter", enter);
+          el.removeEventListener("mouseleave", leave);
+        });
+        setVisible(false);
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+        fader.reset();
+      };
+    });
+
+    // ─── Mobile: scroll-triggered preview (below lg) ───
+    gsap.matchMedia().add("(max-width: 1023px)", () => {
+      const mobilePreview = document.querySelector(
+        "[data-specialities-mobile-preview]",
+      ) as HTMLElement | null;
+      const mImgA = document.querySelector(
+        "[data-mobile-preview-a]",
+      ) as HTMLImageElement | null;
+      const mImgB = document.querySelector(
+        "[data-mobile-preview-b]",
+      ) as HTMLImageElement | null;
+
+      if (!mobilePreview || !mImgA || !mImgB) return;
+
+      const fader = createCrossfader(mImgA, mImgB);
+      let isShowing = false;
+
+      const showPreview = () => {
+        if (isShowing) return;
+        isShowing = true;
+        gsap.set(mobilePreview, { visibility: "visible" });
+        gsap.to(mobilePreview, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      };
+
+      const hidePreview = () => {
+        if (!isShowing) return;
+        isShowing = false;
+        gsap.to(mobilePreview, {
+          opacity: 0,
+          y: 20,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => {
+            gsap.set(mobilePreview, { visibility: "hidden" });
+          },
+        });
+      };
+
+      // Start off-screen
+      gsap.set(mobilePreview, { y: 20, opacity: 0, visibility: "hidden" });
+
+      let activeIndex = -1;
+
+      const updateActive = () => {
+        const viewportCenter = window.innerHeight / 2;
+        let closestIdx = -1;
+        let closestDist = Infinity;
+
+        triggers.forEach((el, idx) => {
+          if (!el.dataset.media) return;
+          const rect = el.getBoundingClientRect();
+          const elCenter = rect.top + rect.height / 2;
+          const dist = Math.abs(elCenter - viewportCenter);
+
+          // Only consider items whose rect overlaps the center band
+          if (
+            rect.top < viewportCenter + rect.height &&
+            rect.bottom > viewportCenter - rect.height &&
+            dist < closestDist
+          ) {
+            closestDist = dist;
+            closestIdx = idx;
+          }
+        });
+
+        // Check if closest item is reasonably near center
+        if (closestIdx !== -1 && closestDist > window.innerHeight * 0.4) {
+          closestIdx = -1;
+        }
+
+        if (closestIdx === activeIndex) return;
+
+        // Reset ALL items to black
+        triggers.forEach((t) => {
+          const txt = t.querySelector("p") as HTMLElement | null;
+          if (txt) gsap.set(txt, { color: "var(--color-stone-950)" });
+        });
+
+        activeIndex = closestIdx;
+
+        if (activeIndex === -1 || activeIndex >= triggers.length) {
+          hidePreview();
+          return;
+        }
+
+        // Activate new
+        const el = triggers[activeIndex]!;
+        const text = el.querySelector("p") as HTMLElement | null;
+        const media = el.dataset.media ?? "";
+        const nextSrc = `${mediaBasePath}${media}`;
+
+        if (text) gsap.set(text, { color: "var(--color-stone-500)" });
+        showPreview();
+        if (!fader.activeSrc) {
+          fader.setInitial(nextSrc);
+        } else {
+          fader.crossfadeTo(nextSrc);
+        }
+      };
+
+      const onScroll = () => requestAnimationFrame(updateActive);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      updateActive();
+
+      // Cleanup
+      return () => {
+        window.removeEventListener("scroll", onScroll);
+        gsap.set(mobilePreview, {
+          opacity: 0,
+          visibility: "hidden",
+          y: 20,
+        });
+        triggers.forEach((el) => {
+          const text = el.querySelector("p");
+          if (text) gsap.set(text, { clearProps: "color" });
+        });
+        fader.reset();
+        isShowing = false;
+        activeIndex = -1;
+      };
     });
   }
 </script>
