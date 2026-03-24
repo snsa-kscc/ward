@@ -10,12 +10,8 @@ import { formatParagraph } from "@/lib/utils";
 
 const { locale, slug } = Astro.params;
 
-const [pagesData, storeData] = await Promise.all([
-  db
-    .select()
-    .from(pages)
-    .where(eq(pages.lang, locale!))
-    .orderBy(asc(pages.name)),
+const [allPagesData, storeData] = await Promise.all([
+  db.select().from(pages).orderBy(asc(pages.name)),
   db.select().from(store).where(eq(store.lang, locale!)),
 ]);
 const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
@@ -24,6 +20,7 @@ const storeDataMap: StoreData = storeData.reduce((acc, cur) => {
   return acc;
 }, {} as StoreData);
 
+const pagesData = allPagesData.filter((page) => page.lang === locale);
 const data = pagesData.filter((page) => page.slug === slug);
 
 if (!data[0]) {
@@ -36,7 +33,7 @@ if (!data[0]) {
   title=`${data[0].title!} — WARD`
   description={data[0].content || ""}
 >
-  <Header lang={locale!} slug={slug} links={storeDataMap.navbarLinks} />
+  <Header lang={locale!} slug={slug} links={storeDataMap.navbarLinks} pagesData={allPagesData} />
   <div class="container px-6">
     <div
       class="mt-40 py-20 text-right text-[clamp(var(--text-5xl),var(--text-11xl))] font-bold md:py-40"
