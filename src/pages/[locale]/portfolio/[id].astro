@@ -76,7 +76,7 @@ const parsedSubtitle = data[0].subtitle
           return (
             <div>
               <Image
-                class="max-h-[60vh] w-full rounded-2xl md:max-h-[75vh]"
+                class="max-h-[60vh] w-full md:max-h-[75vh]"
                 src={`/assets/portfolio/${media}`}
                 alt={`${data[0]?.title ?? "Portfolio Image"}-${index + 1}`}
                 width={1500}
@@ -93,7 +93,7 @@ const parsedSubtitle = data[0].subtitle
     <div class="flex flex-col items-start justify-between gap-16 md:flex-row">
       {
         parsedSubtitle && (
-          <div class="text-3xl font-bold">
+          <div class="w-full text-3xl font-bold md:w-1/2">
             <p>{parsedSubtitle}</p>
           </div>
         )
@@ -101,7 +101,7 @@ const parsedSubtitle = data[0].subtitle
       <div
         class="w-full text-lg md:w-1/2 md:text-xl"
         set:html={formatParagraph(
-          data[0].content ? JSON.parse(data[0].content)[locale!] || "" : ""
+          data[0].content ? JSON.parse(data[0].content)[locale!] || "" : "",
         )}
       />
     </div>
@@ -116,10 +116,10 @@ const parsedSubtitle = data[0].subtitle
 
   const headerWords = document.querySelectorAll(".title>span>span");
   const portfolioItemsWrapper = document.querySelector(
-    ".portfolio-item-wrapper"
+    ".portfolio-item-wrapper",
   ) as HTMLElement;
   const portfolioStickyWrapper = document.querySelector(
-    ".portfolio-sticky-wrapper"
+    ".portfolio-sticky-wrapper",
   );
 
   const tl = gsap.timeline();
@@ -138,7 +138,7 @@ const parsedSubtitle = data[0].subtitle
       yPercent: 0,
       duration: 0.5,
       ease: "none",
-    }
+    },
   );
   tl.to(
     ".portfolio-content",
@@ -147,7 +147,7 @@ const parsedSubtitle = data[0].subtitle
       duration: 0.5,
       ease: "none",
     },
-    "-=0.3"
+    "-=0.3",
   );
   const scrollTl = gsap.timeline({
     scrollTrigger: {
@@ -167,7 +167,7 @@ const parsedSubtitle = data[0].subtitle
       ease: "none",
       duration: 0.8,
     },
-    0.1
+    0.1,
   );
   scrollTl.to({}, { duration: 0.1 });
 </script>
