@@ -114,7 +114,7 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
                   href={`/${locale !== "en" ? `${locale}/` : ""}portfolio/${item.slug}`}
                   class="group block transition-colors duration-300 hover:text-stone-500"
                 >
-                  <div class="portfolio-image-wrapper relative aspect-4/5 overflow-hidden bg-stone-800 max-[480px]:aspect-9/16">
+                  <div class="portfolio-image-wrapper relative aspect-3/4 overflow-hidden bg-stone-800">
                     <Image
                       class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       src={`/assets/portfolio/${firstImage}`}
@@ -155,7 +155,7 @@ const multipliedData = [...data, ...data, ...data, ...data, ...data];
 
   @media (max-width: 640px) {
     .portfolio-slide {
-      width: 85%;
+      width: 100%;
     }
   }
 
